@@ -1,4 +1,4 @@
-# FISH-PRODE
+# FISH-ProDe v0.0.1
 
 **FISH Pro**be **De**sign (**FISH-ProDe**, pronounced "pro‧de", "brave" or "valiant" in *italian*) is a suite of tools for selection of complementary oligonucleotides to build FISH probes. It also includes a web interface to simplify the selection and remove any need for programming skills.
 
@@ -26,12 +26,12 @@ sudo -H pip2 install sqlite3 matplotlib numpy pandas scipy shutil urllib2 xml zi
 sudo -H pip3 install bottle numpy pandas paste
 ```
 
-4. Download/Extract databases. More details in the [documentation](https://ggirelli.github.io/fish-prode/).
+4. Download/Extract databases. More details in the [documentation](https://ggirelli.github.io/fish-prode/database).
 
 Usage
 ---
 
-More details on how to run **FISH-ProDe** are available in the [documentation](https://ggirelli.github.io/fish-prode/).
+More details on how to run **FISH-ProDe** are available in the [documentation](https://ggirelli.github.io/fish-prode/usage).
 
 Contributing
 ---
