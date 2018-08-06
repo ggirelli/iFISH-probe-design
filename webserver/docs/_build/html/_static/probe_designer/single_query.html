@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Single query &mdash; BiCro Commons 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../style.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="BiCro Commons 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Probe designer v0.0.1" href="../probe_designer.html"/>
+        <link rel="next" title="Single queries" href="single_queries.html"/>
+        <link rel="prev" title="Multi query" href="multi_query.html"/> 
+
+  
+  <script src="../js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BiCro Commons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Webserver</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../webserver.html">Web Server</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Sections</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gpseq_img.html">GPSeq Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpseq_seq.html">GPSeq sequencing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Services</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pool_designer.html">Oligopool designer</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../probe_designer.html">Probe designer v0.0.1</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html">Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_query.html">Multi query</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Single query</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#probe-characteristics">Probe characteristics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algorithm">Algorithm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="single_queries.html">Single queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="query.html">Query page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="candidate.html">Candidate page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_setup.html">[dev] Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_database.html">[dev] Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_query.html">[dev] Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html">CHANGELOG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="todo.html">TODO</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">TODO</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">BiCro Commons</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../probe_designer.html">Probe designer v0.0.1</a> &raquo;</li>
+      
+    <li>Single query</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/_static/probe_designer/single_query.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="single-query">
+<h1>Single query<a class="headerlink" href="#single-query" title="Permalink to this headline">¶</a></h1>
+<p>This option allows to <strong>identify the best FISH probe</strong> in a specific genomic region. Specifically, it provides a number of candidates from which the user can choose its favorite.</p>
+<p>The form is divided into four panels:</p>
+<ul class="simple">
+<li>The <strong>general</strong> panel contains the query&#8217;s <code class="docutils literal"><span class="pre">name</span></code> and <code class="docutils literal"><span class="pre">description</span></code> (quite self-explanatory).</li>
+<li>In the <strong>where</strong> panel the user can specify the <strong>genomic region</strong> of interest, with the <code class="docutils literal"><span class="pre">chromosome</span></code>, <code class="docutils literal"><span class="pre">start</span></code> and <code class="docutils literal"><span class="pre">end</span></code> parameters (i.e., <code class="docutils literal"><span class="pre">chr:start-end</span></code>). Moreover, it is possible to select the <code class="docutils literal"><span class="pre">database</span></code> from which to extract the oligomers. The choice of the database is critical, since it influences both the length of the oligomers and their definition of <em>uniqueness</em>.</li>
+<li>The <strong>what</strong> panel allows to specify how many <code class="docutils literal"><span class="pre">oligomers</span></code> the probe must have, and the maximum number of desired output candidates (<code class="docutils literal"><span class="pre">max</span> <span class="pre">output</span> <span class="pre">probes</span></code>). If this last parameter is set to <code class="docutils literal"><span class="pre">-1</span></code>, all the candidates that were found will be reported. It is also possible to specify a <code class="docutils literal"><span class="pre">threshold</span></code> (from 0 to 1) used to define a range around the best value of the so-called <em>first feature</em>, which will be explained in detail in the <strong>algorithm</strong> section below.</li>
+<li>In the <strong>advanced settings</strong> the user can choose which, between <strong>centrality</strong>, <strong>size</strong> and <strong>spread</strong>, should be used as 1st, 2nd and 3rd feature, respectively. The meaning of these 3 features is explained in detail in the <strong>algorithm</strong> section below, together with the formal definition of the 3 measures.</li>
+</ul>
+<div class="section" id="probe-characteristics">
+<h2>Probe characteristics<a class="headerlink" href="#probe-characteristics" title="Permalink to this headline">¶</a></h2>
+<p>The tools focuses on three possible probe characteristics:</p>
+<ul class="simple">
+<li><strong>Size</strong> (<span class="math">\(I_i\)</span>). The size of the genomic regione covered by the probe. It is calculated as the difference between the end position of the last <span class="math">\(k\)</span>-mer (<span class="math">\(E\)</span>) and the start position of the first <span class="math">\(k\)</span>-mer (<span class="math">\(S\)</span>).</li>
+</ul>
+<p>$$I_i = E_i - S_i$$</p>
+<ul class="simple">
+<li><strong>Centrality</strong> (<span class="math">\(C_i\)</span>). It measures how centrally the probe is located in the specified genomic region of interest (GRoI). Specifically, it takes values between 0 and 1, where 1 means perfectly central and 0 means perfectly borderline. Mathematically speaking, if <span class="math">\(S_g\)</span> and <span class="math">\(E_g\)</span> are respectively the start and end position of the GRoi, then</li>
+</ul>
+<p>$$M_i = S_i + \frac{E_i - S_i}{2}$$
+$$M_g = S_g + \frac{E_g - S_g}{2}$$
+$$C_i = \frac{\left| \overline{S_g M_g} - \overline{M_i M_g} \right|}{\overline{S_g M_g}}$$</p>
+<p>With <span class="math">\(M_g\)</span> and <span class="math">\(M_i\)</span> being the middle points of the GRoI and of the <span class="math">\(i\)</span>-th probe, respectively.</p>
+<ul class="simple">
+<li><strong>Spread</strong> (<span class="math">\(P_i\)</span>). It measures how homogeneously the oligomers are spread over the probe. It is basically the inverse of the consecutive-mers distance&#8217;s standard deviation. Thus, the larger <span class="math">\(P_i\)</span>, the more homogeneously the oligomers are spread.</li>
+</ul>
+<p>$$ U_i = \sum_{j=1}^{N_O - 1}{\frac{S_{j+1} - E_{j}}{N_O - 1}} $$</p>
+<p>$$ \frac{1}{P_i} = \sqrt{\sum_{j=1}^{N_O - 1}{\frac{(U - \lvert S_{j+1} - E_{j}\rvert )^2}{N_O - 1}}} $$</p>
+<p>It is important to note how size and spread need to be minimized, while centrality should be maximized.</p>
+</div>
+<div class="section" id="algorithm">
+<h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The algorithm behind the single probe design considers a probe candidate as a set of <span class="math">\(N_O\)</span> consecutive oligomers (or <span class="math">\(k\)</span>-mers), in the genomic region of interest. Two <span class="math">\(k\)</span>-mers are considered <strong>consecutive</strong> when there are no other <span class="math">\(k\)</span>-mers between them.</p>
+<p>It starts by checking that the number of requested <span class="math">\(k\)</span>-mers can actually fit the specified GRoI. Otherwise, it throws an error. Keeping in mind that the <code class="docutils literal"><span class="pre">uniqueOligo</span></code> pipeline forces a minimum distance <span class="math">\(min\_d\)</span> between consecutive <span class="math">\(k\)</span>-mers, the minimum size of a GRoI is</p>
+<p>$$ min\_{I_G} = k · N_O + min\_d · (N_O - 1) $$</p>
+<p>If the query passes the first test, the tool proceeds with the generation of all probe candidates <span class="math">\(C\)</span>. This is achieved by <span class="math">\(N_O\)</span> grouping consecutive <span class="math">\(k\)</span>-mers in <span class="math">\(C\)</span>.</p>
+<p>$$ C_i = O_i, O_{i + 1}, ..., O_{i + N_O - 1} $$</p>
+<p>Where <span class="math">\(O_i\)</span> is the <span class="math">\(i\)</span>-th <span class="math">\(k\)</span>-mers in the GRoI and <span class="math">\(C_i\)</span> is the <span class="math">\(i\)</span>-th probe candidate. If the GRoI has <span class="math">\(N_G\)</span> <span class="math">\(k\)</span>-mers, then <span class="math">\(N_G - N_O + 1\)</span> probe candidates are generated.</p>
+<p>The algorithms requires to rank the probe characteristics (size, centrality, and spread) in so-called 1st, 2nd and 3rd <em>features</em> (<span class="math">\(f_1\)</span>, <span class="math">\(f_2\)</span>, and <span class="math">\(f_3\)</span>).</p>
+<p>$$ \operatorname{best}(f_x) = \left[ \begin{array}{cc}
+\operatorname{max}(f_x) &amp; \operatorname{if} f_x \in \{\operatorname{centrality}\} \\
+\operatorname{min}(f_x) &amp; \operatorname{if} f_x \in \{\operatorname{size}, \operatorname{spread}\} \\
+\end{array} \right. $$</p>
+<p>Then, the 1st feature is calculated for every probe candidate <span class="math">\(C\)</span> and the best probe candidate is identified. An interval around the best candidate 1st feature value is calculated using the user-provided threshold <span class="math">\(t\)</span>.</p>
+<p>$$ I_{f_1} = [ \operatorname{best}(f_1) - t·\operatorname{best}(f_1), \operatorname{best}(f_1) + t·\operatorname{best}(f_1) ] $$</p>
+<p>Every candidate probe <span class="math">\(C_i\)</span> with an <span class="math">\(f_{1,i} \notin I_{f_1}\)</span> is discarded.</p>
+<p>Then, <span class="math">\(f_2\)</span> and <span class="math">\(f_3\)</span> are calculated for every remaining probe candidate. The candidates are ranked based on <span class="math">\(f_2\)</span> (with the <span class="math">\(\operatorname{best}\)</span> on top) and returned as the output.</p>
+<p>The tool also produces plots to easily understand how the probe is structured. More details about the plots are available in the <code class="docutils literal"><span class="pre">query</span></code> and <code class="docutils literal"><span class="pre">candidate</span></code> pages.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="single_queries.html" class="btn btn-neutral float-right" title="Single queries" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="multi_query.html" class="btn btn-neutral" title="Multi query" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Gabriele Girelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../jquery.js"></script>
+      <script type="text/javascript" src="../underscore.js"></script>
+      <script type="text/javascript" src="../doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

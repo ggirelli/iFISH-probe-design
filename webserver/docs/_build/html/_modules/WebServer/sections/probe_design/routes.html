@@ -1,0 +1,659 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WebServer.sections.probe_design.routes &mdash; BiCro Commons 0.1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../../_static/style.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="BiCro Commons 0.1.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> BiCro Commons
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Webserver</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/webserver.html">Web Server</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Sections</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/gpseq_img.html">GPSeq Imaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/gpseq_seq.html">GPSeq sequencing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/pool_designer.html">Oligopool designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/probe_designer.html">Probe designer v0.0.1</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/changelog.html">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_static/todo.html">TODO</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">BiCro Commons</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      
+    <li>WebServer.sections.probe_design.routes</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for WebServer.sections.probe_design.routes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># </span>
+<span class="c1"># Author: Gabriele Girelli</span>
+<span class="c1"># Email: gigi.ga90@gmail.com</span>
+<span class="c1"># Version: 0.0.1</span>
+<span class="c1"># Description: Probe-design Route manager</span>
+<span class="c1"># </span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+
+
+<span class="c1"># DEPENDENCIES =================================================================</span>
+
+<span class="kn">import</span> <span class="nn">bottle</span> <span class="k">as</span> <span class="nn">bot</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shlex</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">routes</span>
+<span class="kn">from</span> <span class="nn">.query</span> <span class="k">import</span> <span class="n">Query</span>
+
+<span class="c1"># CLASSES ======================================================================</span>
+
+<div class="viewcode-block" id="Routes"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes">[docs]</a><span class="k">class</span> <span class="nc">Routes</span><span class="p">(</span><span class="n">routes</span><span class="o">.</span><span class="n">Routes</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Routes class.&#39;&#39;&#39;</span>
+	
+	<span class="c1"># Empty routes dictionary</span>
+	<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		Create new routes here using the add_route method.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Set default Routes</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">Routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+		<span class="c1"># Static files ---------------------------------------------------------</span>
+
+		<span class="n">dname</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;dname:re:(images|documents)&gt;&#39;</span><span class="p">,)</span>
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/c/&lt;candidate_id&gt;/</span><span class="si">%s</span><span class="s1">/&lt;path&gt;&#39;</span> <span class="o">%</span> <span class="n">dname</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_static_file&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">dname</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;dname:re:(images|documents)&gt;&#39;</span><span class="p">,)</span>
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/cs/&lt;candidate_id&gt;/</span><span class="si">%s</span><span class="s1">/&lt;path&gt;&#39;</span> <span class="o">%</span> <span class="n">dname</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_set_static_file&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/c/&lt;candidate_id&gt;/documents/&lt;path:re:.*&gt;/download/&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_static_file_download&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/cs/&lt;candidate_id&gt;/documents/&lt;path:re:.*&gt;/download/&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_set_static_file_download&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/download/&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;query_download&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/c/&lt;candidate_id&gt;/download/&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_download&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="n">route</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/cs/&lt;candidate_id&gt;/download/&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_set_download&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+		<span class="c1"># Pages ----------------------------------------------------------------</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="s1">&#39;home.tpl&#39;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="s1">&#39;/q/&lt;query_id&gt;&#39;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="s1">&#39;query.tpl&#39;</span><span class="p">)</span>
+
+		<span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/c/&lt;candidate_id&gt;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_probe&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_probe&#39;</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="s1">&#39;candidate_probe.tpl&#39;</span><span class="p">)</span>
+
+		<span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;/q/&lt;query_id&gt;/cs/&lt;candidate_id&gt;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_probe_set&#39;</span><span class="p">,</span> <span class="s1">&#39;route&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;candidate_probe_set&#39;</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="s1">&#39;candidate_probe_set.tpl&#39;</span><span class="p">)</span>
+
+		<span class="c1"># Forms ----------------------------------------------------------------</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;single_query&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="s1">&#39;/single_query&#39;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;multi_query&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="s1">&#39;/multi_query&#39;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;single_queries&#39;</span><span class="p">,</span> <span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="s1">&#39;/single_queries&#39;</span><span class="p">)</span>
+
+		<span class="c1"># Errors ---------------------------------------------------------------</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;error404&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="mi">404</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;error500&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+
+		<span class="k">return</span>
+
+	<span class="c1"># Static files -------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Routes.candidate_static_file"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_static_file">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_static_file</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">,</span> <span class="n">dname</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Access candidate static files.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">			dname (string): file type.</span>
+<span class="sd">			path (string): file name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+		<span class="n">ipath</span> <span class="o">+=</span> <span class="s1">&#39;/candidates/probe_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_set_static_file"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_set_static_file">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_set_static_file</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">,</span> <span class="n">dname</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Access candidate static files.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">			dname (string): file type.</span>
+<span class="sd">			path (string): file name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+		<span class="n">ipath</span> <span class="o">+=</span> <span class="s1">&#39;/candidates/set_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_static_file_download"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_static_file_download">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_static_file_download</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Download candidate static files.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">			dname (string): file type.</span>
+<span class="sd">			path (string): file name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+		<span class="n">ipath</span> <span class="o">+=</span> <span class="s1">&#39;/candidates/probe_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+		<span class="n">outname</span> <span class="o">=</span> <span class="s1">&#39;q_&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">path</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">download</span> <span class="o">=</span> <span class="n">outname</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_set_static_file_download"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_set_static_file_download">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_set_static_file_download</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Download candidate static files.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">			dname (string): file type.</span>
+<span class="sd">			path (string): file name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+		<span class="n">ipath</span> <span class="o">+=</span> <span class="s1">&#39;/candidates/set_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+		<span class="n">outname</span> <span class="o">=</span> <span class="s1">&#39;q_&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">path</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">ipath</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">download</span> <span class="o">=</span> <span class="n">outname</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Routes.query_download"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.query_download">[docs]</a>	<span class="k">def</span> <span class="nf">query_download</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Download compressed query output.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+		<span class="n">path</span> <span class="o">=</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;.zip&#39;</span>
+		<span class="n">outname</span> <span class="o">=</span> <span class="s1">&#39;q_&#39;</span> <span class="o">+</span> <span class="n">path</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">download</span> <span class="o">=</span> <span class="n">outname</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_download"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_download">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_download</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Download compressed candidate output.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;/candidates/&#39;</span>
+		<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;probe_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;.zip&#39;</span>
+		<span class="n">outname</span> <span class="o">=</span> <span class="s1">&#39;q_&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">path</span>
+		<span class="k">return</span> <span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">download</span> <span class="o">=</span> <span class="n">outname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_set_download"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_set_download">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_set_download</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+		<span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Download compressed candidate output.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">ipath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;/candidates/&#39;</span>
+		<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;set_&#39;</span> <span class="o">+</span> <span class="n">candidate_id</span> <span class="o">+</span> <span class="s1">&#39;.zip&#39;</span>
+		<span class="n">outname</span> <span class="o">=</span> <span class="s1">&#39;q_&#39;</span> <span class="o">+</span> <span class="n">query_id</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">path</span>
+		<span class="k">return</span> <span class="n">bot</span><span class="o">.</span><span class="n">static_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">download</span> <span class="o">=</span> <span class="n">outname</span><span class="p">)</span></div>
+
+	<span class="c1"># Pages --------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Routes.home"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.home">[docs]</a>	<span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Home-page.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Template dictionary</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vd</span>
+
+		<span class="c1"># Page title and description</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tprefix</span> <span class="o">+</span> <span class="s1">&#39;Home&#39;</span>
+
+		<span class="c1"># Local stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;home.css&#39;</span><span class="p">,</span> <span class="s1">&#39;style.css&#39;</span><span class="p">]</span>
+
+		<span class="c1"># Root stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_root_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1"># Database list</span>
+		<span class="n">dbpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spath</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s1">&#39;/db/&#39;</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;dblist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">dbpath</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="c1"># Query list</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;qlist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">qpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spath</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span>
+		<span class="n">qlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">next</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">qpath</span><span class="p">))[</span><span class="mi">1</span><span class="p">]]</span>
+		<span class="n">qlist</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">qid</span> <span class="ow">in</span> <span class="n">qlist</span><span class="p">:</span>
+			<span class="n">d</span><span class="p">[</span><span class="s1">&#39;qlist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Query</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">qid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">))</span>
+		
+		<span class="k">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.query"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.query">[docs]</a>	<span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Query output page.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Template dictionary</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vd</span>
+
+		<span class="c1"># Page title and description</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tprefix</span> <span class="o">+</span> <span class="s1">&#39; Query: &#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+
+		<span class="c1"># Local stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query.css&#39;</span><span class="p">,</span> <span class="s1">&#39;style.css&#39;</span><span class="p">]</span>
+
+		<span class="c1"># Root stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_root_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1"># Query data (query folder)</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Query</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">)</span>
+
+		<span class="k">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_probe"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_probe">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_probe</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Candidate output page.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Template dictionary</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vd</span>
+
+		<span class="c1"># Page title and description</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tprefix</span> <span class="o">+</span> <span class="s1">&#39; Query: &#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+
+		<span class="c1"># Local stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query.css&#39;</span><span class="p">,</span> <span class="s1">&#39;style.css&#39;</span><span class="p">]</span>
+
+		<span class="c1"># Root stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_root_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1"># Query data (query folder)</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Query</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">)</span>
+
+		<span class="c1"># Candidate data</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;candidate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span> <span class="p">:</span> <span class="n">candidate_id</span><span class="p">}</span>
+
+		<span class="k">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.candidate_probe_set"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.candidate_probe_set">[docs]</a>	<span class="k">def</span> <span class="nf">candidate_probe_set</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">query_id</span><span class="p">,</span> <span class="n">candidate_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Candidate output page.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">			query_id (string): query folder name.</span>
+<span class="sd">			candidate_id (string): candidate folder name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Template dictionary</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vd</span>
+
+		<span class="c1"># Page title and description</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tprefix</span> <span class="o">+</span> <span class="s1">&#39; Query: &#39;</span> <span class="o">+</span> <span class="n">query_id</span>
+
+		<span class="c1"># Local stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query.css&#39;</span><span class="p">,</span> <span class="s1">&#39;style.css&#39;</span><span class="p">]</span>
+
+		<span class="c1"># Root stylesheets</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;custom_root_stylesheets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="c1"># Query data (query folder)</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Query</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">query_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">)</span>
+
+		<span class="c1"># Candidate data</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;candidate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span> <span class="p">:</span> <span class="n">candidate_id</span><span class="p">}</span>
+
+		<span class="k">return</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+	<span class="c1"># Form reception -----------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Routes.single_query"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.single_query">[docs]</a>	<span class="k">def</span> <span class="nf">single_query</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Single probe query form reception route.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="n">fdata</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">forms</span>
+
+		<span class="c1"># Build query command line</span>
+		<span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/scripts/query_database.py&#39;</span><span class="p">]</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Query</span><span class="o">.</span><span class="n">get_next_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">name</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">chromosome</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">start</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">end</span><span class="p">)])</span>
+		<span class="n">dbpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/db/&#39;</span> <span class="o">+</span> <span class="n">fdata</span><span class="o">.</span><span class="n">database</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--n_oligo&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">n_oligo</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--f1_thr&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f1_threshold</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--max_probes&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">max_probes</span><span class="p">)])</span>
+		<span class="n">feat_order</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f1</span><span class="p">)</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f2</span><span class="p">)</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f3</span><span class="p">)</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--feat_order&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feat_order</span><span class="p">))])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--outdir&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span><span class="p">])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--description&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">description</span><span class="p">)])</span>
+
+		<span class="c1"># Add query to the queue</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+		<span class="c1"># Redirect</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">303</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_uri</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_uri</span><span class="p">)</span>
+
+		<span class="c1"># Output</span>
+		<span class="k">return</span><span class="p">(</span><span class="s1">&#39;Query received.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.multi_query"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.multi_query">[docs]</a>	<span class="k">def</span> <span class="nf">multi_query</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Multi probe query form reception route.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="n">fdata</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">forms</span>
+
+		<span class="c1"># Build query command line</span>
+		<span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/scripts/query_database.py&#39;</span><span class="p">]</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Query</span><span class="o">.</span><span class="n">get_next_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_name</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_chromosome</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_start</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_end</span><span class="p">)])</span>
+		<span class="n">dbpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/db/&#39;</span> <span class="o">+</span> <span class="n">fdata</span><span class="o">.</span><span class="n">multi_database</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">dbpath</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--n_oligo&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_n_oligo</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--f1_thr&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_f1_threshold</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--n_probes&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_n_probes</span><span class="p">)])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--win_shift&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_win_shift</span><span class="p">)])</span>
+		<span class="n">feat_order</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f1</span><span class="p">)</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f2</span><span class="p">)</span>
+		<span class="n">feat_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">f3</span><span class="p">)</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--feat_order&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feat_order</span><span class="p">))])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--outdir&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span><span class="p">])</span>
+		<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--description&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">fdata</span><span class="o">.</span><span class="n">multi_description</span><span class="p">)])</span>
+
+		<span class="c1"># Add query to the queue</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+		<span class="c1"># Redirect</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">303</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_uri</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_uri</span><span class="p">)</span>
+
+		<span class="c1"># Output</span>
+		<span class="k">return</span><span class="p">(</span><span class="s1">&#39;Query received.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Routes.single_queries"><a class="viewcode-back" href="../../../../WebServer.sections.probe_design.html#WebServer.sections.probe_design.app.Routes.single_queries">[docs]</a>	<span class="k">def</span> <span class="nf">single_queries</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Single probe queries reception route.</span>
+
+<span class="sd">		Args:</span>
+<span class="sd">			self (App): ProbeDesigner.App instance.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="c1"># Read uploaded file</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">data</span>
+		<span class="n">raw</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
+
+		<span class="c1"># Submit query</span>
+		<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+			<span class="n">args</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+			<span class="c1"># Build query command line</span>
+			<span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/scripts/query_database.py&#39;</span><span class="p">]</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Query</span><span class="o">.</span><span class="n">get_next_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]])</span>
+			<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/db/&#39;</span> <span class="o">+</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/db/&#39;</span> <span class="o">+</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--n_oligo&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">6</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--f1_thr&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">7</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--max_probes&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">8</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--feat_order&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">9</span><span class="p">])])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--outdir&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;/query/&#39;</span><span class="p">])</span>
+			<span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;--description&#39;</span><span class="p">,</span> <span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+
+			<span class="c1"># Add query to the queue</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+		<span class="c1"># Redirect</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">303</span>
+		<span class="n">bot</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_uri</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_uri</span><span class="p">)</span>
+
+		<span class="c1"># Output</span>
+		<span class="k">return</span><span class="p">(</span><span class="s1">&#39;Query received.&#39;</span><span class="p">)</span></div></div>
+
+	<span class="c1"># Error --------------------------------------------------------------------</span>
+
+<span class="c1"># END ==========================================================================</span>
+
+<span class="c1">################################################################################</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Gabriele Girelli.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
