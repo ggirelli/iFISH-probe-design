@@ -114,12 +114,6 @@ def go_docs(path):
 
 # Sections ---------------------------------------------------------------------
 
-# Sample sections
-root.mount('sample/',
-	sec.sample.App(spath, root_path, ruri_complete, 'sample/'))
-root.mount('sample_angular/',
-	sec.sample_angular.App(spath, root_path, ruri_complete, 'sample_angular/'))
-
 # Probe designer
 root.mount('probe-design/',
 	sec.probe_design.App(spath, root_path, ruri_complete, 'probe-design/'))

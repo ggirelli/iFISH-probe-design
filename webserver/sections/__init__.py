@@ -14,8 +14,6 @@
 # DEPENDENCIES =================================================================
 
 from . import probe_design
-from . import sample
-from . import sample_angular
 
 # END ==========================================================================
 
