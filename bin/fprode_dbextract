@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # ------------------------------------------------------------------------------
@@ -29,55 +29,50 @@ parser = argparse.ArgumentParser(
 )
 
 # Add params
-parser.add_argument('db', metavar = 'db', type = str, nargs = 1,
+parser.add_argument('db', metavar = 'db', type = str,
 	help = 'Sqlite3 database path.')
-parser.add_argument('table', metavar = 'table', type = str, nargs = 1,
+parser.add_argument('table', metavar = 'table', type = str,
 	help = 'Table name.')
-parser.add_argument('--outdir', metavar = 'od', type = str, nargs = 1,
-	default = ['.'], help = 'Database directory path.')
+parser.add_argument('-o', '--outdir', metavar = 'od', type = str,
+	default = '.', help = 'Database directory path. Default: "."')
 
 # Parse arguments
 args = parser.parse_args()
-
-# Retrieve arguments
-dbpath = args.db[0]
-table = args.table[0]
-outdir = args.outdir[0]
 
 # FUNCTIONS ====================================================================
 
 # RUN ==========================================================================
 
 print('\nExtracting information from unique oligo databases.')
-print('Database: ' + dbpath)
-print('Table: ' + table + '\n')
+print(('Database: %s' % args.db))
+print(('Table: %s\n' % args.table))
 
 # Connect to databases
 print(' · Connecting to database...')
-conn = sqlite3.connect(dbpath)
+conn = sqlite3.connect(args.db)
 c = conn.cursor()
 
 # Identify chromosomes
 print(' · Identifying chromosomes...')
 chrlist = []
-q = 'SELECT CHR FROM ' + table
+q = 'SELECT CHR FROM %s' % args.table
 for row in c.execute(q):
 	if not row[0] in chrlist:
 		chrlist.append(row[0])
 
 # Create output folder
 print(' · Creating output folder...')
-outdir = outdir + '/' + table + '/'
-if not os.path.exists(outdir):
-    os.makedirs(outdir)
+args.outdir = "%s/%s/" % (args.outdir, args.table)
+if not os.path.exists(args.outdir):
+    os.makedirs(args.outdir)
 
 # Extracting table per chromosome
 print(' · Extracting oligo positions per chromosome...')
 for chrom in chrlist:
-	print(' >>> chr' + str(chrom) + ' ...')
+	print((' >>> chr%s ...' % chrom))
 
 	# Output file path
-	fpath = outdir + 'chr' + str(chrom)
+	fpath = '%schr%s' % (args.outdir, chrom)
 
 	# Remove file if it exists
 	try:
@@ -89,7 +84,7 @@ for chrom in chrlist:
 	outf = open(fpath, 'a+')
 
 	# Query to get positions
-	q = 'SELECT START FROM ' + table + ' WHERE CHR=?'
+	q = 'SELECT START FROM %s WHERE CHR=?' % args.table
 	for row in c.execute(q, (chrom,)):
 		# Output position
 		outf.write(','.join([str(i) for i in row]) + '\n')

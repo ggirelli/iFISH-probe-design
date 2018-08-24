@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # ------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ import pandas as pd
 from scipy import stats
 import shutil
 import sys
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import xml.etree.ElementTree
 import zipfile
 
@@ -43,76 +43,77 @@ parser = argparse.ArgumentParser(
 )
 
 # Add params
-parser.add_argument('id', type = str, nargs = 1,
+parser.add_argument('id', type = str,
 	help = 'Query ID.')
-parser.add_argument('name', type = str, nargs = 1,
+parser.add_argument('name', type = str,
 	help = 'Query name.')
-parser.add_argument('chrom', metavar = 'chr', type = str, nargs = 1,
+parser.add_argument('chrom', metavar = 'chr', type = str,
 	help = 'Chromosome in "ChrXX" format.')
-parser.add_argument('start', metavar = 'start', type = int, nargs = 1,
+parser.add_argument('start', metavar = 'start', type = int,
 	help = 'Probe range starting position.')
-parser.add_argument('end', metavar = 'end', type = int, nargs = 1,
+parser.add_argument('end', metavar = 'end', type = int,
 	help = 'Probe range ending position.')
-parser.add_argument('db', metavar = 'db', type = str, nargs = 1,
+parser.add_argument('db', metavar = 'db', type = str,
 	help = 'Database folder path.')
-parser.add_argument('--description', metavar = 'descr', type = str, nargs = 1,
-	default = [''], help = 'Query description')
-parser.add_argument('--feat_order', metavar = 'fo', type = str, nargs = 1,
-	default = ['size,spread,centrality'], help = 'Comma-separated features.')
-parser.add_argument('--f1_thr', metavar = 'ft', type = float, nargs = 1,
-	default = [1.1], help = 'Threshold of first feature filter, '
+
+parser.add_argument('--description', metavar = 'descr', type = str,
+	default = '', help = 'Query description')
+parser.add_argument('--feat_order', metavar = 'fo', type = str,
+	default = 'size,spread,centrality', help = 'Comma-separated features.')
+parser.add_argument('--f1_thr', metavar = 'ft', type = float,
+	default = 1.1, help = 'Threshold of first feature filter, '
 	+ 'used to identify a range around the best value. '
 	+ 'It\'s the percentage range around it. Accepts values from 0 to 1.')
-parser.add_argument('--min_d', metavar = 'md', type = int, nargs = 1,
-	default = [10], help = 'Minimum distance between consecutive oligos.')
-parser.add_argument('--n_oligo', metavar = 'no', type = int, nargs = 1,
-	default = [48], help = 'Number of oligos per probe.')
-parser.add_argument('--n_probes', metavar = 'np', type = int, nargs = 1,
-	default = [1], help = 'Number of probes to design.')
-parser.add_argument('--max_probes', metavar = 'mp', type = int, nargs = 1,
-	default = [-1], help = 'Maximum number of output probe candidates.'
+parser.add_argument('--min_d', metavar = 'md', type = int,
+	default = 10, help = 'Minimum distance between consecutive oligos.')
+parser.add_argument('--n_oligo', metavar = 'no', type = int,
+	default = 48, help = 'Number of oligos per probe.')
+parser.add_argument('--n_probes', metavar = 'np', type = int,
+	default = 1, help = 'Number of probes to design.')
+parser.add_argument('--max_probes', metavar = 'mp', type = int,
+	default = -1, help = 'Maximum number of output probe candidates.'
 	+ ' Set to "-1" to retrieve all candidates.')
-parser.add_argument('--win_shift', metavar = 'ws', type = float, nargs = 1,
-	default = [.1], help = 'Window size fraction for shifting the windows.')
-parser.add_argument('--outdir', metavar = 'od', type = str, nargs = 1,
-	default = ['query'], help = 'Query output directory.')
+parser.add_argument('--win_shift', metavar = 'ws', type = float,
+	default = .1, help = 'Window size fraction for shifting the windows.')
+parser.add_argument('-o', '--outdir', metavar = 'od', type = str,
+	default = 'query', help = 'Query output directory.')
 parser.add_argument('-f', type = bool, nargs = '?', const = [True],
-	default = [False], help = 'Force overwriting of the query if already run.')
+	default = False, help = 'Force overwriting of the query if already run.')
 
 # Parse arguments
 args = parser.parse_args()
 
 # general
-query_id = args.id[0]
-name = args.name[0]
-description = args.description[0]
+query_id = args.id
+name = args.name
+description = args.description
 
 # output
-outdir = args.outdir[0]
-max_probes = args.max_probes[0]
-force_mode = args.f[0]
+outdir = args.outdir
+max_probes = args.max_probes
+force_mode = args.f
 
 # where
-chrom = args.chrom[0]
-start = args.start[0]
-end = args.end[0]
+chrom = args.chrom
+start = args.start
+end = args.end
 
 # what
-n_probes = args.n_probes[0]
-n_oligo = args.n_oligo[0]
+n_probes = args.n_probes
+n_oligo = args.n_oligo
 
 # Minimum distance between consecutive oligos
-min_d = args.min_d[0]
+min_d = args.min_d
 
 # Threshold for first feature selection
-f1_thr = args.f1_thr[0]
+f1_thr = args.f1_thr
 
 # Extracted database folder
-dbpath = args.db[0]
+dbpath = args.db
 
 # Features order
 feats = ['size', 'centrality', 'spread']
-feats_order = args.feat_order[0].split(',')
+feats_order = args.feat_order.split(',')
 feats_order = [feats.index(feats_order[i]) for i in range(len(feats_order))]
 
 # Extract k information from database selection
@@ -120,7 +121,7 @@ k = dbpath.split('/')[-1].split('_')
 k = int(''.join([i for i in k if 'kmer' in i]).strip('kmer'))
 
 # Shift window size fraction
-win_shift = max(0.0, min(1.0, args.win_shift[0]))
+win_shift = max(0.0, min(1.0, args.win_shift))
 
 # FUNCTIONS ====================================================================
 
@@ -172,7 +173,7 @@ def done(dirpath):
 		dirpath (string): directory path.
 	'''
 
-	f = open(add_trailing_slash(dirpath) + 'DONE', 'w+')
+	f = open('%sDONE' % add_trailing_slash(dirpath), 'w+')
 	f.close()
 
 def zipdir(path, ziph):
@@ -208,19 +209,19 @@ def calc_density(data, **kwargs):
 	"""
 
 	# Default values
-	if not 'sigma' in kwargs.keys():
+	if not 'sigma' in list(kwargs.keys()):
 		sigma = .2
 	else:
 		sigma = kwargs['sigma']
 
-	if not 'nbins' in kwargs.keys():
+	if not 'nbins' in list(kwargs.keys()):
 		nbins = 1000
 	else:
 		nbins = kwargs['nbins']
 
 	# If only one nucleus was found
 	if 1 == len(data):
-		f = eval('lambda x: 1 if x == ' + str(data[0]) + ' else 0')
+		f = eval('lambda x: 1 if x == %d else 0' % data[0])
 		f = np.vectorize(f)
 		return({
 			'x' : np.array([data[0]]),
@@ -439,9 +440,9 @@ def get_best_feature(vs, fid, ff = None):
 	# Setup default feature functions
 	if type(None) == type(ff):
 		ff = {}
-		ff['size'] = lambda (x): min(x)
-		ff['centrality'] = lambda (x): max(x)
-		ff['spread'] = lambda (x): max(x)
+		ff['size'] = lambda x: min(x)
+		ff['centrality'] = lambda x: max(x)
+		ff['spread'] = lambda x: max(x)
 
 	# Calculate best
 	return(ff[fid](vs))
@@ -530,9 +531,9 @@ def rank_feature(vs, fid, ff = None):
 	# Setup default feature functions
 	if type(None) == type(ff):
 		ff = {}
-		ff['size'] = lambda (x): np.argsort(vs)
-		ff['centrality'] = lambda (x): np.argsort(vs)[::-1]
-		ff['spread'] = lambda (x): np.argsort(vs)[::-1]
+		ff['size'] = lambda x: np.argsort(vs)
+		ff['centrality'] = lambda x: np.argsort(vs)[::-1]
+		ff['spread'] = lambda x: np.argsort(vs)[::-1]
 
 	# Calculate best
 	return(ff[fid](vs))	
@@ -557,7 +558,7 @@ def get_seq(chrom, start, stop, genome = None):
 	# Contact UCSC
 	data = (genome, chrom, start, stop)
 	uri = 'http://genome.ucsc.edu/cgi-bin/das/%s/dna?segment=%s:%d,%d' % data
-	file = urllib2.urlopen(uri)
+	file = urllib.request.urlopen(uri)
 	data = file.read()
 	file.close()
 
@@ -648,7 +649,7 @@ def plot_probe(chrom, probe, k, path):
 	start = min(probe)
 	stop = max(probe) + k
 	step = (stop - start) / 5.
-	plt.gca().axes.get_xaxis().set_ticks(range(start, stop, int(step)))
+	plt.gca().axes.get_xaxis().set_ticks(list(range(start, stop, int(step))))
 
 	# Legend
 	plt.legend(handles = [genome, oligo, oligo_center],
@@ -681,7 +682,7 @@ def plot_oligo_distr(chrom, probe, k, path):
 	plt.plot([0, len(probe) - 1], [min(probe) + k/2., max(probe) + k/2.], 'k-',
 		label = 'Homogeneous distribution')
 	plt.hold(True)
-	plt.plot(range(len(probe)), np.array(probe) + k/2., 'r.',
+	plt.plot(list(range(len(probe))), np.array(probe) + k/2., 'r.',
 		label = 'Oligo')
 
 	# Add labels
@@ -724,7 +725,7 @@ def plot_probe_distr(chrom, probe_set, k, path):
 	plt.plot([0, len(psta) - 1], [min(pcen), max(pcen)], 'k-',
 		label = 'Homogeneous distribution')
 	plt.hold(True)
-	plt.plot(range(len(pcen)), np.array(pcen), 'r.', label = 'Probe')
+	plt.plot(list(range(len(pcen))), np.array(pcen), 'r.', label = 'Probe')
 
 	# Add labels
 	plt.suptitle('%s:%d-%d' % (chrom, min(pcen), max(pcen) + k))
@@ -954,13 +955,13 @@ def run_single_probe(dbpath, outdir, lpath, elpath,
 
 	# Design single probe ------------------------------------------------------
 	if verbose: log('\n* SINGLE PROBE DESIGN *\n', lpath)
-	if verbose: log('~ Database: ' + dbpath[:-1] + '\n', lpath)
+	if verbose: log('~ Database: %s\n' % dbpath[:-1], lpath)
 
 	# Check window size
 	if not check_window(start, end, get_min_size(n_oligo, k, min_d)):
-		msg = '(╯°□°)╯︵ ┻━┻\n'
-		msg += 'ERROR: too many oligos were requested,'
-		msg += ' or the specified window was too small.'
+		msg = '(╯°□°)╯︵ ┻━┻\n%s%s' % (
+			'ERROR: too many oligos were requested,',
+			' or the specified window was too small.')
 		log(msg, elpath)
 		sys.exit()
 
@@ -979,7 +980,7 @@ def run_single_probe(dbpath, outdir, lpath, elpath,
 	if verbose: log(' · Identifying candidate probes.', lpath)
 	candidates = get_probe_candidates(poss, n_oligo)
 	n_candidates = len(candidates)
-	if verbose: log(' >>> Found ' + str(n_candidates) + ' candidates.', lpath)
+	if verbose: log(' >>> Found %d candidates.' % n_candidates, lpath)
 
 	# Exit if no candidate probes were found
 	if 0 == n_candidates:
@@ -994,7 +995,7 @@ def run_single_probe(dbpath, outdir, lpath, elpath,
 
 	# Calculate first feature --------------------------------------------------
 	f1 = feats[feats_order[0]]
-	if verbose: log(' · Calculating first feature [' + f1 + '].', lpath)
+	if verbose: log(' · Calculating first feature [%s].' % f1, lpath)
 	for ci in range(len(candidates)):
 		fvs[ci, 0] = calc_feature(f1,
 			probe = candidates[ci],
@@ -1005,8 +1006,8 @@ def run_single_probe(dbpath, outdir, lpath, elpath,
 	if verbose:
 		msg = ' >>> Best ' + f1 + ': ' + str(get_best_feature(fvs[:,0], f1))
 		log(msg, lpath)
-		log(' · Selecting candidates with threshold: ' + str(f1_thr), lpath)
-		log(' >>> Selected ' + str(len(selected)) + ' candidate probes.', lpath)
+		log(' · Selecting candidates with threshold: %f' % f1_thr, lpath)
+		log(' >>> Selected %d candidate probes.' % len(selected), lpath)
 	candidates = [candidates[i] for i in selected]
 	fvs = fvs[selected, :]
 
@@ -1034,7 +1035,7 @@ def run_single_probe(dbpath, outdir, lpath, elpath,
 	if -1 != max_probes:
 		if len(candidates) > max_probes:
 			if verbose:
-				msg = ' · Selecting top ' + str(max_probes) + ' candidates.'
+				msg = ' · Selecting top %d candidates.' % max_probes
 				log(msg, lpath)
 			candidates = candidates[0:max_probes]
 			fvs = fvs[0:max_probes, :]
@@ -1119,8 +1120,8 @@ def output_single_probe(query_id, outdir, lpath, chrom, start, end, k,
 
 	for ci in range(len(candidates)):
 		cc = candidates[ci]
-		pname = 'probe_' + str(ci)
-		dname = outdir + 'candidates/' + pname + '/'
+		pname = 'probe_%d' % ci
+		dname =  '%scandidates/%s/' % (outdir, pname)
 		f = open(dname + pname + '.fa', 'a+')
 		
 		for oi in range(len(cc)):
@@ -1333,7 +1334,7 @@ def run_multi_probe(dbpath, lpath, elpath,
 		if verbose: log(' · Building probe windows.', lpath)
 		window_sets = []		
 		wsize = int((end - start) / float(n_probes + 1))
-		wstarts = np.array(range(start, end, wsize))[:-1]
+		wstarts = np.array(list(range(start, end, wsize)))[:-1]
 		if not 0 == (end - start) % wsize:
 			wstarts = wstarts[:-1]
 		if verbose: log(' >>> Built %d windows.' % len(wstarts), lpath)
@@ -1595,7 +1596,7 @@ def output_multi_probe(query_id, outdir, lpath, chrom, start, end, k,
 # Test internet connection
 try:
 	uri = 'http://www.google.se'
-	file = urllib2.urlopen(uri)
+	file = urllib.request.urlopen(uri)
 	file.close()
 except:
 	msg = '\n(╯°□°)╯︵ ┻━┻\n'
