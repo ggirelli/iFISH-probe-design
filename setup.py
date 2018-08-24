@@ -8,19 +8,13 @@ https://github.com/pypa/sampleproject
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 
-# To use a consistent encoding
-from codecs import open
-import os
-
-here = os.path.abspath(os.path.dirname(__file__))
-
 # Get the long description from the README file
-with open(os.path.join(here, 'README.md')) as f:
+with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='0.1.0.post1',
-	description='A FISH probe design web interface',
+	version='1.0.0',
+	description='''A FISH probe design web interface.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
 	url='https://github.com/ggirelli/fish-prode',
@@ -35,7 +29,7 @@ setup(name='fish_prode',
 		'Programming Language :: Python :: 3 :: Only',
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
-	packages=["fish_prode"],
+	packages=find_packages(),
 	install_requires=[
 		"bottle>=0.12.13",
 		"matplotlib>=2.2.2",
