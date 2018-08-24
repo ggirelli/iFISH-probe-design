@@ -20,7 +20,7 @@ with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='0.0.1',
+	version='0.1.0',
 	description='A FISH probe design web interface',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -29,7 +29,7 @@ setup(name='fish_prode',
 	author_email='gabriele.girelli@scilifelab.se',
 	license='MIT',
 	classifiers=[
-		'Development Status :: 3 - Alpha',
+		'Development Status :: 4 - Beta',
 		'Intended Audience :: Science/Research',
 		'Topic :: Scientific/Engineering :: Bio-Informatics',
 		'License :: OSI Approved :: MIT License',
