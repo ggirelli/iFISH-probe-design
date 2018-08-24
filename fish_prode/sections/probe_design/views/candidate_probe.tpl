@@ -2,19 +2,6 @@
 
 <div id="main" class="col col-md-6 offset-md-3 col-12">
 
-	<div class="row">
-		<div class="col col-3">
-			<a href="https://bienkocrosettolabs.org/research-in-the-bienko-lab/" target="_new">
-				<img class="img-fluid" src="{{root_uri}}images/bienko_lab_logo.png" alt="bienko-lab-logo" />
-			</a>
-		</div>
-		<div class="col col-3 offset-6">
-			<a href="https://bienkocrosettolabs.org/research-in-the-crosetto-lab/" target="_new">
-				<img class="img-fluid" src="{{root_uri}}images/crosetto_lab_logo.png" alt="crosetto-lab-logo" />
-			</a>
-		</div>
-	</div>
-
 	<h1 id="title">
 		<a href="{{app_uri}}/q/{{query['data']['query_id']}}" data-toggle="tooltip" data-placement="left" title="Query {{query['data']['query_id']}}"><span class="fa fa-backward"></span></a> 
 		Query: {{query['data']['query_id']}} <br />
@@ -127,7 +114,7 @@
 
 					<pre class="ws_wrap" style="max-height: 25em;"><code>
 					% import os
-					% fapath = vpath + '../query/' + query['data']['query_id']
+					% fapath = qpath + query['data']['query_id']
 					% fapath += '/candidates/probe_' + candidate['id']
 					% fapath += '/probe_' + candidate['id'] + '.fa'
 					% if os.path.exists(fapath):
@@ -143,7 +130,7 @@
 				<div role="tabpanel" class="tab-pane" id="bed">
 
 					<pre class="ws_wrap" style="max-height: 25em;"><code>
-					% fapath = vpath + '../query/' + query['data']['query_id']
+					% fapath = qpath + query['data']['query_id']
 					% fapath += '/candidates/probe_' + candidate['id']
 					% fapath += '/probe_' + candidate['id'] + '.bed'
 					% if os.path.exists(fapath):

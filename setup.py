@@ -39,8 +39,10 @@ setup(name='fish_prode',
 	packages=find_packages(),
 	install_requires=[
 		"bottle>=0.12.13",
+		"matplotlib>=2.2.2",
 		"numpy>=1.14.2",
-		"pandas>=0.22.0"
+		"pandas>=0.22.0",
+		"scipy>=1.0.0"
 	],
 	scripts=[os.path.join(bindir, fp) for fp in os.listdir(bindir)],
 	test_suite="nose.collector",
