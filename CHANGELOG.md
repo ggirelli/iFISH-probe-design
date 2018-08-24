@@ -6,13 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
-## 0.1.0 - 2018-08-24
+## [0.1.0] - 2018-08-24
 ### Changed
 - Refactored as Python package.
 
 
 
-## 0.0.1 - 2017-08-06 - First release
+## [0.0.1] - 2017-08-06 - First release
 
 
 
