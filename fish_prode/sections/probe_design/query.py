@@ -66,26 +66,26 @@ class Query:
 		d = {'query_id' : query_id}
 
 		# Check that the query exists
-		dpath = query_path + query_id + '/'
+		dpath = '%s%s/' % (query_path, query_id)
 		if not os.path.isdir(dpath):
 			return(d)
 
 		# Check DONE status
 		d['done'] = False
 		d['error'] = ''
-		if os.path.exists(dpath + 'DONE'):
+		if os.path.exists('%sDONE' % dpath):
 			d['done'] = True
 		else:
-			if os.path.exists(dpath + 'ERROR'):
-				f = open(dpath + 'ERROR', 'r')
+			if os.path.exists('%sERROR' % dpath):
+				f = open('%sERROR' % dpath, 'r')
 				d['error'] = ''.join(f.readlines())
 				f.close()
 
 		# Read configuration
 		d['data'] = {}
 		d['nodata'] = False
-		if os.path.exists(dpath + 'config.tsv'):
-			f = open(dpath + 'config.tsv', 'r')
+		if os.path.exists('%sconfig.tsv' % dpath):
+			f = open('%sconfig.tsv' % dpath, 'r')
 			for row in f.readlines():
 				row = row.strip('\r\n').split('\t')
 				d['data'][row[0]] = row[1]
@@ -94,27 +94,27 @@ class Query:
 			d['nodata'] = True
 
 		# Read cmd
-		if os.path.exists(dpath + 'cmd'):
-			f = open(dpath + 'cmd', 'r')
+		if os.path.exists('%scmd' % dpath):
+			f = open('%scmd' % dpath, 'r')
 			d['cmd'] = ''.join(f.readlines())
 			f.close()
 		else:
 			d['cmd'] = 'No command line found.'
 
 		# Read log
-		if os.path.exists(dpath + 'log'):
-			f = open(dpath + 'log', 'r')
+		if os.path.exists('%slog' % dpath):
+			f = open('%slog' % dpath, 'r')
 			d['log'] = ''.join(f.readlines())
 			f.close()
 		else:
 			d['log'] = 'No log found'
 
 		# Read candidate table
-		if os.path.exists(dpath + 'probes.tsv'):
-			d['candidates'] = pd.read_csv(dpath + 'probes.tsv', sep = '\t')
+		if os.path.exists('%sprobes.tsv' % dpath):
+			d['candidates'] = pd.read_csv('%sprobes.tsv' % dpath, sep = '\t')
 			d['candidates'] = np.array(d['candidates']).tolist()
-		elif os.path.exists(dpath + 'sets.tsv'):
-			d['candidates'] = pd.read_csv(dpath + 'sets.tsv', sep = '\t')
+		elif os.path.exists('%ssets.tsv' % dpath):
+			d['candidates'] = pd.read_csv('%ssets.tsv' % dpath, sep = '\t')
 			d['candidates'] = np.array(d['candidates']).tolist()
 		else:
 			d['candidates'] = np.array([])

@@ -18,8 +18,8 @@ import bottle as bot
 import os
 import shlex
 
-from fish.prode.sections import routes
-from fish.prode.sections.probe_design.query import Query
+from fish_prode.sections import routes
+from fish_prode.sections.probe_design.query import Query
 
 # CLASSES ======================================================================
 
@@ -106,8 +106,8 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = self.local_path + '/query/' + query_id
-		ipath += '/candidates/probe_' + candidate_id + '/'
+		ipath = '%s/query/%s/candidates/probe_%s/' % (
+			self.static_path, query_id, candidate_id)
 		return(bot.static_file(path, ipath))
 
 	def candidate_set_static_file(routes, self,
@@ -121,8 +121,8 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = self.local_path + '/query/' + query_id
-		ipath += '/candidates/set_' + candidate_id + '/'
+		ipath = '%s/query/%s/candidates/set_%s/' % (
+			self.static_path, query_id, candidate_id)
 		return(bot.static_file(path, ipath))
 
 	def candidate_static_file_download(routes, self,
@@ -136,9 +136,9 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = self.local_path + '/query/' + query_id
-		ipath += '/candidates/probe_' + candidate_id + '/'
-		outname = 'q_' + query_id + '.' + path
+		ipath = '%s/query/%s/candidates/probe_%s/' % (
+			self.static_path, query_id, candidate_id)
+		outname = 'q_%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
 	def candidate_set_static_file_download(routes, self,
@@ -152,11 +152,9 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = self.local_path + '/query/' + query_id
-		ipath += '/candidates/set_' + candidate_id + '/'
-		outname = 'q_' + query_id + '.' + path
-		print(path)
-		print(ipath)
+		ipath = '%s/query/%s/candidates/set_%s/' % (
+			self.static_path, query_id, candidate_id)
+		outname = 'q_%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
 
@@ -168,9 +166,9 @@ class Routes(routes.Routes):
 			self (App): ProbeDesigner.App instance.
 			query_id (string): query folder name.
 		'''
-		ipath = self.local_path + '/query/' + query_id + '/'
-		path = query_id + '.zip'
-		outname = 'q_' + path
+		ipath = '%s/query/%s/' % (self.static_path, query_id)
+		path = '%s.zip' % query_id
+		outname = 'q_%s' % path
 		return(bot.static_file(path, ipath, download = outname))
 
 	def candidate_download(routes, self,
@@ -182,9 +180,9 @@ class Routes(routes.Routes):
 			query_id (string): query folder name.
 			candidate_id (string): candidate folder name.
 		'''
-		ipath = self.local_path + '/query/' + query_id + '/candidates/'
-		path = 'probe_' + candidate_id + '.zip'
-		outname = 'q_' + query_id + '.' + path
+		ipath = '%s/query/%s/candidates/' % (self.static_path, query_id)
+		path = 'probe_%s.zip' % candidate_id
+		outname = 'q_%s.%s' % (query_id, path)
 		return bot.static_file(path, ipath, download = outname)
 
 	def candidate_set_download(routes, self,
@@ -196,9 +194,9 @@ class Routes(routes.Routes):
 			query_id (string): query folder name.
 			candidate_id (string): candidate folder name.
 		'''
-		ipath = self.local_path + '/query/' + query_id + '/candidates/'
-		path = 'set_' + candidate_id + '.zip'
-		outname = 'q_' + query_id + '.' + path
+		ipath = '%s/query/%s/candidates/' % (self.static_path, query_id)
+		path = 'set_%s.zip' % (candidate_id)
+		outname = 'q_%s.%s' % (query_id, path)
 		return bot.static_file(path, ipath, download = outname)
 
 	# Pages --------------------------------------------------------------------
@@ -248,7 +246,7 @@ class Routes(routes.Routes):
 		d = self.vd
 
 		# Page title and description
-		d['title'] = self.tprefix + ' Query: ' + query_id
+		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
 
 		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
@@ -274,7 +272,7 @@ class Routes(routes.Routes):
 		d = self.vd
 
 		# Page title and description
-		d['title'] = self.tprefix + ' Query: ' + query_id
+		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
 
 		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
@@ -303,7 +301,7 @@ class Routes(routes.Routes):
 		d = self.vd
 
 		# Page title and description
-		d['title'] = self.tprefix + ' Query: ' + query_id
+		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
 
 		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
@@ -331,13 +329,13 @@ class Routes(routes.Routes):
 		fdata = bot.request.forms
 
 		# Build query command line
-		cmd = [self.local_path + '/scripts/query_database.py']
+		cmd = ['fprode_dbquery']
 		cmd.extend([Query.get_next_id(self.qpath, self.queue)])
 		cmd.extend([shlex.quote(fdata.name)])
 		cmd.extend([shlex.quote(fdata.chromosome)])
 		cmd.extend([shlex.quote(fdata.start)])
 		cmd.extend([shlex.quote(fdata.end)])
-		dbpath = self.local_path + '/db/' + fdata.database
+		dbpath = '%s/db/%s' % (self.static_path, fdata.database)
 		cmd.extend([shlex.quote(dbpath)])
 		cmd.extend(['--n_oligo', shlex.quote(fdata.n_oligo)])
 		cmd.extend(['--f1_thr', shlex.quote(fdata.f1_threshold)])
@@ -347,7 +345,7 @@ class Routes(routes.Routes):
 		feat_order.append(fdata.f2)
 		feat_order.append(fdata.f3)
 		cmd.extend(['--feat_order', shlex.quote(','.join(feat_order))])
-		cmd.extend(['--outdir', self.local_path + '/query/'])
+		cmd.extend(['--outdir', '%s/query/' % self.static_path])
 		cmd.extend(['--description', shlex.quote(fdata.description)])
 
 		# Add query to the queue
@@ -355,7 +353,8 @@ class Routes(routes.Routes):
 
 		# Redirect
 		bot.response.status = 303
-		bot.response.set_header('Location', self.root_uri + self.app_uri)
+		bot.response.set_header('Location',
+			"%s%s" % (self.root_uri, self.app_uri))
 
 		# Output
 		return('Query received.')
@@ -370,13 +369,13 @@ class Routes(routes.Routes):
 		fdata = bot.request.forms
 
 		# Build query command line
-		cmd = [self.local_path + '/scripts/query_database.py']
+		cmd = ['fprode_dbquery']
 		cmd.extend([Query.get_next_id(self.qpath, self.queue)])
 		cmd.extend([shlex.quote(fdata.multi_name)])
 		cmd.extend([shlex.quote(fdata.multi_chromosome)])
 		cmd.extend([shlex.quote(fdata.multi_start)])
 		cmd.extend([shlex.quote(fdata.multi_end)])
-		dbpath = self.local_path + '/db/' + fdata.multi_database
+		dbpath = '%s/db/%s' % (self.static_path, fdata.multi_database)
 		cmd.extend([shlex.quote(dbpath)])
 		cmd.extend(['--n_oligo', shlex.quote(fdata.multi_n_oligo)])
 		cmd.extend(['--f1_thr', shlex.quote(fdata.multi_f1_threshold)])
@@ -387,7 +386,7 @@ class Routes(routes.Routes):
 		feat_order.append(fdata.f2)
 		feat_order.append(fdata.f3)
 		cmd.extend(['--feat_order', shlex.quote(','.join(feat_order))])
-		cmd.extend(['--outdir', self.local_path + '/query/'])
+		cmd.extend(['--outdir', '%s/query/' % self.static_path])
 		cmd.extend(['--description', shlex.quote(fdata.multi_description)])
 
 		# Add query to the queue
@@ -395,7 +394,8 @@ class Routes(routes.Routes):
 
 		# Redirect
 		bot.response.status = 303
-		bot.response.set_header('Location', self.root_uri + self.app_uri)
+		bot.response.set_header('Location',
+			"%s%s" % (self.root_uri, self.app_uri))
 
 		# Output
 		return('Query received.')
@@ -417,17 +417,16 @@ class Routes(routes.Routes):
 			print(args)
 
 			# Build query command line
-			cmd = [self.local_path + '/scripts/query_database.py']
+			cmd = ['fprode_dbquery']
 			cmd.extend([Query.get_next_id(self.qpath, self.queue)])
 			cmd.extend([shlex.quote(args[0])])
 			cmd.extend([shlex.quote(e) for e in args[3:6]])
-			print(self.local_path + '/db/' + args[2])
-			cmd.extend([shlex.quote(self.local_path + '/db/' + args[2])])
+			cmd.extend([shlex.quote('%s/db/%s' % (self.static_path, args[2]))])
 			cmd.extend(['--n_oligo', shlex.quote(args[6])])
 			cmd.extend(['--f1_thr', shlex.quote(args[7])])
 			cmd.extend(['--max_probes', shlex.quote(args[8])])
 			cmd.extend(['--feat_order', shlex.quote(args[9])])
-			cmd.extend(['--outdir', self.local_path + '/query/'])
+			cmd.extend(['--outdir', '%s/query/' % self.static_path])
 			cmd.extend(['--description', shlex.quote(args[1])])
 
 			# Add query to the queue
@@ -435,7 +434,8 @@ class Routes(routes.Routes):
 
 		# Redirect
 		bot.response.status = 303
-		bot.response.set_header('Location', self.root_uri + self.app_uri)
+		bot.response.set_header('Location',
+			"%s%s" % (self.root_uri, self.app_uri))
 
 		# Output
 		return('Query received.')

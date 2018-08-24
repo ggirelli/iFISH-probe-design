@@ -16,10 +16,10 @@
 
 import logging
 
-from fish.prode.sections import app as rootApp
-from fish.prode.sections.probe_design.enquirer import Enquirer
-from fish.prode.sections.probe_design.queue import Queue
-from fish.prode.sections.probe_design.routes import Routes
+from fish_prode.sections import app as rootApp
+from fish_prode.sections.probe_design.enquirer import Enquirer
+from fish_prode.sections.probe_design.queue import Queue
+from fish_prode.sections.probe_design.routes import Routes
 
 # CLASSES ======================================================================
 
@@ -83,8 +83,7 @@ class App(rootApp.App):
 		self.vd['app_uri'] = "%s%s" % (root_uri, app_uri)
 		self.vd['root_uri'] = root_uri
 		self.vd['vpath'] = self.vpath
-		self.vd['description'] = 'Probe designer application, '
-		self.vd['description'] += 'to design FISH probes.'
+		self.vd['description'] = 'FISH probe designer application.'
 
 		# Set default
 		if not type(None) == type(MAX_CURR):

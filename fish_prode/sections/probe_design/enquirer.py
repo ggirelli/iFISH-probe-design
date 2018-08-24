@@ -54,14 +54,14 @@ class Enquirer(threading.Thread):
 				if not type(None) == type(cmd):
 
 					# Start query
-					msg = 'Running query #' + str(cmd[1])
+					msg = 'Running query #%s' % str(cmd[1])
 					logging.debug(msg)
 
 					# Run query
 					sp.call(cmd)
 
 					# Finish query
-					msg = 'Finished query #' + str(cmd[1])
+					msg = 'Finished query #%s' % str(cmd[1])
 					logging.debug(msg)
 					cmd = self.queue.task_done(cmd)
 
