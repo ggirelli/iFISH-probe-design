@@ -7,21 +7,15 @@ Read the [documentation](https://ggirelli.github.io/fish-prode/) for more detail
 Installation
 ---
 
-1. Clone the git repository locally and install the package.
+The easiest way to install FISH-ProDe is to install it from pypi with `pip3 install fish-prode`, that's as easy as it gets!
+
+Otherwise, you can install from github point as follows:
 
 ```bash
 git clone https://github.com/ggirelli/fish-prode/
 cd fish-prode
 sudo -H pip3 install .
 ```
-
-3. Install Python2 dependencies (requires pip2, installed with `sudo apt install python-pip` or similar).
-
-```bash
-sudo -H pip2 install sqlite3 matplotlib numpy pandas scipy shutil urllib2 xml zipfile
-```
-
-4. Download/Extract databases. More details in the [documentation](https://ggirelli.github.io/fish-prode/database).
 
 Usage
 ---
