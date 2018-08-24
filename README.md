@@ -1,6 +1,6 @@
-# FISH-ProDe v0.0.1
+# FISH-ProDe v0.1.0
 
-**FISH Pro**be **De**sign (**FISH-ProDe**, pronounced "pro‧de", "brave" or "valiant" in *italian*) is a suite of tools for selection of complementary oligonucleotides to build FISH probes. It also includes a web interface to simplify the selection and remove any need for programming skills.
+**FISH Pro**be **De**sign (**FISH-ProDe**, pronounced "pro‧de", "brave" or "valiant" in *italian*) is a Python3 package suite of tools for selection of complementary oligonucleotides to build FISH probes. It also includes a web interface to simplify the selection and remove any need for programming skills.
 
 Read the [documentation](https://ggirelli.github.io/fish-prode/) for more details.
 
@@ -10,8 +10,8 @@ Installation
 1. Clone the git repository locally.
 
 ```bash
-git clone https://github.com/ggirelli/ood-fish/
-cd ood-fish
+git clone https://github.com/ggirelli/fish-prode/
+cd fish-prode
 ```
 
 2. Install Python2 dependencies (requires pip2, installed with `sudo apt install python-pip` or similar).
