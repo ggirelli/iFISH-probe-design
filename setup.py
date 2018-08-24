@@ -13,7 +13,7 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='1.0.0',
+	version='1.0.0.post2',
 	description='''A FISH probe design web interface.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -29,7 +29,7 @@ setup(name='fish_prode',
 		'Programming Language :: Python :: 3 :: Only',
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
-	packages=find_packages(),
+	packages=["fish_prode", "fish_prode.sections", "fish_prode.sections.probe_design"],
 	install_requires=[
 		"bottle>=0.12.13",
 		"matplotlib>=2.2.2",
