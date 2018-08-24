@@ -7,23 +7,18 @@ Read the [documentation](https://ggirelli.github.io/fish-prode/) for more detail
 Installation
 ---
 
-1. Clone the git repository locally.
+1. Clone the git repository locally and install the package.
 
 ```bash
 git clone https://github.com/ggirelli/fish-prode/
 cd fish-prode
+sudo -H pip3 install .
 ```
 
-2. Install Python2 dependencies (requires pip2, installed with `sudo apt install python-pip` or similar).
+3. Install Python2 dependencies (requires pip2, installed with `sudo apt install python-pip` or similar).
 
 ```bash
 sudo -H pip2 install sqlite3 matplotlib numpy pandas scipy shutil urllib2 xml zipfile
-```
-
-3. Install Python3 dependencies (requires pip3 and python3, installed with `sudo apt install python3 python3-pip` or similar).
-
-```bash
-sudo -H pip3 install bottle numpy pandas paste
 ```
 
 4. Download/Extract databases. More details in the [documentation](https://ggirelli.github.io/fish-prode/database).
