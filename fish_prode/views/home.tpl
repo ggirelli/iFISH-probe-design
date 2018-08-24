@@ -1,6 +1,8 @@
 % include('header.tpl')
 
+<script type="text/javascript">document.location = document.location + "probe-design/"</script>
 
+<!--
 <div id="main" class="col col-md-6 offset-md-3">
 
 	<div class="row">
@@ -13,6 +15,6 @@
 		</div>
 	</div>
 </div>
-
+-->
 
 % include('footer.tpl')
