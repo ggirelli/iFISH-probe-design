@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div id="footer" class="col col-md-8 offset-md-2 col-sm-12">
-		Probe Designer v0.0.1 - &copy; 2016 - <a href="/docs/_static/probe_designer.html" target='_new' data-toggle="tooltip" data-placement="top" title="Read the documentation!">Need help?</a>
+		Probe Designer v0.0.1 - &copy; Gabriele Girelli 2016-18 - <a href="https://ggirelli.github.io/fish-prode/" target='_new' data-toggle="tooltip" data-placement="top" title="Read the documentation!">Need help?</a>
 	</div>
 </div>
 

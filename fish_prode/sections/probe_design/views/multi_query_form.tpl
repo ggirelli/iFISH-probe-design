@@ -26,11 +26,15 @@
 			<div class="row">
 				<div class="form-group col col-3">
 					<label for="multi_database">Database</label>
+					% if 0 != len(dblist):
 					<select name="multi_database" id="multi_database" class="form-control">
 					% for db in dblist:
 						<option value="{{db}}">{{db}}</option>
 					% end
 					</select>
+					% else:
+					<input type="text" class="form-control" placeholder="No databases found." readonly/>
+					% end
 				</div>
 
 				<div class="form-group col col-3">

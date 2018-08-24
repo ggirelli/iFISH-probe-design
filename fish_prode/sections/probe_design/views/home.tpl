@@ -6,7 +6,7 @@
 	<div id="header" class="col col-md-6 offset-md-3">
 
 		<h1 id="title">
-			<a href="{{root_uri}}" data-toggle="tooltip" data-placement="left" title="home"><span class="fa fa-backward"></span></a> Probe Designer
+			<!--<a href="{{root_uri}}" data-toggle="tooltip" data-placement="left" title="home"><span class="fa fa-backward"></span></a> -->Probe Designer
 		</h1>
 
 		<div id="description">
@@ -43,7 +43,7 @@
 				</li>
 				<!-- left tab blocks starts with .ml-auto element -->
 				<li rolw="presentation" class="nav-item ml-auto float-right">
-					<a class="nav-link" href="/docs/_static/probe_designer.html" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+					<a class="nav-link" href="https://ggirelli.github.io/fish-prode/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
 						<span class="fa fa-info-circle"></span>
 					</a>
 				</li>

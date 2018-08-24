@@ -21,7 +21,7 @@
 	% # No query found (non run yet)
 	% if 0 == len(qlist):
 		<tr>
-			<td colspan="8">No query found...</td>
+			<td colspan="10">No query found...</td>
 		</tr>
 	% end
 	%
@@ -75,7 +75,7 @@
 
 	<!-- nothing found from searching -->
 	<tr>
-		<td id="no_found" colspan="8">No query found...</td>
+		<td id="no_found" colspan="10">No query found...</td>
 	</tr>
 	</tbody>
 </table>
