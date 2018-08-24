@@ -157,7 +157,6 @@ class Routes(routes.Routes):
 		outname = 'q_%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
-
 	def query_download(routes, self,
 		query_id):
 		'''Download compressed query output.

@@ -1,6 +1,5 @@
 % include(vpath + 'header.tpl')
 
-
 <!-- header -->
 <div class="row">
 	<div id="header" class="col col-md-6 offset-md-3">
