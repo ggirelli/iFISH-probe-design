@@ -92,7 +92,7 @@ class Routes:
 			dname (string): file type.
 			path (string): file name.
 		'''
-		return(bot.static_file(path, self.local_path + '/' + dname + '/'))
+		return(bot.static_file(path, '%s/%s/' % (self.local_path, dname)))
 
 	def static_raw_file_download(routes, self,
 		path, mt1, mt2):
@@ -104,8 +104,8 @@ class Routes:
 			mt1 (string): first part of the mimetype.
 			mt2 (string): second part of the mimetype.
 		'''
-		ipath = self.local_path + '/documents/'
-		mt = mt1 + '/' + mt2
+		ipath = '%s/documents/' % self.local_path
+		mt = '%s/%s' % (mt1, mt2)
 		return(bot.static_file(path, ipath, mimetype = mt))
 
 	# Error --------------------------------------------------------------------

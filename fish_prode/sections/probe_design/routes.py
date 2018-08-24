@@ -18,8 +18,8 @@ import bottle as bot
 import os
 import shlex
 
-from .. import routes
-from .query import Query
+from fish.prode.sections import routes
+from fish.prode.sections.probe_design.query import Query
 
 # CLASSES ======================================================================
 

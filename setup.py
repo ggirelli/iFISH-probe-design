@@ -38,7 +38,9 @@ setup(name='fish_prode',
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
 	packages=find_packages(),
 	install_requires=[
-		"bottle>=0.12.13"
+		"bottle>=0.12.13",
+		"numpy>=1.14.2",
+		"pandas>=0.22.0"
 	],
 	scripts=[os.path.join(bindir, fp) for fp in os.listdir(bindir)],
 	test_suite="nose.collector",

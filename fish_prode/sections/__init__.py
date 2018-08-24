@@ -13,7 +13,7 @@
 
 # DEPENDENCIES =================================================================
 
-from . import probe_design
+from fish_prode.sections import probe_design
 
 # END ==========================================================================
 

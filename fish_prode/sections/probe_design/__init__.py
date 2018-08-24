@@ -15,11 +15,11 @@
 
 from bottle import Bottle, response, route, run, static_file, template, view
 
-from .app import App
-from .enquirer import Enquirer
-from .query import Query
-from .queue import Queue
-from .routes import Routes
+from fish_prode.sections.probe_design.app import App
+from fish_prode.sections.probe_design.enquirer import Enquirer
+from fish_prode.sections.probe_design.query import Query
+from fish_prode.sections.probe_design.queue import Queue
+from fish_prode.sections.probe_design.routes import Routes
 
 # END ==========================================================================
 

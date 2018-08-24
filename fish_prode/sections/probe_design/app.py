@@ -16,10 +16,10 @@
 
 import logging
 
-from .. import app as rootApp
-from .enquirer import Enquirer
-from .queue import Queue
-from .routes import Routes
+from fish.prode.sections import app as rootApp
+from fish.prode.sections.probe_design.enquirer import Enquirer
+from fish.prode.sections.probe_design.queue import Queue
+from fish.prode.sections.probe_design.routes import Routes
 
 # CLASSES ======================================================================
 
