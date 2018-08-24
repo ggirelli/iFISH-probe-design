@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## Unreleased
+### Changed
+- Refactor as Python package.
+
+
+
 ## 0.0.1 - 2017-08-06 - First release
 
 

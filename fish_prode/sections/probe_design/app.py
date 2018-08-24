@@ -36,7 +36,7 @@ class App(rootApp.App):
 		root_path (string): webserver root absolute path.
 		root_uri (string): root webserver url.
 		route_list (string): probe_design.routes.Routes instance.
-		spath (string): sections relative path.
+		section_path (string): sections relative path.
 		tprefix (string): title prefix.
 		vd (string): view data.
 		vpath (string): absolute path to views folder.
@@ -51,12 +51,13 @@ class App(rootApp.App):
 	BUF_SIZE = 0
 	MAX_CURR = 1
 
-	def __init__(self, spath, root_path, root_uri, app_uri,
+	def __init__(self, section_path, static_path,
+		root_path, root_uri, app_uri,
 		MAX_CURR = None, BUF_SIZE = None):
 		'''Initialize.
 
 		Args:
-			spath (string): sections relative path.
+			section_path (string): sections relative path.
 			root_path (string): webserver root absolute path.
 			root_uri (string): root webserver url.
 			app_uri (string): section relative url.
@@ -68,17 +69,18 @@ class App(rootApp.App):
 		super(App, self).__init__()
 
 		# Save input parameters
-		self.spath = spath
+		self.section_path = section_path
 		self.root_uri = root_uri
 		self.app_uri = app_uri
-		self.local_path = root_path + spath + self.base_dir
-		self.vpath = self.local_path + '/views/'
-		self.qpath = self.local_path + '/query/'
+		self.local_path = "%s%s" % (section_path, self.base_dir)
+		self.static_path = static_path
+		self.vpath = '%s/views/' % self.local_path
+		self.qpath = '%s/query/' % self.static_path
 		self.MAX_CURR = MAX_CURR
 		self.BUF_SIZE = BUF_SIZE
 
 		# Start setting up view dictionary
-		self.vd['app_uri'] = root_uri + app_uri
+		self.vd['app_uri'] = "%s%s" % (root_uri, app_uri)
 		self.vd['root_uri'] = root_uri
 		self.vd['vpath'] = self.vpath
 		self.vd['description'] = 'Probe designer application, '

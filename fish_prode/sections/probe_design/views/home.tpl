@@ -5,19 +5,6 @@
 <div class="row">
 	<div id="header" class="col col-md-6 offset-md-3">
 
-		<div class="row">
-			<div class="col col-3">
-				<a href="https://bienkocrosettolabs.org/research-in-the-bienko-lab/" target="_new">
-					<img class="img-fluid" src="../images/bienko_lab_logo.png" alt="bienko-lab-logo" />
-				</a>
-			</div>
-			<div class="col col-3 offset-6">
-				<a href="https://bienkocrosettolabs.org/research-in-the-crosetto-lab/" target="_new">
-					<img class="img-fluid" src="../images/crosetto_lab_logo.png" alt="crosetto-lab-logo" />
-				</a>
-			</div>
-		</div>
-
 		<h1 id="title">
 			<a href="{{root_uri}}" data-toggle="tooltip" data-placement="left" title="home"><span class="fa fa-backward"></span></a> Probe Designer
 		</h1>

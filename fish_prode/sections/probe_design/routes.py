@@ -223,12 +223,12 @@ class Routes(routes.Routes):
 		d['custom_root_stylesheets'] = []
 
 		# Database list
-		dbpath = self.spath + self.base_dir + '/db/'
+		dbpath = '%s/db/' % self.static_path
 		d['dblist'] = next(os.walk(dbpath))[1]
 
 		# Query list
 		d['qlist'] = []
-		qpath = self.spath + self.base_dir + '/query/'
+		qpath = self.qpath
 		qlist = [int(i) for i in next(os.walk(qpath))[1]]
 		qlist.sort()
 		for qid in qlist:
