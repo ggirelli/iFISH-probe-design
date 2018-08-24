@@ -13,14 +13,13 @@ from codecs import open
 import os
 
 here = os.path.abspath(os.path.dirname(__file__))
-bindir = os.path.join(here, "bin/")
 
 # Get the long description from the README file
-with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(here, 'README.md')) as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='0.1.0',
+	version='0.1.0.post1',
 	description='A FISH probe design web interface',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -36,7 +35,7 @@ setup(name='fish_prode',
 		'Programming Language :: Python :: 3 :: Only',
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
-	packages=find_packages(),
+	packages=["fish_prode"],
 	install_requires=[
 		"bottle>=0.12.13",
 		"matplotlib>=2.2.2",
@@ -44,7 +43,7 @@ setup(name='fish_prode',
 		"pandas>=0.22.0",
 		"scipy>=1.0.0"
 	],
-	scripts=[os.path.join(bindir, fp) for fp in os.listdir(bindir)],
+	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
 	test_suite="nose.collector",
 	tests_require=["nose"],
 )
