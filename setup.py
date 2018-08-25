@@ -38,6 +38,10 @@ setup(name='fish_prode',
 		"scipy>=1.0.0"
 	],
 	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
+	package_data={
+		'fish_prode': ['css/bootstrap.css', 'css/*', 'fonts/*', 'js/*', 'views/*'],
+		'fish_prode.sections.probe_design': ['css/*', 'documents/*', 'views/*']
+	},
 	test_suite="nose.collector",
 	tests_require=["nose"],
 )
