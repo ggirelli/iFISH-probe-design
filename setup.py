@@ -13,7 +13,7 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='1.1.0.a1',
+	version='1.1.0',
 	description='''A FISH probe design web interface.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',

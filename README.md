@@ -7,7 +7,9 @@ Read the [documentation](https://ggirelli.github.io/fish-prode/) for more detail
 Installation
 ---
 
-Install from github point as follows:
+Install from pypi with `sudo -H pip3 install fish-prode`, and that's it! That's as easy as it gets.
+
+You can also install from github (any point in history, although we suggest to stick with realease tags) as follows:
 
 ```bash
 git clone https://github.com/ggirelli/fish-prode/
