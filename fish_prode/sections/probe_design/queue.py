@@ -63,7 +63,7 @@ class Queue(q.Queue):
 		return(released)
 
 	def task_done(self, done, **kwargs):
-		'''Extend origina task_done method by adding doing and done features.'''
+		'''Extend original task_done method by adding doing and done features.'''
 
 		# If unknown task, kill execution
 		if not done in self.doing:

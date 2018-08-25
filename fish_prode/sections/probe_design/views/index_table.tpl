@@ -50,14 +50,13 @@
 	% # List unfinished queries
 	% for q in [q for q in qlist if not q['done']]:
 		<tr>
-			<td><a href="{{ app_uri + 'q/' + q['query_id'] }}">Query #{{q['query_id']}}</a></td>
 			% if int(q['data']['n_probes']) == 1:
 			<td>S</td>
 			% else:
 			<td>M</td>
 			% end
 			% doing = [' '.join(q) for q in queue.doing]
-			% if q['cmd'] in doing:
+			% if any([x in q['cmd'] for x in doing]):
 			<td colspan="7" class="text-success">
 				Still running...
 			</td>

@@ -113,20 +113,20 @@
 			</div>
 
 			<div class="card-block">
-
-				% if 0 == len(queue.queue):
-				<tr>
-					<td>Empty queue...</td>
-				</tr>
-				% end
-				% for i in range(len(queue.queue)):
-				<tr>
-					<td>
-						{{i + 1}}: Query #{{queue.queue[i][1]}} - {{queue.queue[i][2]}}
-					</td>
-				</tr>
-				% end
-
+				<table>
+					% if 0 == len(queue.queue):
+					<tr>
+						<td>Empty queue...</td>
+					</tr>
+					% end
+					% for i in range(len(queue.queue)):
+					<tr>
+						<td>
+							{{i + 1}}: Query #{{queue.queue[i][1]}} - {{queue.queue[i][2]}}
+						</td>
+					</tr>
+					% end
+				</table>
 			</div>
 
 		</div>
