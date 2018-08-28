@@ -59,11 +59,11 @@
 			<td class="name_cell">{{q['data']['name']}}</td>
 			% doing = [' '.join(q) for q in queue.doing]
 			% if any([x in q['cmd'] for x in doing]):
-			<td colspan="" class="text-success">
+			<td colspan="7" class="text-success">
 				Still running...
 			</td>
 			% else:
-			<td colspan='' class="text-danger">
+			<td colspan="7" class="text-danger">
 				% if 0 != len(q['error']):
 				{{q['error']}}
 				% else:
