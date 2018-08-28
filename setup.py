@@ -13,7 +13,7 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='fish_prode',
-	version='1.1.0',
+	version='1.1.0.post1',
 	description='''A FISH probe design web interface.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -35,6 +35,7 @@ setup(name='fish_prode',
 		"matplotlib>=2.2.2",
 		"numpy>=1.14.2",
 		"pandas>=0.22.0",
+		"paste>=2.0.3",
 		"scipy>=1.0.0"
 	],
 	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
