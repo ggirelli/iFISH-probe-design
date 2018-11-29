@@ -89,7 +89,7 @@ args = parser.parse_args()
 
 # RUN ==========================================================================
 
-refGenomes = fp.web.list_UCSC_reference_genomes(verbose = True)
+refGenomes = fp.web.list_UCSC_reference_genomes(verbose = args.listRefGenomes)
 if args.listRefGenomes:
     sys.exit()
 
@@ -99,6 +99,14 @@ assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
 
 if not os.path.isdir(args.O):
     os.mkdir(args.O)
+
+# Read bed file
+
+# Does bed file have sequences?
+
+# Do we need to retain sequences?
+
+# ...
 
 # END ==========================================================================
 
