@@ -11,7 +11,7 @@
 import os
 import pandas as pd
 
-# FUNCTIONS ====================================================================
+# ==============================================================================
 
 class UCSCbed(object):
     '''Class to read a UCSC Bed format file into a pandas.DataFrame.'''
@@ -69,11 +69,11 @@ class UCSCbed(object):
         return self.ncols == 6
 
     def getBED3():
-        return self.df[, :3]
+        return self.df.iloc[:, :3]
 
     def getBED6():
         assert self.ncols >= 6
-        return self.df[, :6]
+        return self.df.iloc[:, :6]
 
 # END ==========================================================================
 
