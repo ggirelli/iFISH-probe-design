@@ -14,10 +14,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     + UCSC DAS server related methods.
 - `fprode_mkdb` script: re-format a database to be compatible with FISH-ProDe.
     + List UCSC available reference genomes with `--list-refGenomes`.
+    + `.config` file generated using the `configparser` package.
 - `fprode_dbchk`: checks database integrity.
 
 ### Changed
 - Moved interface documents to separate sub-folder.
+- Each database is structured as follows:
+    + One file per chromosome, with the name being the same as the chromosome. One row per oligo and two columns: start and end position, as per the UCSC bed format standard. Also, a third (optional) column can be present, with the sequence of the oligo.
+    + One `.config` file with the database details.
 
 ### Fixed
 - ...

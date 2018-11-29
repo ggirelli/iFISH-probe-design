@@ -16,7 +16,9 @@
 # ==============================================================================
 
 import argparse
+import configparser
 import fish_prode as fp
+import numpy as np
 import os
 import pandas as pd
 import socket
@@ -59,6 +61,8 @@ parser.add_argument('bedFile', metavar = 'bedPath', type = str,
     with the sequence of the corresponding region''')
 parser.add_argument('genome', metavar = 'refGen', type = str,
     help = 'Reference genome in NCBI-compatible format (e.g., hg19).')
+parser.add_argument('dbName', metavar = 'dbName', type = str,
+    help = 'Database name.')
 
 parser.add_argument('-O', metavar = 'dirPath', type = str, default = '.',
     help = '''Path to directory where to build the database. Created if missing.
@@ -119,6 +123,32 @@ for _, chromDF in tqdm(bed.df.groupby("chrom")):
     chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
         "\t", columns = columns2export,
         header = False, index = False)
+
+has_overlaps = False
+for _, chromDF in tqdm(bed.df.groupby("chrom")):
+    starts = np.array(chromDF['chromStart'].iloc[1:].tolist())
+    ends = np.array(chromDF['chromEnd'].iloc[:-1].tolist())
+    if any(starts <= ends):
+        has_overlaps = True
+
+print(" Generating config file...")
+config = configparser.ConfigParser()
+config['DATABASE'] = {
+    'name' : args.dbName,
+    'refGenome' : args.genome
+}
+config['OLIGOS'] = {
+    'sequence' : args.retainSequences,
+    'length' : np.unique(bed.df['chromEnd'] - bed.df['chromStart']).tolist(),
+    'overlaps' : has_overlaps
+}
+config['SOURCE'] = {
+    'bed' : args.bedFile,
+    'enforced2bed3' : args.enforceBED3,
+    'outDirectory' : args.O
+}
+with open(os.path.join(args.O, '.config'), 'w+') as OH:
+    config.write(OH)
 
 # END ==========================================================================
 
