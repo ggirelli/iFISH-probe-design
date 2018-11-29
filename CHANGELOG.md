@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
-- `web` sub-package.
-- `fprode_mkdb`: re-format a database to be compatible with FISH-ProDe.
+- `bioext` sub-package for biological file extension methods.
+    + `UCSCbed` class to read files in UCSC bed format.
+- `web` sub-package for web-service related methods.
+    + UCSC DAS server related methods.
+- `fprode_mkdb` script: re-format a database to be compatible with FISH-ProDe.
     + List UCSC available reference genomes with `--list-refGenomes`.
 - `fprode_dbchk`: checks database integrity.
 

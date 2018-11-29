@@ -101,6 +101,7 @@ if not os.path.isdir(args.O):
     os.mkdir(args.O)
 
 # Read bed file
+bed = fp.bioext.UCSCbed(args.bedFile)
 
 # Does bed file have sequences?
 

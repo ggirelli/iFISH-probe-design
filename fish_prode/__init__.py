@@ -15,6 +15,7 @@
 
 from fish_prode.sections import *
 
+from . import bioext
 from . import web
 
 # END ==========================================================================
