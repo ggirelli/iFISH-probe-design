@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## Unreleased
+### Added
+- ...
+
+### Changed
+- Moved interface documents to separate sub-folder.
+
+### Fixed
+- ...
+
+
+
 ## [1.1.0] - 2018-08-25
 ### Changed
 - Refactored as Python package.

@@ -40,7 +40,14 @@ setup(name='fish_prode',
 	],
 	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
 	package_data={
-		'fish_prode': ['css/bootstrap.css', 'css/*', 'fonts/*', 'js/*', 'views/*'],
+		'fish_prode': [
+			'interface/css/bootstrap.css',
+			'interface/css/*',
+			'interface/fonts/*',
+			'interface/images/*',
+			'interface/js/*',
+			'interface/views/*'
+		],
 		'fish_prode.sections.probe_design': ['css/*', 'documents/*', 'views/*']
 	},
 	test_suite="nose.collector",
