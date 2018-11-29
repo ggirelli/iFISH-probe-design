@@ -16,12 +16,11 @@
 # DEPENDENCIES =================================================================
 
 import argparse
+import fish_prode as fp
 import os
 import pandas as pd
 import socket
 import sys
-import urllib.request, urllib.error, urllib.parse
-import xml.etree.ElementTree
 
 # INPUT ========================================================================
 
@@ -34,7 +33,7 @@ DISCLAIMER: this script does NOT generate a new database. It only re-formats an
 existing database to in a format compatible with FISH-ProDe.
 
 The script uses takes as input a BED file (BED3) format and the reference
-genome. The reference genome name must be compatible with NCBI standard.
+genome. The reference genome name must be compatible with UCSC standard.
 
 When building a database for FISH-ProDe, it is possible to retain the ODNs
 sequence in the database itself. While this generates larger files, it also
@@ -44,8 +43,8 @@ retreive the ODN sequences from somewhere else.
 To retain the ODN sequences in the database, use the --retain-sequences option.
 When this option is used, the ODN sequences must be present in the input BED3
 file as an additional column. Alternatively, if such column is not found, the
-script queries NCBI for the sequences (this process requires an active internet
-connection).
+script queries UCSC for the sequences (this process requires an active internet
+connection to contact the UCSC DAS server).
 
 NOTE: only non-arbitrary nucleotides in standard IUPAC format are allowed in the
 ODNs sequence. https://www.bioinformatics.org/sms/iupac.html
@@ -86,46 +85,11 @@ args = parser.parse_args()
 
 # FUNCTIONS ====================================================================
 
-def internet_on():
-    '''Check internet connection status.
-    From: https://stackoverflow.com/a/3764660'''
-    try:
-        urllib.request.urlopen('http://216.58.192.142', timeout = 1)
-        return True
-    except urllib.error.URLError as e: 
-        return False
 
-def list_UCSC_reference_genomes(verbose = False,
-    UCSC_DSN_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
-    '''Retrieves list of UCSC reference genomes.'''
-
-    assert internet_on(), "cannot connect to the internet."
-
-    try:
-        dsnXML = urllib.request.urlopen(UCSC_DSN_URI)
-        dsnXMLdata = dsnXML.read()
-        dsnXML.close()
-    except urllib.error.URLError as e:
-        raise
-
-    databases = set()
-    for dsn in xml.etree.ElementTree.fromstring(dsnXMLdata):
-        assert 0 < len(dsn), "no databases found."
-
-        attrib = dsn[0].attrib
-        assert "id" in attrib.keys(), "database has no 'id' key."
-        assert "version" in attrib.keys(), "database has no 'version' key."
-
-        dsnID = attrib["id"]
-        if verbose:
-            print(f'"{dsnID}" (v{attrib["version"]}) : {dsn[0].text}')
-        databases.add(dsnID)
-
-    return(databases)
 
 # RUN ==========================================================================
 
-refGenomes = list_UCSC_reference_genomes(verbose = True)
+refGenomes = fp.web.list_UCSC_reference_genomes(verbose = True)
 if args.listRefGenomes:
     sys.exit()
 

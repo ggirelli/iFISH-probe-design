@@ -38,7 +38,12 @@ setup(name='fish_prode',
 		"paste>=2.0.3",
 		"scipy>=1.0.0"
 	],
-	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
+	scripts=[
+		"bin/fprode_mkdb",
+		"bin/fprode_dbchk",
+		"bin/fprode_dbquery",
+		"bin/fprode_serve"
+	],
 	package_data={
 		'fish_prode': [
 			'interface/css/bootstrap.css',
