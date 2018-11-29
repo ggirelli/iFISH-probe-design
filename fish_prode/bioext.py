@@ -45,6 +45,7 @@ class UCSCbed(object):
             bedDF.extend([UCSCbed.parse_bed_line(line) for line in IH])
 
         self.df = pd.concat(bedDF)
+        self.df.index = range(self.df.shape[0])
         self.ncols = self.df.shape[1]
     
     @staticmethod
@@ -62,18 +63,21 @@ class UCSCbed(object):
 
         return(lineDF)
 
-    def isBED3():
-        return self.ncols == 3
+    def isBEDN(self, n):
+        n = min(n, 12)
+        return self.ncols == n
 
-    def isBED6():
-        return self.ncols == 6
+    def getBEDN(self, n):
+        n = min(n, 12)
+        assert self.ncols >= n
+        return self.df.iloc[:, :n]
 
-    def getBED3():
-        return self.df.iloc[:, :3]
+    def mkBEDN(self, n):
+        assert n <= 12
+        if n < self.ncols:
+            self.df = self.df.iloc[:, :n]
+            self.ncols = n
 
-    def getBED6():
-        assert self.ncols >= 6
-        return self.df.iloc[:, :6]
 
 # END ==========================================================================
 

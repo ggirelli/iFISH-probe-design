@@ -40,8 +40,8 @@ retreive the ODN sequences from somewhere else.
 
 To retain the ODN sequences in the database, use the --retain-sequences option.
 When this option is used, the ODN sequences must be present in the input BED3
-file as an additional column. Alternatively, if such column is not found, the
-script queries UCSC for the sequences (this process requires an active internet
+file 'name' column. Alternatively, if such column is not found, the script
+queries UCSC for the sequences (this process requires an active internet
 connection to contact the UCSC DAS server).
 
 NOTE: only non-arbitrary nucleotides in standard IUPAC format are allowed in the
@@ -68,6 +68,9 @@ parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
     help = '''(advanced option) URI to UCSC DAS server.
         Default: http://genome.ucsc.edu/cgi-bin/das/dsn''')
 
+parser.add_argument('--enforce-bed3', action = 'store_const',
+    dest = 'enforceBED3', const = True, default = False,
+    help = 'Consider only first 3 columns of the bed file.')
 parser.add_argument('--retain-sequences', action = 'store_const',
     dest = 'retainSequences', const = True, default = False,
     help = 'Use this option to generate a database with sequences')
@@ -81,8 +84,6 @@ parser.add_argument('--version', action = 'version',
     version = f'{sys.argv[0]} v{version}')
 
 args = parser.parse_args()
-
-
 
 refGenomes = fp.web.list_UCSC_reference_genomes(
     UCSC_DAS_URI = args.ucsc_das_uri, verbose = args.listRefGenomes)
@@ -98,16 +99,26 @@ if not os.path.isdir(args.O):
 
 bed = fp.bioext.UCSCbed(args.bedFile)
 
+if args.enforceBED3:
+    bed.mkBEDN(3)
+
+columns2export = ['chromStart', 'chromEnd']
 if args.retainSequences:
-    if bed.ncols >= 3:
-        # Use 4th column
-    else:
-        # Retreive sequences from UCSC
-else:
-    for _, chromDF in tqdm(bed.df.groupby("chrom")):
-        chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
-            "\t", columns = ['chromStart', 'chromEnd'],
-            header = False, index = False)
+    if 3 >= bed.ncols:
+        print(" Retrieving sequences from UCSC...")
+        sequences = []
+        for i in tqdm(bed.df.index):
+            region = bed.df.loc[i, ['chrom', 'chromStart', 'chromEnd']].tolist()
+            regionSequence = fp.web.get_sequence_from_UCSC(args.genome, *region)
+            sequences.append(regionSequence)
+        bed.df['name'] = pd.Series(sequences, index = bed.df.index)
+    columns2export.append('name')
+
+print(" Writing database...")
+for _, chromDF in tqdm(bed.df.groupby("chrom")):
+    chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
+        "\t", columns = columns2export,
+        header = False, index = False)
 
 # END ==========================================================================
 

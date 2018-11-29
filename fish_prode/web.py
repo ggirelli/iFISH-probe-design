@@ -45,7 +45,7 @@ def print_UCSC_DSN(dsn):
     print(f'"{attrib["id"]}" (v{attrib["version"]}) : {dsn[0].text}')
 
 def list_UCSC_reference_genomes(verbose = False,
-    UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
+        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
     '''Retrieves list of UCSC DAS reference genome IDs.
     Use verbose to print a readable list.'''
 
@@ -61,6 +61,19 @@ def list_UCSC_reference_genomes(verbose = False,
         databases.add(dsn[0].attrib["id"])
 
     return(databases)
+
+def get_sequence_from_UCSC(genome, chrom, chromStart, chromEnd,
+        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
+    '''Retrieve the sequence of a certain reference genome region from UCSC DAS
+    server. As the input region definition follows the bed format, the chromEnd
+    position is not included.'''
+    base_uri = f'http://genome.ucsc.edu/cgi-bin/das/{genome}/dna'
+    uri_query = f'?segment={chrom}:{chromStart},{chromEnd-1}'
+    seqXMLdata = get_webpage_content(base_uri+uri_query)
+
+    seq = xml.etree.ElementTree.fromstring(seqXMLdata)[0][0].text
+    seq = seq.replace('\n', '').replace('\r', '').replace(' ', '')
+    return seq.upper()
 
 # END ==========================================================================
 
