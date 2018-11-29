@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
-- `fprode_mkdb`
+- `web` sub-package.
+- `fprode_mkdb`: re-format a database to be compatible with FISH-ProDe.
     + List UCSC available reference genomes with `--list-refGenomes`.
+- `fprode_dbchk`: checks database integrity.
 
 ### Changed
 - Moved interface documents to separate sub-folder.

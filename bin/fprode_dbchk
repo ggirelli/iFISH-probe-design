@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# ------------------------------------------------------------------------------
+# 
+# Author: Gabriele Girelli
+# Email: gigi.ga90@gmail.com
+# Date: 2018-11-29
+# Description: prepare database compatible with FISH-ProDe query script and
+#              associated web-interface.
+# 
+# ------------------------------------------------------------------------------
+
+
+
+# DEPENDENCIES =================================================================
+
+import argparse
+import os
+import pandas as pd
+import socket
+import sys
+import urllib.request, urllib.error, urllib.parse
+import xml.etree.ElementTree
+
+# INPUT ========================================================================
+
+# Add script description
+parser = argparse.ArgumentParser(description = '''
+...
+''', formatter_class = argparse.RawDescriptionHelpFormatter)
+
+# Add params
+parser.add_argument('dbDirPath', type = str, default = '.',
+    help = '''Path to database directory.''')
+
+# Version flag
+version = "0.0.1"
+parser.add_argument('--version', action = 'version',
+    version = f'{sys.argv[0]} v{version}')
+
+# Parse arguments
+args = parser.parse_args()
+
+# FUNCTIONS ====================================================================
+
+# RUN ==========================================================================
+
+# END ==========================================================================
+
+################################################################################
