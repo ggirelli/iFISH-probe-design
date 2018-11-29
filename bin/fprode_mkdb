@@ -120,6 +120,7 @@ if args.retainSequences:
 
 print(" Writing database...")
 for _, chromDF in tqdm(bed.df.groupby("chrom")):
+    chromDF = chromDF.sort_values(by = ["chromStart"])
     chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
         "\t", columns = columns2export,
         header = False, index = False)
