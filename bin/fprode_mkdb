@@ -13,7 +13,7 @@
 
 
 
-# DEPENDENCIES =================================================================
+# ==============================================================================
 
 import argparse
 import fish_prode as fp
@@ -21,10 +21,8 @@ import os
 import pandas as pd
 import socket
 import sys
+from tqdm import tqdm
 
-# INPUT ========================================================================
-
-# Add script description
 parser = argparse.ArgumentParser(description = '''
 Builds a database of complementary oligodeoxyribonucleotides (ODNs) in a format
 compatible with FISH-ProDe.
@@ -56,17 +54,20 @@ Details on the BED3 format are available on the UCSC website:
 https://genome.ucsc.edu/FAQ/FAQformat.html#format1
 ''', formatter_class = argparse.RawDescriptionHelpFormatter)
 
-# Add params
 parser.add_argument('bedFile', metavar = 'bedPath', type = str,
     help = '''Path to BED3 bed file. Optionally, a fourth column can be present
     with the sequence of the corresponding region''')
 parser.add_argument('genome', metavar = 'refGen', type = str,
     help = 'Reference genome in NCBI-compatible format (e.g., hg19).')
+
 parser.add_argument('-O', metavar = 'dirPath', type = str, default = '.',
     help = '''Path to directory where to build the database. Created if missing.
         Defaults to current directory.''')
+parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
+    default = 'http://genome.ucsc.edu/cgi-bin/das/dsn',
+    help = '''(advanced option) URI to UCSC DAS server.
+        Default: http://genome.ucsc.edu/cgi-bin/das/dsn''')
 
-# Add flags
 parser.add_argument('--retain-sequences', action = 'store_const',
     dest = 'retainSequences', const = True, default = False,
     help = 'Use this option to generate a database with sequences')
@@ -75,39 +76,38 @@ parser.add_argument('--list-refGenomes', action = 'store_const',
     help = ''''List UCSC reference genomes and exit
         (requires internet connection)''')
 
-# Version flag
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
     version = f'{sys.argv[0]} v{version}')
 
-# Parse arguments
 args = parser.parse_args()
 
-# FUNCTIONS ====================================================================
 
 
-
-# RUN ==========================================================================
-
-refGenomes = fp.web.list_UCSC_reference_genomes(verbose = args.listRefGenomes)
+refGenomes = fp.web.list_UCSC_reference_genomes(
+    UCSC_DAS_URI = args.ucsc_das_uri, verbose = args.listRefGenomes)
 if args.listRefGenomes:
     sys.exit()
 
-# Assert input
 assert os.path.isfile(args.bedFile), f'bed file not found: "{args.bedFile}"'
 assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
+assert args.genome in refGenomes, f'genome "{args.genome}" not found @UCSC'
 
 if not os.path.isdir(args.O):
     os.mkdir(args.O)
 
-# Read bed file
 bed = fp.bioext.UCSCbed(args.bedFile)
 
-# Does bed file have sequences?
-
-# Do we need to retain sequences?
-
-# ...
+if args.retainSequences:
+    if bed.ncols >= 3:
+        # Use 4th column
+    else:
+        # Retreive sequences from UCSC
+else:
+    for _, chromDF in tqdm(bed.df.groupby("chrom")):
+        chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
+            "\t", columns = ['chromStart', 'chromEnd'],
+            header = False, index = False)
 
 # END ==========================================================================
 
