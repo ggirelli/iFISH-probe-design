@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
-- ...
+- `fprode_mkdb`
+    + List UCSC available reference genomes with `--list-refGenomes`.
 
 ### Changed
 - Moved interface documents to separate sub-folder.

@@ -1,0 +1,141 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# ------------------------------------------------------------------------------
+# 
+# Author: Gabriele Girelli
+# Email: gigi.ga90@gmail.com
+# Date: 2018-11-29
+# Description: prepare database compatible with FISH-ProDe query script and
+#              associated web-interface.
+# 
+# ------------------------------------------------------------------------------
+
+
+
+# DEPENDENCIES =================================================================
+
+import argparse
+import os
+import pandas as pd
+import socket
+import sys
+import urllib.request, urllib.error, urllib.parse
+import xml.etree.ElementTree
+
+# INPUT ========================================================================
+
+# Add script description
+parser = argparse.ArgumentParser(description = '''
+Builds a database of complementary oligodeoxyribonucleotides (ODNs) in a format
+compatible with FISH-ProDe.
+
+DISCLAIMER: this script does NOT generate a new database. It only re-formats an
+existing database to in a format compatible with FISH-ProDe.
+
+The script uses takes as input a BED file (BED3) format and the reference
+genome. The reference genome name must be compatible with NCBI standard.
+
+When building a database for FISH-ProDe, it is possible to retain the ODNs
+sequence in the database itself. While this generates larger files, it also
+speeds up the process of probe design, since the script would not need to
+retreive the ODN sequences from somewhere else.
+
+To retain the ODN sequences in the database, use the --retain-sequences option.
+When this option is used, the ODN sequences must be present in the input BED3
+file as an additional column. Alternatively, if such column is not found, the
+script queries NCBI for the sequences (this process requires an active internet
+connection).
+
+NOTE: only non-arbitrary nucleotides in standard IUPAC format are allowed in the
+ODNs sequence. https://www.bioinformatics.org/sms/iupac.html
+
+After the database is created, we advise running the fprode_dbcheck script to
+test its integrity.
+
+Details on the BED3 format are available on the UCSC website:
+https://genome.ucsc.edu/FAQ/FAQformat.html#format1
+''', formatter_class = argparse.RawDescriptionHelpFormatter)
+
+# Add params
+parser.add_argument('bedFile', metavar = 'bedPath', type = str,
+    help = '''Path to BED3 bed file. Optionally, a fourth column can be present
+    with the sequence of the corresponding region''')
+parser.add_argument('genome', metavar = 'refGen', type = str,
+    help = 'Reference genome in NCBI-compatible format (e.g., hg19).')
+parser.add_argument('-O', metavar = 'dirPath', type = str, default = '.',
+    help = '''Path to directory where to build the database. Created if missing.
+        Defaults to current directory.''')
+
+# Add flags
+parser.add_argument('--retain-sequences', action = 'store_const',
+    dest = 'retainSequences', const = True, default = False,
+    help = 'Use this option to generate a database with sequences')
+parser.add_argument('--list-refGenomes', action = 'store_const',
+    dest = 'listRefGenomes', const = True, default = False,
+    help = ''''List UCSC reference genomes and exit
+        (requires internet connection)''')
+
+# Version flag
+version = "0.0.1"
+parser.add_argument('--version', action = 'version',
+    version = f'{sys.argv[0]} v{version}')
+
+# Parse arguments
+args = parser.parse_args()
+
+# FUNCTIONS ====================================================================
+
+def internet_on():
+    '''Check internet connection status.
+    From: https://stackoverflow.com/a/3764660'''
+    try:
+        urllib.request.urlopen('http://216.58.192.142', timeout = 1)
+        return True
+    except urllib.error.URLError as e: 
+        return False
+
+def list_UCSC_reference_genomes(verbose = False,
+    UCSC_DSN_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
+    '''Retrieves list of UCSC reference genomes.'''
+
+    assert internet_on(), "cannot connect to the internet."
+
+    try:
+        dsnXML = urllib.request.urlopen(UCSC_DSN_URI)
+        dsnXMLdata = dsnXML.read()
+        dsnXML.close()
+    except urllib.error.URLError as e:
+        raise
+
+    databases = set()
+    for dsn in xml.etree.ElementTree.fromstring(dsnXMLdata):
+        assert 0 < len(dsn), "no databases found."
+
+        attrib = dsn[0].attrib
+        assert "id" in attrib.keys(), "database has no 'id' key."
+        assert "version" in attrib.keys(), "database has no 'version' key."
+
+        dsnID = attrib["id"]
+        if verbose:
+            print(f'"{dsnID}" (v{attrib["version"]}) : {dsn[0].text}')
+        databases.add(dsnID)
+
+    return(databases)
+
+# RUN ==========================================================================
+
+refGenomes = list_UCSC_reference_genomes(verbose = True)
+if args.listRefGenomes:
+    sys.exit()
+
+# Assert input
+assert os.path.isfile(args.bedFile), f'bed file not found: "{args.bedFile}"'
+assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
+
+if not os.path.isdir(args.O):
+    os.mkdir(args.O)
+
+# END ==========================================================================
+
+################################################################################
