@@ -13,38 +13,75 @@
 
 
 
-# DEPENDENCIES =================================================================
+# ==============================================================================
 
 import argparse
+import configparser
+import fish_prode as fp
 import os
-import pandas as pd
-import socket
 import sys
-import urllib.request, urllib.error, urllib.parse
-import xml.etree.ElementTree
 
-# INPUT ========================================================================
-
-# Add script description
 parser = argparse.ArgumentParser(description = '''
-...
+Checks integrity of a database. Specifically:
+- a ".config" file must be present
+  * Chromosome length must correspond to the reference genome's.
+  * Overlapping status must match.
+  * Sequence from reference genome can be verified. (optional, --check-seq)
+- At least one non-empty chromosome file
+  * Appropriate format
+  * Positions must be sorted.
+  * An ODN must end after it starts.
+  * No ODNs can start fro the same position.
+  * No ODNs can be totally included in another one.
 ''', formatter_class = argparse.RawDescriptionHelpFormatter)
 
-# Add params
 parser.add_argument('dbDirPath', type = str, default = '.',
     help = '''Path to database directory.''')
 
-# Version flag
+parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
+    default = 'http://genome.ucsc.edu/cgi-bin/das/dsn',
+    help = '''(advanced option) URI to UCSC DAS server.
+        Default: http://genome.ucsc.edu/cgi-bin/das/dsn''')
+
+parser.add_argument('--check-seq', action = 'store_const',
+    dest = 'enforceBED3', const = True, default = False,
+    help = 'Consider only first 3 columns of the bed file.')
+
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
     version = f'{sys.argv[0]} v{version}')
 
-# Parse arguments
 args = parser.parse_args()
 
-# FUNCTIONS ====================================================================
+assert_msg = f'expected folder, file found: "{args.dbDirPath}"'
+assert not os.path.isfile(args.dbDirPath), assert_msg
+assert os.path.isdir(args.dbDirPath), f'folder not found: "{args.dbDirPath}"'
 
-# RUN ==========================================================================
+configPath = os.path.join(args.dbDirPath, ".config")
+assert os.path.isfile(configPath), f'missing "{configPath}" file.'
+
+print(" Reading .config file...")
+IH = open(configPath, 'r')
+config = configparser.ConfigParser()
+config.read_string("".join(IH.readlines()))
+IH.close()
+
+dbName = config['DATABASE']['name']
+print(f' Database name: "{dbName}"')
+
+refGenome = config['DATABASE']['refGenome']
+refGenomeList = fp.web.list_UCSC_reference_genomes(
+    UCSC_DAS_URI = args.ucsc_das_uri)
+assert refGenome in refGenomeList, f'genome "{args.refGenome}" not found @UCSC'
+print(f' Reference genome: "{refGenome}"')
+
+hasSequences = config.getboolean('OLIGOS', 'sequence')
+oligoLengthRange = (
+  config.getint('OLIGOS', 'min_length'),
+  config.getint('OLIGOS', 'max_length'))
+hasOverlaps = config.getboolean('OLIGOS', 'overlaps')
+
+#...
 
 # END ==========================================================================
 

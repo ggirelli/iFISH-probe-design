@@ -21,7 +21,6 @@ import fish_prode as fp
 import numpy as np
 import os
 import pandas as pd
-import socket
 import sys
 from tqdm import tqdm
 
@@ -59,7 +58,7 @@ https://genome.ucsc.edu/FAQ/FAQformat.html#format1
 parser.add_argument('bedFile', metavar = 'bedPath', type = str,
     help = '''Path to BED3 bed file. Optionally, a fourth column can be present
     with the sequence of the corresponding region''')
-parser.add_argument('genome', metavar = 'refGen', type = str,
+parser.add_argument('refGenome', metavar = 'refGen', type = str,
     help = 'Reference genome in NCBI-compatible format (e.g., hg19).')
 parser.add_argument('dbName', metavar = 'dbName', type = str,
     help = 'Database name.')
@@ -89,14 +88,15 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-refGenomes = fp.web.list_UCSC_reference_genomes(
+refGenomeList = fp.web.list_UCSC_reference_genomes(
     UCSC_DAS_URI = args.ucsc_das_uri, verbose = args.listRefGenomes)
 if args.listRefGenomes:
     sys.exit()
 
 assert os.path.isfile(args.bedFile), f'bed file not found: "{args.bedFile}"'
 assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
-assert args.genome in refGenomes, f'genome "{args.genome}" not found @UCSC'
+assert_msg = f'genome "{args.refGenome}" not found @UCSC'
+assert args.refGenome in refGenomeList, assert_msg
 
 if not os.path.isdir(args.O):
     os.mkdir(args.O)
@@ -113,7 +113,8 @@ if args.retainSequences:
         sequences = []
         for i in tqdm(bed.df.index):
             region = bed.df.loc[i, ['chrom', 'chromStart', 'chromEnd']].tolist()
-            regionSequence = fp.web.get_sequence_from_UCSC(args.genome, *region)
+            regionSequence = fp.web.get_sequence_from_UCSC(
+                args.refGenome, *region)
             sequences.append(regionSequence)
         bed.df['name'] = pd.Series(sequences, index = bed.df.index)
     columns2export.append('name')
@@ -132,15 +133,18 @@ for _, chromDF in tqdm(bed.df.groupby("chrom")):
     if any(starts <= ends):
         has_overlaps = True
 
+oligoLengthList = np.unique(bed.df['chromEnd'] - bed.df['chromStart']).tolist()
+
 print(" Generating config file...")
 config = configparser.ConfigParser()
 config['DATABASE'] = {
     'name' : args.dbName,
-    'refGenome' : args.genome
+    'refGenome' : args.refGenome
 }
 config['OLIGOS'] = {
     'sequence' : args.retainSequences,
-    'length' : np.unique(bed.df['chromEnd'] - bed.df['chromStart']).tolist(),
+    'min_length' oligoLengthList.min(),
+    'max_length' oligoLengthList.max(),
     'overlaps' : has_overlaps
 }
 config['SOURCE'] = {
