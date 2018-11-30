@@ -26,12 +26,15 @@ Checks integrity of a database. Specifically:
 - a ".config" file must be present
   * Chromosome length must correspond to the reference genome's.
   * Overlapping status must match.
-  * Sequence from reference genome can be verified. (optional, --check-seq)
+  * Reference genome must be available at UCSC.
+    (requires internet connection)
+  * Sequence from reference genome can be verified.
+    (optional, use --check-seq, requires internet connection)
 - At least one non-empty chromosome file
-  * Appropriate format
+  * Appropriate format (2-3 columns).
   * Positions must be sorted.
   * An ODN must end after it starts.
-  * No ODNs can start fro the same position.
+  * No ODNs can start from the same position.
   * No ODNs can be totally included in another one.
 ''', formatter_class = argparse.RawDescriptionHelpFormatter)
 
@@ -46,6 +49,9 @@ parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
 parser.add_argument('--check-seq', action = 'store_const',
     dest = 'enforceBED3', const = True, default = False,
     help = 'Consider only first 3 columns of the bed file.')
+parser.add_argument('--no-net', action = 'store_const',
+    dest = 'hasNetwork', const = False, default = True,
+    help = 'Skip checks that require internet connection.')
 
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
@@ -70,9 +76,11 @@ dbName = config['DATABASE']['name']
 print(f' Database name: "{dbName}"')
 
 refGenome = config['DATABASE']['refGenome']
-refGenomeList = fp.web.list_UCSC_reference_genomes(
-    UCSC_DAS_URI = args.ucsc_das_uri)
-assert refGenome in refGenomeList, f'genome "{args.refGenome}" not found @UCSC'
+if not args.no_net:
+  refGenomeList = fp.web.list_UCSC_reference_genomes(
+      UCSC_DAS_URI = args.ucsc_das_uri)
+  assert_msg = f'genome "{args.refGenome}" not found @UCSC'
+  assert refGenome in refGenomeList, assert_msg
 print(f' Reference genome: "{refGenome}"')
 
 hasSequences = config.getboolean('OLIGOS', 'sequence')
