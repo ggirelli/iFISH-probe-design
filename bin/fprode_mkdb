@@ -133,7 +133,7 @@ for _, chromDF in tqdm(bed.df.groupby("chrom")):
     if any(starts <= ends):
         has_overlaps = True
 
-oligoLengthList = np.unique(bed.df['chromEnd'] - bed.df['chromStart']).tolist()
+oligoLengthList = np.unique(bed.df['chromEnd'] - bed.df['chromStart'])
 
 print(" Generating config file...")
 config = configparser.ConfigParser()
@@ -143,8 +143,8 @@ config['DATABASE'] = {
 }
 config['OLIGOS'] = {
     'sequence' : args.retainSequences,
-    'min_length' oligoLengthList.min(),
-    'max_length' oligoLengthList.max(),
+    'min_length' : oligoLengthList.min(),
+    'max_length' : oligoLengthList.max(),
     'overlaps' : has_overlaps
 }
 config['SOURCE'] = {
