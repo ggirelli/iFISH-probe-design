@@ -73,23 +73,28 @@ config.read_string("".join(IH.readlines()))
 IH.close()
 
 dbName = config['DATABASE']['name']
-print(f' Database name: "{dbName}"')
+print(f'   Database name: "{dbName}"')
 
 refGenome = config['DATABASE']['refGenome']
-if not args.no_net:
+if args.hasNetwork:
   refGenomeList = fp.web.list_UCSC_reference_genomes(
       UCSC_DAS_URI = args.ucsc_das_uri)
-  assert_msg = f'genome "{args.refGenome}" not found @UCSC'
+  assert_msg = f'genome "{refGenome}" not found @UCSC'
   assert refGenome in refGenomeList, assert_msg
-print(f' Reference genome: "{refGenome}"')
+print(f'   Reference genome: "{refGenome}"')
 
 hasSequences = config.getboolean('OLIGOS', 'sequence')
 oligoLengthRange = (
   config.getint('OLIGOS', 'min_length'),
   config.getint('OLIGOS', 'max_length'))
 hasOverlaps = config.getboolean('OLIGOS', 'overlaps')
+print(f'   Contains sequences: {hasSequences}')
+print(f'   Contains overlaps: {hasOverlaps}')
+print(f'   Oligo length range: {oligoLengthRange}')
 
-#...
+fileList = os.listdir(args.dbDirPath)
+assert 1 < len(fileList), "no chromosome files found."
+print(f' Found {len(fileList)-1} chromosomes.')
 
 # END ==========================================================================
 
