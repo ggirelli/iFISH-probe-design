@@ -45,13 +45,13 @@ def print_UCSC_DSN(dsn):
     print(f'"{attrib["id"]}" (v{attrib["version"]}) : {dsn[0].text}')
 
 def list_UCSC_reference_genomes(verbose = False,
-        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
+        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/'):
     '''Retrieves list of UCSC DAS reference genome IDs.
     Use verbose to print a readable list.'''
 
     assert internet_on(), "cannot connect to the internet."
 
-    dsnXMLdata = get_webpage_content(UCSC_DAS_URI)
+    dsnXMLdata = get_webpage_content(f'{UCSC_DAS_URI}/dsn')
 
     databases = set()
     for dsn in xml.etree.ElementTree.fromstring(dsnXMLdata):
@@ -63,17 +63,30 @@ def list_UCSC_reference_genomes(verbose = False,
     return(databases)
 
 def get_sequence_from_UCSC(genome, chrom, chromStart, chromEnd,
-        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/dsn'):
+        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/'):
     '''Retrieve the sequence of a certain reference genome region from UCSC DAS
     server. As the input region definition follows the bed format, the chromEnd
     position is not included.'''
-    base_uri = f'http://genome.ucsc.edu/cgi-bin/das/{genome}/dna'
+    base_uri = f'{UCSC_DAS_URI}/{genome}/dna'
     uri_query = f'?segment={chrom}:{chromStart},{chromEnd-1}'
     seqXMLdata = get_webpage_content(base_uri+uri_query)
 
     seq = xml.etree.ElementTree.fromstring(seqXMLdata)[0][0].text
     seq = seq.replace('\n', '').replace('\r', '').replace(' ', '')
     return seq.upper()
+
+def get_segment_size_from_UCSC(genome, chrom,
+        UCSC_DAS_URI = 'http://genome.ucsc.edu/cgi-bin/das/'):
+    if chrom.startswith('chr'):
+        chrom = chrom[3:]
+
+    base_uri = f'{UCSC_DAS_URI}/{genome}/entry_points'
+    chromXMLdata = get_webpage_content(base_uri)
+
+    chromList = xml.etree.ElementTree.fromstring(chromXMLdata)[0]
+    chromIDs = [chrom.attrib['id'] for chrom in chromList]
+    
+    return int(chromList[chromIDs.index(chrom)].attrib['stop'])
 
 # END ==========================================================================
 

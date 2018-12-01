@@ -69,7 +69,7 @@ parser.add_argument('-O', metavar = 'dirPath', type = str, default = '.',
 parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
     default = 'http://genome.ucsc.edu/cgi-bin/das/dsn',
     help = '''(advanced option) URI to UCSC DAS server.
-        Default: http://genome.ucsc.edu/cgi-bin/das/dsn''')
+        Default: http://genome.ucsc.edu/cgi-bin/das/''')
 
 parser.add_argument('--enforce-bed3', action = 'store_const',
     dest = 'enforceBED3', const = True, default = False,
