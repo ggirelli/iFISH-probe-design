@@ -5,8 +5,7 @@
 # 
 # Author: Gabriele Girelli
 # Email: gigi.ga90@gmail.com
-# Version: 0.0.1
-# Date: 161121
+# Date: 2018-12-01
 # Description: Design FISH probe using ODN databases.
 # 
 # ------------------------------------------------------------------------------
@@ -16,6 +15,17 @@
 # ==============================================================================
 
 import argparse
+import sys
+
+parser = argparse.ArgumentParser(description = '''
+...
+''', formatter_class = argparse.RawDescriptionHelpFormatter)
+
+version = "0.0.1"
+parser.add_argument('--version', action = 'version',
+    version = f'{sys.argv[0]} v{version}')
+
+args = parser.parse_args()
 
 # END ==========================================================================
 
