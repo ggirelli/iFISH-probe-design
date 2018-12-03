@@ -33,7 +33,7 @@ class UCSCbed(object):
         assert os.path.isfile(self.path), f"bed file not found: '{self.path}'"
 
         bedDF = []
-        with open(self.path, 'r') as IH:
+        with open(self.path, 'r+') as IH:
             header = next(IH)
             if header.startswith("browser") or header.startswith("track"):
                 self.custom = True
@@ -54,7 +54,7 @@ class UCSCbed(object):
         Does not work on header lines.'''
         
         line = line.strip().split("\t")
-        assert 3 <= len(line), f"at least 3 field require, {len(line)} found."
+        assert 3 <= len(line), f"at least 3 fields required, {len(line)} found."
 
         lineDF = pd.DataFrame([
             UCSCbed.FORMATTER[UCSCbed.FIELD_FORMAT[i]](line[i])

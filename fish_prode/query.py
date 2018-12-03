@@ -181,9 +181,9 @@ class OligoProbe(object):
         std = np.std(np.diff(self.oligoData.iloc[:, 1]))
         return np.inf if 0 == std else 1/std
 
-    def describe(self, region):
+    def describe(self, region, path = None):
         '''Builds a small pd.DataFrame describing a probe.'''
-        return pd.DataFrame.from_dict({
+        description = pd.DataFrame.from_dict({
             'chrom' : [region[0]],
             'chromStart' : [self.oligoData.iloc[:, 0].min()],
             'chromEnd' : [self.oligoData.iloc[:, 1].max()],
@@ -191,6 +191,29 @@ class OligoProbe(object):
             'size' : [self.size],
             'spread' : [self.spread]
         })
+
+        if not type(None) == type(path):
+            config = configparser.ConfigParser()
+            config['REGION'] = {
+                'chrom' : region[0],
+                'chromStart' : region[1],
+                'chromEnd' : region[2]
+            }
+            config['PROBE'] = {
+                'chrom' : description['chrom'].values[0],
+                'chromStart' : description['chromStart'].values[0],
+                'chromEnd' : description['chromEnd'].values[0],
+                'nOligo' : self.oligoData.shape[0]
+            }
+            config['FEATURES'] = {
+                'centrality' : description['centrality'].values[0],
+                'size' : description['size'].values[0],
+                'spread' : description['spread'].values[0]
+            }
+            with open(path, 'w+') as OH:
+                config.write(OH)
+
+        return description
 
     def get_fasta(self, path = None):
         fasta = ""
