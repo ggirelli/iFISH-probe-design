@@ -114,7 +114,7 @@ if args.retainSequences:
         for i in tqdm(bed.df.index):
             region = bed.df.loc[i, ['chrom', 'chromStart', 'chromEnd']].tolist()
             regionSequence = fp.web.get_sequence_from_UCSC(
-                args.refGenome, *region)
+                tuple(region), args.refGenome)
             sequences.append(regionSequence)
         bed.df['name'] = pd.Series(sequences, index = bed.df.index)
     columns2export.append('name')

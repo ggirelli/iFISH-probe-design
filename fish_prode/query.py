@@ -125,7 +125,7 @@ class OligoDatabase(object):
                     assert len(sequence) == chromEnd-chromStart, assert_msg
 
                     assert_status, msg = fp.web.check_sequence(
-                        chrom, chromStart, chromEnd, sequence,
+                        (chrom, chromStart, chromEnd), sequence,
                         self.get_reference_genome(),
                         UCSC_DAS_URI = self.UCSC_DAS_URI)
                     assert_msg = f'sequence of oligo #{i} does not match'

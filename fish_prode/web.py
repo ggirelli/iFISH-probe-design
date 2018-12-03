@@ -46,8 +46,7 @@ def print_UCSC_DSN(dsn):
     attrib = dsn[0].attrib
     print(f'"{attrib["id"]}" (v{attrib["version"]}) : {dsn[0].text}')
 
-def list_UCSC_reference_genomes(verbose = False,
-        UCSC_DAS_URI = UCSC_DAS_URI):
+def list_UCSC_reference_genomes(verbose = False, UCSC_DAS_URI = UCSC_DAS_URI):
     '''Retrieves list of UCSC DAS reference genome IDs.
     Use verbose to print a readable list.'''
 
@@ -64,11 +63,11 @@ def list_UCSC_reference_genomes(verbose = False,
 
     return(databases)
 
-def get_sequence_from_UCSC(genome, chrom, chromStart, chromEnd,
-        UCSC_DAS_URI = UCSC_DAS_URI):
+def get_sequence_from_UCSC(region, genome, UCSC_DAS_URI = UCSC_DAS_URI):
     '''Retrieve the sequence of a certain reference genome region from UCSC DAS
     server. As the input region definition follows the bed format, the chromEnd
     position is not included.'''
+    chrom, chromStart, chromEnd = region
     base_uri = f'{UCSC_DAS_URI}/{genome}/dna'
     uri_query = f'?segment={chrom}:{chromStart},{chromEnd-1}'
     seqXMLdata = get_webpage_content(base_uri+uri_query)
@@ -77,8 +76,7 @@ def get_sequence_from_UCSC(genome, chrom, chromStart, chromEnd,
     seq = seq.replace('\n', '').replace('\r', '').replace(' ', '')
     return seq.upper()
 
-def get_segment_size_from_UCSC(genome, chrom,
-        UCSC_DAS_URI = UCSC_DAS_URI):
+def get_segment_size_from_UCSC(genome, chrom, UCSC_DAS_URI = UCSC_DAS_URI):
     if chrom.startswith('chr'):
         chrom = chrom[3:]
 
@@ -90,8 +88,7 @@ def get_segment_size_from_UCSC(genome, chrom,
     
     return int(chromList[chromIDs.index(chrom)].attrib['stop'])
 
-def check_reference_genome(refGenome,
-    UCSC_DAS_URI = UCSC_DAS_URI):
+def check_reference_genome(refGenome, UCSC_DAS_URI = UCSC_DAS_URI):
     refGenomeList = list_UCSC_reference_genomes(
       UCSC_DAS_URI = UCSC_DAS_URI)
     return refGenome in refGenomeList
@@ -102,11 +99,10 @@ def check_chromosome_size(chrom, chromSize, refGenome,
         refGenome, chrom, UCSC_DAS_URI = UCSC_DAS_URI)
     return chromSize <= chromSizeFound
 
-def check_sequence(chrom, chromStart, chromEnd, sequence, refGenome,
-    UCSC_DAS_URI = UCSC_DAS_URI):
+def check_sequence(region, sequence, refGenome, UCSC_DAS_URI = UCSC_DAS_URI):
     '''Connects to UCSC to check if a sequence is correct.'''
-    regionSequence = get_sequence_from_UCSC(refGenome,
-      chrom, chromStart, chromEnd, UCSC_DAS_URI)
+    regionSequence = get_sequence_from_UCSC(
+      region, refGenome, UCSC_DAS_URI)
     assert_msg = f'\nSequence: {sequence}'
     assert_msg += f'\nUCSC seq: {regionSequence}'
     return (sequence == regionSequence, assert_msg)
