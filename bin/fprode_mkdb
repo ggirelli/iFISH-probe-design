@@ -101,6 +101,7 @@ assert args.refGenome in refGenomeList, assert_msg
 if not os.path.isdir(args.O):
     os.mkdir(args.O)
 
+print(" Reading bed-like file...")
 bed = fp.bioext.UCSCbed(args.bedFile)
 
 if args.enforceBED3:
