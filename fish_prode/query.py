@@ -6,7 +6,13 @@
 @description: methods related to database query.
 '''
 
-# DEPENDENCIES =================================================================
+
+
+# ==============================================================================
+
+import matplotlib
+matplotlib.use('svg')
+import matplotlib.pyplot as plt
 
 import configparser
 import fish_prode as fp
@@ -15,7 +21,6 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
-# ==============================================================================
 
 class OligoDatabase(object):
     """FISH-ProDe Oligonucleotide Database class."""
@@ -157,7 +162,9 @@ class OligoProbe(object):
         self.chrom = chrom
         self.oligoData = oligos
         self.refGenome = database.get_reference_genome()
-        self.size = self.get_probe_size()
+        self.chromStart = self.oligoData.iloc[:, 0].min()
+        self.chromEnd = self.oligoData.iloc[:, 1].max()
+        self.size = self.chromEnd - self.chromStart
         self.spread = self.get_probe_spread()
 
     def get_probe_centrality(self, region):
@@ -248,8 +255,103 @@ class OligoProbe(object):
 
         return bed
 
-    def plot(self, outputDir):
+    def _plot_region(self, outputDir, region):
+        fig = plt.figure()
+
+        chrom, start, stop = region
+        plt.plot([start, stop], [0, 0], 'k', linewidth = 4.0, label = 'Genome')
+        plt.plot([start + (stop-start)/2., start + (stop-start)/2.],
+            [-1, 1], 'r--', label = 'Window center')
+
+        plt.plot([self.chromStart, self.chromEnd], [0, 0],
+            'c-', linewidth = 4.0, label = 'Probe')
+        plt.plot([self.chromStart+self.size/2., self.chromStart+self.size/2.],
+            [-1, 1], 'c--',label = 'Probe center')
+
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.suptitle('%s:%d-%d' % (chrom, start, stop))
+        plt.xlabel('genomic coordinate [nt]')
+        plt.legend(fontsize = 'small', loc = 'best')
+
+        plt.savefig(os.path.join(outputDir, 'window.png'),
+            format = 'png', bbox_inches = 'tight')
+        plt.close(fig)
+
+    def _plot_oligo(self, outputDir):
+        fig = plt.figure(figsize = (20, 5))
+        genome_handle, = plt.plot([self.chromStart, self.chromEnd],
+            [0, 0], 'k', linewidth = 4.0, label = 'Genome')
+
+        for i in self.oligoData.index:
+            oligo = self.oligoData.loc[i, :]
+            oligo_midpoint = (oligo['chromStart'] + oligo['chromStart']) / 2.
+            oligo_handle, = plt.plot([oligo['chromStart'], oligo['chromEnd']],
+                [0, 0], 'c', linewidth = 2.0, label = 'Oligo')
+            oligoCenter_handle, = plt.plot(
+                [oligo_midpoint, oligo_midpoint],
+                [-.1, .1], 'c:', label = 'Oligo center')
+
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.ylim((-.5, .5))
+
+        plt.gca().axes.get_xaxis().set_ticks(list(range(
+            self.chromStart, self.chromEnd,
+            int((self.chromEnd-self.chromStart)/5.))))
+
+        plt.legend(handles = [genome_handle, oligo_handle, oligoCenter_handle],
+            fontsize = 'small', loc = 'best')
+        plt.suptitle((f'{self.chrom}:{self.chromStart}-{self.chromEnd}'))
+        plt.xlabel('genomic coordinate [nt]')
+
+        plt.savefig(os.path.join(outputDir, 'probe.png'),
+            format = 'png', bbox_inches = 'tight')
+        plt.close(fig)
+
+    def _plot_oligo_distr(self, outputDir):
+        fig = plt.figure()
+
+        plt.plot(
+            [0, self.oligoData.shape[0]-1],
+            [self.chromStart, self.chromEnd], 'k-',
+            label = 'Homogeneous distribution')
+        plt.plot(
+            list(range(self.oligoData.shape[0])),
+            self.oligoData['chromStart'].values,
+            'r.', label = 'Oligo')
+
+        plt.suptitle(f'{self.chrom}:{self.chromStart}-{self.chromEnd}')
+        plt.xlabel('oligo number')
+        plt.ylabel('genomic coordinate [nt]')
+        plt.legend(fontsize = 'small', loc = 'best')
+
+        plt.savefig(os.path.join(outputDir, 'oligo.png'), format = 'png')
+        plt.close(fig)
+
+    def _plot_oligo_distance(self, outputDir):
+        fig = plt.figure()
+
+        startPositions = self.oligoData.iloc[1:, 0].values
+        endPositions = self.oligoData.iloc[:-1, 1]
+        diffs =  startPositions - endPositions
+        plt.hist(diffs, density = 1, facecolor = 'green', alpha = .5)
+        density = fp.stats.calc_density(diffs, alpha = .5)
+        plt.plot(density['x'].tolist(), density['y'].tolist(), 'b--',
+            label = 'Density distribution')
+
+        plt.suptitle(f'{self.chrom}:{self.chromStart}-{self.chromEnd}')
+        plt.xlabel('Distance between consecutive oligos [nt]')
+        plt.ylabel('Density')
+        plt.legend(fontsize = 'small', loc = 'best')
+
+        plt.savefig(os.path.join(outputDir, 'distance.png'), format = 'png')
+        plt.close(fig)
+
+    def plot(self, outputDir, region):
         assert os.path.isdir(outputDir), f'folder not found: "{outputDir}"'
+        self._plot_region(outputDir, region)
+        self._plot_oligo(outputDir)
+        self._plot_oligo_distr(outputDir)
+        self._plot_oligo_distance(outputDir)
 
 class ProbeFeatureTable(object):
     """docstring for ProbeFeatureTable"""

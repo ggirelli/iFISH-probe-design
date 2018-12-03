@@ -194,6 +194,7 @@ for i in range(min(args.max_probes, probeFeatureTable.data.shape[0])):
         os.path.join(candidatePath, f'candidate_{i}.config'))
     candidate.get_fasta(os.path.join(candidatePath, f'candidate_{i}.fasta'))
     candidate.get_bed(os.path.join(candidatePath, f'candidate_{i}.bed'))
+    candidate.plot(candidatePath, queried_region)
 
 # END ==========================================================================
 
