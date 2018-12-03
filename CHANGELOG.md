@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
-- `bioext` sub-package for biological file extension methods.
+- `bioext` module for biological file extension methods.
     + `UCSCbed` class to read files in UCSC bed format.
-- `web` sub-package for web-service related methods.
+- `web` module for web-service related methods.
     + UCSC DAS server related methods.
+- `query` module for query and database management.
+    + Implemented oligo database class that asserts it when reading it.
 - `fprode_mkdb` script: re-format a database to be compatible with FISH-ProDe.
     + List UCSC available reference genomes with `--list-refGenomes`.
     + `.config` file generated using the `configparser` package.
