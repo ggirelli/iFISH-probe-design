@@ -55,7 +55,7 @@ title = 'FISH ProDe'
 
 # Add views folder to TEMPLATE_PATH
 bot.TEMPLATE_PATH.append(root_path)
-bot.TEMPLATE_PATH.append('%sviews/' % root_path)
+bot.TEMPLATE_PATH.append('%s/interface/views/' % root_path)
 
 # Prepare static folder
 assert_msg = "folder expected, file found: %s" % args.static
@@ -92,27 +92,27 @@ def error404(error):
 # CSS files
 @root.route('/css/<path>')
 def callback(path):
-    return bot.static_file(path, '%s/css/' % root_path)
+    return bot.static_file(path, '%s/interface/css/' % root_path)
 
 # JS files
 @root.route('/js/<path>')
 def callback(path):
-    return bot.static_file(path, '%s/js/' % root_path)
+    return bot.static_file(path, '%s/interface/js/' % root_path)
 
 # Fonts files
 @root.route('/fonts/<path>')
 def callback(path):
-    return bot.static_file(path, '%s/fonts/' % root_path)
+    return bot.static_file(path, '%s/interface/fonts/' % root_path)
 
 # Images
 @root.route('/images/<path>')
 def callback(path):
-    return bot.static_file(path, '%s/images/' % root_path)
+    return bot.static_file(path, '%s/interface/images/' % root_path)
 
 # Documents
 @root.route('/documents/<path>')
 def callback(path):
-    return bot.static_file(path, '%s/documents/' % root_path)
+    return bot.static_file(path, '%s/interface/documents/' % root_path)
 
 # Documentation ----------------------------------------------------------------
 
