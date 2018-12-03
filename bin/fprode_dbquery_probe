@@ -17,6 +17,7 @@
 import argparse
 import configparser
 import fish_prode as fp
+import logging
 import numpy as np
 import os
 import pandas as pd
@@ -75,22 +76,34 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-print(" Reading database...")
-oligoDB = fp.query.OligoDatabase(args.database, True, False)
-
-assert_msg = 'databases with overlapping oligos are not supported yet.'
-assert not oligoDB.has_overlaps(), assert_msg
-
 assert_msg = f'output folder expected, file found: {args.outdir}'
 assert not os.path.isfile(args.outdir), assert_msg
 if args.forceRun:
     if os.path.isdir(args.outdir):
-        print('Overwriting previously run query.')
         shutil.rmtree(args.outdir)
 else:
     assert_msg = f'output folder already exists: {args.outdir}'
     assert not os.path.isdir(args.outdir), assert_msg
 os.mkdir(args.outdir)
+
+formatString = '%(asctime)-25s %(name)s %(levelname)-8s %(message)s'
+formatter = logging.Formatter(formatString)
+logging.basicConfig(
+    filename = os.path.join(args.outdir, 'log'),
+    level = logging.DEBUG,
+    format = formatString)
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+if args.forceRun and os.path.isdir(args.outdir):
+    logging.info('Overwriting previously run query.')
+
+logging.info("Reading database...")
+oligoDB = fp.query.OligoDatabase(args.database, True, False)
+
+assert_msg = 'databases with overlapping oligos are not supported yet.'
+assert not oligoDB.has_overlaps(), assert_msg
 
 roi_regexp = '^chr[0-9A-Za-z]+:[0-9]+,[0-9]+$'
 assert_msg = 'the provided region does not match the expected pattern:'
@@ -133,9 +146,10 @@ selectedOligos = chromData.loc[selectCondition, :]
 assert_msg = 'there are not enough oligos in the database.'
 assert_msg += f' Asked for {args.n_oligo}, {selectCondition.sum()} found.'
 assert args.n_oligo <= selectCondition.sum(), assert_msg
+logging.info(f'Found {selectCondition.sum()} oligos in the region {args.region}')
 
-if 3 > chromData.shape[1]:
-    print(" Retrieving sequences from UCSC...")
+if 3 > selectedOligos.shape[1]:
+    logging.info("Retrieving sequences from UCSC...")
     sequences = []
     for i in tqdm(selectedOligos.index):
         region = selectedOligos.iloc[i, :2].tolist()
@@ -145,17 +159,33 @@ if 3 > chromData.shape[1]:
     selectedOligos.assign(name = pd.Series(sequences,
         index = selectedOligos.index).values)
 
-print(" Building probe candidates...")
+logging.info("Building probe candidates...")
 candidateList = []
-for i in tqdm(range(0, chromData.shape[0]-args.n_oligo)):
+for i in tqdm(range(0, selectedOligos.shape[0]-args.n_oligo)):
     candidateList.append(fp.query.OligoProbe(queried_region[0], 
-        chromData.iloc[i:(i+args.n_oligo), :], oligoDB))
+        selectedOligos.iloc[i:(i+args.n_oligo), :], oligoDB))
+logging.info(f"Found {len(candidateList)} probe candidates.")
 
-print(" Describing candidates...")
+logging.info("Describing candidates...")
 probeFeatureTable = fp.query.ProbeFeatureTable(
     candidateList, queried_region, True)
-probeFeatureTable.filter(args.order[0], args.filter_thr)
+feature_range, feature = probeFeatureTable.filter(
+    args.order[0], args.filter_thr)
+feature_range = np.round(feature_range, 6)
+logging.info(f"Selected {probeFeatureTable.data.shape[0]} candidates " +
+    f"in the range {feature_range} of '{feature}'.")
 
+logging.info(f"Ranking based on '{args.order[1]}'.")
+probeFeatureTable.rank(args.order[1])
+
+logging.info("Writing description table...")
+probeFeatureTable.data.to_csv(os.path.join(args.outdir, "candidates.tsv"),
+    "\t", index = False)
+
+if np.isfinite(args.max_probes):
+    logging.info(f"Exporting top {args.max_probes} candidates...")
+else:
+    logging.info(f"Exporting candidates...")
 for i in range(min(args.max_probes, probeFeatureTable.data.shape[0])):
     candidate = candidateList[probeFeatureTable.data.index[i]]
     candidatePath = os.path.join(args.outdir, f'candidate_{i}')

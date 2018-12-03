@@ -84,7 +84,7 @@ class OligoDatabase(object):
 
     def _read_chromosomes(self, verbose):
 
-        chromList = [d for d in os.listdir(self.dirPath) if d != '.config']
+        chromList = [d for d in os.listdir(self.dirPath) if not d.startswith('.')]
         assert 1 < len(chromList), "no chromosome files found in {self.dirPath}"
         chromList = tqdm(chromList) if verbose else chromList
 
@@ -291,6 +291,8 @@ class ProbeFeatureTable(object):
         discardCondition = np.logical_or(*discardCondition)
         self.discarded = self.data.loc[discardCondition, :]
         self.data = self.data.loc[np.logical_not(discardCondition), :]
+
+        return (feature_range, feature)
 
     def rank(self, feature):
         self.data = self.data.sort_values(feature,

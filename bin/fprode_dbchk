@@ -17,6 +17,7 @@
 
 import argparse
 import fish_prode as fp
+import logging
 import sys
 
 parser = argparse.ArgumentParser(description = '''
@@ -57,19 +58,23 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-print(f'Reading database...')
+formatString = '%(asctime)-25s %(name)s %(levelname)-8s %(message)s'
+logging.basicConfig(level = logging.DEBUG, format = formatString)
+
+logging.info('Reading database...')
 oligoDB = fp.query.OligoDatabase(args.dbDirPath, hasNetwork = args.hasNetwork)
-print(f'Database name: "{oligoDB.get_name()}"')
+logging.info(f'Database name: "{oligoDB.get_name()}"')
 
 refGenome = oligoDB.get_reference_genome()
-print(f'Reference genome: "{refGenome}"')
+logging.info(f'Reference genome: "{refGenome}"')
 
 hasSequences = oligoDB.has_sequences()
 oligoLengthRange = oligoDB.get_oligo_length_range()
 hasOverlaps = oligoDB.has_overlaps()
-print(f'Contains sequences: {hasSequences}')
-print(f'Contains overlaps: {hasOverlaps}')
-print(f'Oligo length range: {oligoLengthRange}')
+logging.info(f'Contains sequences: {hasSequences}')
+logging.info(f'Contains overlaps: {hasOverlaps}')
+logging.info(f'Oligo length range: {oligoLengthRange}')
+logging.info(f'Database checked.')
 
 # END ==========================================================================
 

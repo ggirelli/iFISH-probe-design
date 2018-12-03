@@ -18,6 +18,7 @@
 import argparse
 import configparser
 import fish_prode as fp
+import logging
 import numpy as np
 import os
 import pandas as pd
@@ -110,13 +111,27 @@ assert args.refGenome in refGenomeList, assert_msg
 
 if args.forceRun:
     if os.path.isdir(args.O):
-        print('Overwriting previously run query.')
         shutil.rmtree(args.O)
 else:
-    assert not os.path.isdir(args.O), f'output folder already exists: "{args.O}"'
+    assert_msg = f'output folder already exists: "{args.O}"'
+    assert not os.path.isdir(args.O), assert_msg
 os.mkdir(args.O)
 
-print(" Buffering bed-like file...")
+formatString = '%(asctime)-25s %(name)s %(levelname)-8s %(message)s'
+formatter = logging.Formatter(formatString)
+logging.basicConfig(
+    filename = os.path.join(args.O, '.log'),
+    level = logging.DEBUG,
+    format = formatString)
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+
+if args.forceRun and os.path.isdir(args.O):
+    logging.warning('Overwritten previously run query.')
+
+logging.info("Buffering bed-like file...")
 bed = fp.bioext.UCSCbed(args.bedFile,
     incrementChromEnd = args.incrementChromEnd, bufferize = True)
 
@@ -136,10 +151,10 @@ def add_oligo_sequence(oligoList):
         yield(oligo)
 
 if args.retainSequences:
-    print(" Enabled sequence retrieval from UCSC...")
+    logging.info("Enabled sequence retrieval from UCSC...")
     oligoGenerator = add_oligo_sequence(oligoGenerator)
 
-print(" Writing database...")
+logging.info("Writing database...")
 chromList = set()
 for line in oligoGenerator:
     chrom = line['chrom'].values[0]
@@ -148,7 +163,7 @@ for line in oligoGenerator:
     with open(os.path.join(args.O, chrom), 'a+') as OH:
         OH.write(f'{line}\n')
 
-print(" Sorting oligos...")
+logging.info("Sorting oligos...")
 has_overlaps = False
 oligoLengthRange = [np.inf, -np.inf]
 for chrom in chromList:
@@ -168,7 +183,7 @@ for chrom in chromList:
     oligoLengthRange[0] = min(oligoLengthRange[0], oligoLengthList.min())
     oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
 
-print(" Generating config file...")
+logging.info("Generating config file...")
 config = configparser.ConfigParser()
 config['DATABASE'] = {
     'name' : args.dbName,
@@ -187,6 +202,8 @@ config['SOURCE'] = {
 }
 with open(os.path.join(args.O, '.config'), 'w+') as OH:
     config.write(OH)
+
+logging.info(f'Created database "{args.dbName}".')
 
 # END ==========================================================================
 
