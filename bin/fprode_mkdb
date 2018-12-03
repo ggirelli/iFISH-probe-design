@@ -108,7 +108,7 @@ if args.enforceBED3:
 
 columns2export = ['chromStart', 'chromEnd']
 if args.retainSequences:
-    if 3 >= bed.ncols:
+    if 3 > bed.ncols:
         print(" Retrieving sequences from UCSC...")
         sequences = []
         for i in tqdm(bed.df.index):
