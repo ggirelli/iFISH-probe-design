@@ -146,7 +146,7 @@ selectedOligos = chromData.loc[selectCondition, :]
 assert_msg = 'there are not enough oligos in the database.'
 assert_msg += f' Asked for {args.n_oligo}, {selectCondition.sum()} found.'
 assert args.n_oligo <= selectCondition.sum(), assert_msg
-logging.info(f'Found {selectCondition.sum()} oligos in the region {args.region}')
+logging.info(f'Found {selectCondition.sum()} oligos in {args.region}')
 
 if 3 > selectedOligos.shape[1]:
     logging.info("Retrieving sequences from UCSC...")
