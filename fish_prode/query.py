@@ -245,6 +245,9 @@ class OligoProbe(object):
 
         return bed
 
+    def plot(self, outputDir):
+        assert os.path.isdir(outputDir), f'folder not found: "{outputDir}"'
+
 class ProbeFeatureTable(object):
     """docstring for ProbeFeatureTable"""
 
@@ -289,7 +292,6 @@ class ProbeFeatureTable(object):
     def rank(self, feature):
         self.data = self.data.sort_values(feature,
             ascending = self.FEATURE_SORT[feature]['ascending'])
-
 
 # END ==========================================================================
 
