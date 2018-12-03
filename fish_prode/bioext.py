@@ -6,12 +6,12 @@
 @description: biological file extension-specific methods.
 '''
 
-# DEPENDENCIES =================================================================
+
+
+# ==============================================================================
 
 import os
 import pandas as pd
-
-# ==============================================================================
 
 class UCSCbed(object):
     '''Class to read a UCSC Bed format file into a pandas.DataFrame.'''

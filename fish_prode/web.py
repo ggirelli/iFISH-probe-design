@@ -6,12 +6,12 @@
 @description: web-services and related functions.
 '''
 
-# DEPENDENCIES =================================================================
+
+
+# ==============================================================================
 
 import urllib.request, urllib.error
 import xml.etree.ElementTree
-
-# FUNCTIONS ====================================================================
 
 def internet_on():
     '''Check internet connection status.
