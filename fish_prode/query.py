@@ -20,7 +20,7 @@ from tqdm import tqdm
 class OligoDatabase(object):
     """FISH-ProDe Oligonucleotide Database class."""
 
-    def __init__(self, dbDirPath, hasNetwork = True,
+    def __init__(self, dbDirPath, verbose = False, hasNetwork = True,
         UCSC_DAS_URI = fp.web.UCSC_DAS_URI):
         super(OligoDatabase, self).__init__()
         self.dirPath = dbDirPath
@@ -48,7 +48,7 @@ class OligoDatabase(object):
                 refGenome, self.UCSC_DAS_URI)
             assert refGenomeChecked, f'genome "{refGenome}" not found @UCSC'
 
-        self._read_chromosomes()
+        self._read_chromosomes(verbose)
 
     def check_overlaps(self):
         endPositions = np.array(chromData.iloc[1:, 1])
@@ -79,13 +79,14 @@ class OligoDatabase(object):
         '''Reads sequence status from Database .config'''
         return self.config.getboolean('OLIGOS', 'sequence')
 
-    def _read_chromosomes(self):
+    def _read_chromosomes(self, verbose):
 
         chromList = [d for d in os.listdir(self.dirPath) if d != '.config']
         assert 1 < len(chromList), "no chromosome files found in {self.dirPath}"
+        chromList = tqdm(chromList) if verbose else chromList
 
         self.chromData = {}
-        for chrom in tqdm(chromList):
+        for chrom in chromList:
             chromPath = os.path.join(self.dirPath, chrom)
             chromData = pd.read_csv(chromPath, '\t', header = None)
             chromData.columns = fp.bioext.UCSCbed.FIELD_NAMES[
@@ -148,8 +149,9 @@ class OligoDatabase(object):
 class OligoProbe(object):
     """Class for probe management."""
 
-    def __init__(self, oligos, database):
+    def __init__(self, chrom, oligos, database):
         super(OligoProbe, self).__init__()
+        self.chrom = chrom
         self.oligoData = oligos
         self.refGenome = database.get_reference_genome()
         self.size = self.get_probe_size()
@@ -176,7 +178,8 @@ class OligoProbe(object):
         '''Probe spread, as the inverse of the standard deviation of the
         distance between consecutive oligos, calculated from their start
         position, disregarding oligo length.'''
-        return 1 / np.std(np.diff(self.oligoData.iloc[:, 1]))
+        std = np.std(np.diff(self.oligoData.iloc[:, 1]))
+        return np.inf if 0 == std else 1/std
 
     def describe(self, region):
         '''Builds a small pd.DataFrame describing a probe.'''
@@ -188,6 +191,82 @@ class OligoProbe(object):
             'size' : [self.size],
             'spread' : [self.spread]
         })
+
+    def get_fasta(self, path = None):
+        fasta = ""
+        for i in self.oligoData.index:
+            oligo = self.oligoData.loc[i, :]
+            chromStart, chromEnd, sequence = oligo[:3]
+            fasta += f'> oligo_{i} [{self.refGenome}]'
+            fasta += f'{self.chrom}:{chromStart}-{chromEnd}\n'
+            fasta += f'{sequence}\n'
+
+        if not type(None) == type(path):
+            assert os.path.isdir(os.path.dirname(path))
+            with open(path, 'w+') as OH:
+                OH.write(fasta)
+
+        return fasta
+
+    def get_bed(self, path = None):
+        bed = f'track description="ref:{self.refGenome}"\n'
+        for i in self.oligoData.index:
+            oligo = self.oligoData.loc[i, :]
+            chromStart, chromEnd, sequence = oligo[:3]
+            bed += f'{self.chrom}\t{chromStart}\t{chromEnd}\toligo_{i}\n'
+
+        if not type(None) == type(path):
+            assert os.path.isdir(os.path.dirname(path))
+            with open(path, 'w+') as OH:
+                OH.write(bed)
+
+        return bed
+
+class ProbeFeatureTable(object):
+    """docstring for ProbeFeatureTable"""
+
+    FEATURE_SORT = {
+        'centrality' : {'ascending':False},
+        'size' : {'ascending':True},
+        'spread' : {'ascending':True},
+    }
+
+    def __init__(self, candidateList, queried_region, verbose = False):
+        super(ProbeFeatureTable, self).__init__()
+        
+        self.data = []
+        candidateList = tqdm(candidateList) if verbose else candidateList
+        for candidate in candidateList:
+            self.data.append(candidate.describe(queried_region))
+        self.data = pd.concat(self.data)
+        self.data.index = range(self.data.shape[0])
+
+        self.discarded = None
+    
+    def filter(self, feature, thr):
+        ''''''
+        assert_msg = f'fetature "{feature}" not recognized.'
+        assert feature in self.FEATURE_SORT.keys(), assert_msg
+
+        if not type(None) == type(self.discarded):
+            self.data = pd.concat([self.discarded, self.data])
+
+        self.rank(feature)
+
+        best_feature = self.data[feature].values[0]
+        feature_delta = best_feature * thr
+        feature_range = (best_feature-feature_delta, best_feature+feature_delta)
+
+        discardCondition = [self.data[feature] < feature_range[0]]
+        discardCondition.append(self.data[feature] > feature_range[1])
+        discardCondition = np.logical_or(*discardCondition)
+        self.discarded = self.data.loc[discardCondition, :]
+        self.data = self.data.loc[np.logical_not(discardCondition), :]
+
+    def rank(self, feature):
+        self.data = self.data.sort_values(feature,
+            ascending = self.FEATURE_SORT[feature]['ascending'])
+
 
 # END ==========================================================================
 

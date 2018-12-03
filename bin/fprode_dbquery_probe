@@ -69,13 +69,17 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-oligoDB = fp.query.OligoDatabase(args.database, False)
+print(" Reading database...")
+oligoDB = fp.query.OligoDatabase(args.database, True, False)
 
 assert_msg = 'databases with overlapping oligos are not supported yet.'
 assert not oligoDB.has_overlaps(), assert_msg
 
+assert_msg = f'output folder expected, file found: {args.outdir}'
+assert not os.path.isfile(args.outdir), assert_msg
 assert_msg = f'output folder already exists: {args.outdir}'
 assert not os.path.isdir(args.outdir), assert_msg
+os.mkdir(args.outdir)
 
 roi_regexp = '^chr[0-9A-Za-z]+:[0-9]+,[0-9]+$'
 assert_msg = 'the provided region does not match the expected pattern:'
@@ -130,10 +134,24 @@ if 3 > chromData.shape[1]:
     selectedOligos.assign(name = pd.Series(sequences,
         index = selectedOligos.index).values)
 
+print(" Building probe candidates...")
+candidateList = []
 for i in tqdm(range(0, chromData.shape[0]-args.n_oligo)):
-    candidate = fp.query.OligoProbe(
-        chromData.iloc[i:(i+args.n_oligo), :], oligoDB)
-    print(candidate.describe(queried_region))
+    candidateList.append(fp.query.OligoProbe(queried_region[0], 
+        chromData.iloc[i:(i+args.n_oligo), :], oligoDB))
+
+print(" Describing candidates...")
+probeFeatureTable = fp.query.ProbeFeatureTable(
+    candidateList, queried_region, True)
+probeFeatureTable.filter(args.order[0], args.filter_thr)
+
+for i in range(min(args.max_probes, probeFeatureTable.data.shape[0])):
+    candidate = candidateList[probeFeatureTable.data.index[i]]
+    candidatePath = os.path.join(args.outdir, f'candidate_{i}')
+    os.mkdir(candidatePath)
+    candidate.get_fasta(os.path.join(candidatePath, f'candidate_{i}.fasta'))
+    candidate.get_bed(os.path.join(candidatePath, f'candidate_{i}.bed'))
+
 
 # END ==========================================================================
 
