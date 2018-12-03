@@ -140,7 +140,10 @@ if 3 > chromData.shape[1]:
     selectedOligos.assign(name = pd.Series(sequences,
         index = selectedOligos.index).values)
 
-
+for i in tqdm(range(0, chromData.shape[0]-args.n_oligo)):
+    candidateDescription = fp.query.describe_probe(
+        chromData.iloc[i:(i+args.n_oligo), :],
+        [chrom, chromStart, chromEnd])
 
 # END ==========================================================================
 

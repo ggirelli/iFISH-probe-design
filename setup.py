@@ -41,7 +41,8 @@ setup(name='fish_prode',
 	scripts=[
 		"bin/fprode_mkdb",
 		"bin/fprode_dbchk",
-		"bin/fprode_dbquery",
+		"bin/fprode_dbquery_probe",
+		"bin/fprode_dbquery_probeSet",
 		"bin/fprode_serve"
 	],
 	package_data={
@@ -53,7 +54,8 @@ setup(name='fish_prode',
 			'interface/js/*',
 			'interface/views/*'
 		],
-		'fish_prode.sections.probe_design': ['css/*', 'documents/*', 'views/*']
+		'fish_prode.sections.probe_design': [
+			'css/*', 'documents/*', 'views/*']
 	},
 	test_suite="nose.collector",
 	tests_require=["nose"],
