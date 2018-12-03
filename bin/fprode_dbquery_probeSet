@@ -18,7 +18,9 @@ import argparse
 import sys
 
 parser = argparse.ArgumentParser(description = '''
-...
+Design a FISH probe set in a genomic region, with the aim of having the probes
+as homogeneously spaced as possible. Concisely, the script does the following:
+- ...
 ''', formatter_class = argparse.RawDescriptionHelpFormatter)
 
 version = "0.0.1"
