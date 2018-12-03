@@ -10,6 +10,7 @@
 
 import configparser
 import fish_prode as fp
+import numpy as np
 import os
 import pandas as pd
 from tqdm import tqdm
@@ -145,35 +146,48 @@ class OligoDatabase(object):
             self.chromData[chrom] = chromData
 
 class OligoProbe(object):
-    """docstring for OligoProbe"""
+    """Class for probe management."""
 
-    def __init__(self, oligos):
+    def __init__(self, oligos, database):
         super(OligoProbe, self).__init__()
-        pass
-        
+        self.oligoData = oligos
+        self.refGenome = database.get_reference_genome()
+        self.size = self.get_probe_size()
+        self.spread = self.get_probe_spread()
 
-def get_probe_centrality(probe, region):
-    ''''''
-    pass
+    def get_probe_centrality(self, region):
+        '''Calculate centrality, as location of the probe midpoint relative to
+        the region midpoint. 1 when overlapping, 0 when the probe midpoint is
+        at either of the region extremities.'''
+        probe_halfWidth = self.size / 2
+        region_halfWidth = (region[2] - region[1]) / 2
+        probe_midPoint = self.oligoData.iloc[:, 0].min() + probe_halfWidth
+        region_midPoint = region[1] + region_halfWidth
+        centrality = (region_halfWidth - abs(
+            region_midPoint - probe_midPoint)) / region_halfWidth
+        return centrality
 
-def get_probe_size(probe):
-    ''''''
-    return probe.iloc[:, 1].max() - probe.iloc[:, 0].min()
+    def get_probe_size(self):
+        '''Probe size, defined as difference between start of first oligo
+        and end of the last one.'''
+        return self.oligoData.iloc[:, 1].max() - self.oligoData.iloc[:, 0].min()
 
-def get_probe_spread(probe):
-    ''''''
-    pass
+    def get_probe_spread(self):
+        '''Probe spread, as the inverse of the standard deviation of the
+        distance between consecutive oligos, calculated from their start
+        position, disregarding oligo length.'''
+        return 1 / np.std(np.diff(self.oligoData.iloc[:, 1]))
 
-def describe_probe(probe, region):
-    '''Builds a small pd.DataFrame describing a probe.'''
-    return pd.DataFrame.from_dict({
-        'chrom' : [region[0]],
-        'chromStart' : [probe.iloc[:, 0].min()],
-        'chromEnd' : [probe.iloc[:, 1].max()],
-        'centrality' : [get_probe_centrality(probe, region)],
-        'size' : [get_probe_size(probe)],
-        'spread' : [get_probe_spread(probe)]
-    })
+    def describe(self, region):
+        '''Builds a small pd.DataFrame describing a probe.'''
+        return pd.DataFrame.from_dict({
+            'chrom' : [region[0]],
+            'chromStart' : [self.oligoData.iloc[:, 0].min()],
+            'chromEnd' : [self.oligoData.iloc[:, 1].max()],
+            'centrality' : [self.get_probe_centrality(region)],
+            'size' : [self.size],
+            'spread' : [self.spread]
+        })
 
 # END ==========================================================================
 

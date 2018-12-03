@@ -103,6 +103,7 @@ assert args.max_probes >= 0, assert_msg
 
 chrom = args.region.split(":")[0]
 chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(',')]
+queried_region = (chrom, chromStart, chromEnd)
 
 assert_msg = f'chromosome "{chrom}" not in the database.'
 assert chrom in oligoDB.chromData.keys(), assert_msg
@@ -130,9 +131,9 @@ if 3 > chromData.shape[1]:
         index = selectedOligos.index).values)
 
 for i in tqdm(range(0, chromData.shape[0]-args.n_oligo)):
-    candidateDescription = fp.query.describe_probe(
-        chromData.iloc[i:(i+args.n_oligo), :],
-        [chrom, chromStart, chromEnd])
+    candidate = fp.query.OligoProbe(
+        chromData.iloc[i:(i+args.n_oligo), :], oligoDB)
+    print(candidate.describe(queried_region))
 
 # END ==========================================================================
 
