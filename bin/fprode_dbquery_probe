@@ -69,19 +69,10 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-assert_msg = f'database folder not found: "{args.database}"'
-assert os.path.isdir(args.database), assert_msg
-configPath = os.path.join(args.database, ".config")
-assert_msg = f'database folder missing ".config" file: "{configPath}"'
-assert os.path.isfile(configPath), assert_msg
-
-IH = open(configPath, 'r')
-config = configparser.ConfigParser()
-config.read_string("".join(IH.readlines()))
-IH.close()
+oligoDB = fp.query.OligoDatabase(args.database, False)
 
 assert_msg = 'databases with overlapping oligos are not supported yet.'
-assert not config.getboolean('OLIGOS', 'overlaps'), assert_msg
+assert not oligoDB.has_overlaps(), assert_msg
 
 assert_msg = f'output folder already exists: {args.outdir}'
 assert not os.path.isdir(args.outdir), assert_msg
@@ -113,12 +104,10 @@ assert args.max_probes >= 0, assert_msg
 chrom = args.region.split(":")[0]
 chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(',')]
 
-chromPath = os.path.join(args.database, chrom)
-assert_msg = f'chromosome "{chrom}" not in the database: {chromPath}'
-assert os.path.isfile(chromPath), assert_msg
+assert_msg = f'chromosome "{chrom}" not in the database.'
+assert chrom in oligoDB.chromData.keys(), assert_msg
 
-chromData = pd.read_csv(chromPath, '\t', header = None)
-chromData.columns = fp.bioext.UCSCbed.FIELD_NAMES[1:(chromData.shape[1]+1)]
+chromData = oligoDB.chromData[chrom]
 
 selectCondition = np.logical_and(
     chromData.iloc[:, 0] >= chromStart,

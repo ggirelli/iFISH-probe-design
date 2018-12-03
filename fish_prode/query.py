@@ -87,6 +87,8 @@ class OligoDatabase(object):
         for chrom in tqdm(chromList):
             chromPath = os.path.join(self.dirPath, chrom)
             chromData = pd.read_csv(chromPath, '\t', header = None)
+            chromData.columns = fp.bioext.UCSCbed.FIELD_NAMES[
+                1:(chromData.shape[1]+1)]
 
             assert_msg = f'found empty chromosome file: "{chromPath}"'
             assert 0 != chromData.shape[0], assert_msg
