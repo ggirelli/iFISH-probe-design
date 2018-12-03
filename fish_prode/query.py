@@ -51,10 +51,13 @@ class OligoDatabase(object):
         self._read_chromosomes(verbose)
 
     def check_overlaps(self):
-        endPositions = np.array(chromData.iloc[1:, 1])
-        startPositions = np.array(chromData.iloc[:-1, 0])
-        foundOverlaps = any(endPositions <= startPositions)
-        return foundOverlaps == self.has_overlaps()
+        hasOverlaps = False
+        for chrom, chromData in self.chromData.items():
+            startPositions = np.array(chromData.iloc[:-1, 0])
+            endPositions = np.array(chromData.iloc[1:, 1]) - 1
+            foundOverlaps = any(startPositions <= endPositions)
+            hasOverlaps |= foundOverlaps
+        return hasOverlaps == self.has_overlaps()
 
     def get_oligo_length_range(self):
         '''Reads oligo length range from Database .config'''

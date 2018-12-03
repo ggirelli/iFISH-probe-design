@@ -21,6 +21,7 @@ import fish_prode as fp
 import numpy as np
 import os
 import pandas as pd
+import shutil
 import sys
 from tqdm import tqdm
 
@@ -71,6 +72,11 @@ parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
     help = '''(advanced option) URI to UCSC DAS server.
         Default: http://genome.ucsc.edu/cgi-bin/das/''')
 
+parser.add_argument('--increment-chrom-end', action = 'store_const',
+    dest = 'incrementChromEnd', const = True, default = False,
+    help = '''Use this option if your input bed file is not in UCSC bed format,
+        and the last position (chromEnd) is actually included. This forces
+        a unit increase of that position convert to UCSC bed format.''')
 parser.add_argument('--enforce-bed3', action = 'store_const',
     dest = 'enforceBED3', const = True, default = False,
     help = 'Consider only first 3 columns of the bed file.')
@@ -81,6 +87,10 @@ parser.add_argument('--list-refGenomes', action = 'store_const',
     dest = 'listRefGenomes', const = True, default = False,
     help = ''''List UCSC reference genomes and exit
         (requires internet connection)''')
+parser.add_argument('-f', action = 'store_const',
+    dest = 'forceRun', const = True, default = False,
+    help = '''Force overwriting of the query if already run.
+        This is potentially dangerous.''')
 
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
@@ -98,43 +108,65 @@ assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
 assert_msg = f'genome "{args.refGenome}" not found @UCSC'
 assert args.refGenome in refGenomeList, assert_msg
 
-if not os.path.isdir(args.O):
-    os.mkdir(args.O)
+if args.forceRun:
+    if os.path.isdir(args.O):
+        print('Overwriting previously run query.')
+        shutil.rmtree(args.O)
+else:
+    assert not os.path.isdir(args.O), f'output folder already exists: "{args.O}"'
+os.mkdir(args.O)
 
-print(" Reading bed-like file...")
-bed = fp.bioext.UCSCbed(args.bedFile)
+print(" Buffering bed-like file...")
+bed = fp.bioext.UCSCbed(args.bedFile,
+    incrementChromEnd = args.incrementChromEnd, bufferize = True)
 
-if args.enforceBED3:
-    bed.mkBEDN(3)
+ncol = 3 if args.enforceBED3 else None
+oligoGenerator = bed.buffer(ncol)
 
-columns2export = ['chromStart', 'chromEnd']
-if args.retainSequences:
-    if 3 > bed.ncols:
-        print(" Retrieving sequences from UCSC...")
-        sequences = []
-        for i in tqdm(bed.df.index):
-            region = bed.df.loc[i, ['chrom', 'chromStart', 'chromEnd']].tolist()
+def add_oligo_sequence(oligoList):
+    for oligo in oligoList:
+        if 4 > oligo.shape[1]:
+            sequences = []
+            region = oligo.loc[:, ['chrom', 'chromStart', 'chromEnd']
+                ].iloc[0, :].tolist()
             regionSequence = fp.web.get_sequence_from_UCSC(
                 tuple(region), args.refGenome)
             sequences.append(regionSequence)
-        bed.df['name'] = pd.Series(sequences, index = bed.df.index)
-    columns2export.append('name')
+            oligo['name'] = pd.Series(sequences, index = oligo.index)
+        yield(oligo)
+
+if args.retainSequences:
+    print(" Enabled sequence retrieval from UCSC...")
+    oligoGenerator = add_oligo_sequence(oligoGenerator)
 
 print(" Writing database...")
-for _, chromDF in tqdm(bed.df.groupby("chrom")):
-    chromDF = chromDF.sort_values(by = ["chromStart"])
-    chromDF.to_csv(os.path.join(args.O, chromDF['chrom'].tolist()[0]),
-        "\t", columns = columns2export,
+chromList = set()
+for line in oligoGenerator:
+    chrom = line['chrom'].values[0]
+    chromList.add(chrom)
+    line = "\t".join(line.iloc[0, 1:].astype('str').tolist())
+    with open(os.path.join(args.O, chrom), 'a+') as OH:
+        OH.write(f'{line}\n')
+
+print(" Sorting oligos...")
+has_overlaps = False
+oligoLengthRange = [np.inf, -np.inf]
+for chrom in chromList:
+    chromDF = pd.read_csv(os.path.join(args.O, chrom), "\t", header = None)
+    chromDF.columns = fp.bioext.UCSCbed.FIELD_NAMES[1:(chromDF.shape[1]+1)]
+
+    chromDF = chromDF.sort_values('chromStart')
+    chromDF.to_csv(os.path.join(args.O, chrom), "\t",
         header = False, index = False)
 
-has_overlaps = False
-for _, chromDF in tqdm(bed.df.groupby("chrom")):
-    starts = np.array(chromDF['chromStart'].iloc[1:].tolist())
-    ends = np.array(chromDF['chromEnd'].iloc[:-1].tolist())
-    if any(starts <= ends):
+    startPositions = np.array(chromDF['chromStart'].iloc[1:].tolist())
+    endPositions = np.array(chromDF['chromEnd'].iloc[:-1].tolist()) - 1
+    if any(startPositions <= endPositions):
         has_overlaps = True
 
-oligoLengthList = np.unique(bed.df['chromEnd'] - bed.df['chromStart'])
+    oligoLengthList = np.unique(chromDF['chromEnd'] - chromDF['chromStart'])
+    oligoLengthRange[0] = min(oligoLengthRange[0], oligoLengthList.min())
+    oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
 
 print(" Generating config file...")
 config = configparser.ConfigParser()
@@ -144,8 +176,8 @@ config['DATABASE'] = {
 }
 config['OLIGOS'] = {
     'sequence' : args.retainSequences,
-    'min_length' : oligoLengthList.min(),
-    'max_length' : oligoLengthList.max(),
+    'min_length' : oligoLengthRange[0],
+    'max_length' : oligoLengthRange[1],
     'overlaps' : has_overlaps
 }
 config['SOURCE'] = {

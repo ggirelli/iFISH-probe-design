@@ -58,7 +58,7 @@ parser.add_argument('--version', action = 'version',
 args = parser.parse_args()
 
 print(f'Reading database...')
-oligoDB = fp.query.OligoDatabase(args.dbDirPath, args.hasNetwork)
+oligoDB = fp.query.OligoDatabase(args.dbDirPath, hasNetwork = args.hasNetwork)
 print(f'Database name: "{oligoDB.get_name()}"')
 
 refGenome = oligoDB.get_reference_genome()
