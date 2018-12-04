@@ -495,7 +495,7 @@ class GenomicWindowList(object):
         self.data = [self.data[i] for i in np.argsort(midpointList)]
 
     def calc_probe_size_and_spread(self):
-        if 3 < self.count_probes():
+        if 3 > self.count_probes():
             return np.nan
 
         probeData = pd.concat([w.probe.asDataFrame((w.chromStart, w.chromEnd))
