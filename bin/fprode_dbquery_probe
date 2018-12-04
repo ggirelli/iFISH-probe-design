@@ -99,21 +99,20 @@ logging.getLogger('').addHandler(console)
 if args.forceRun and os.path.isdir(args.outdir):
     logging.info('Overwriting previously run query.')
 
-chrom = args.region.split(":")[0]
-chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(',')]
-queried_region = (chrom, chromStart, chromEnd)
-
-logging.info("Reading database...")
-oligoDB = fp.query.OligoDatabase(args.database, False)
-oligoDB.read_chromosome(chrom)
-
-assert_msg = 'databases with overlapping oligos are not supported yet.'
-assert not oligoDB.has_overlaps(), assert_msg
-
 roi_regexp = '^chr[0-9A-Za-z]+:[0-9]+,[0-9]+$'
 assert_msg = 'the provided region does not match the expected pattern:'
 assert_msg += f' "{args.region}" [chrN:XXX:YYY]'
 assert type(None) != type(re.match(roi_regexp, args.region)), assert_msg
+
+logging.info("Reading database...")
+oligoDB = fp.query.OligoDatabase(args.database, False)
+
+chrom = args.region.split(":")[0]
+chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(',')]
+queried_region = (chrom, chromStart, chromEnd)
+
+assert_msg = 'databases with overlapping oligos are not supported yet.'
+assert not oligoDB.has_overlaps(), assert_msg
 
 assert_msg = f'at least 2 features need, only {len(args.order)} found.'
 assert 2 <= len(args.order), assert_msg
@@ -135,8 +134,9 @@ assert_msg = f'at least 1 probe in output: {args.max_probes}'
 assert args.max_probes >= 0, assert_msg
 
 assert_msg = f'chromosome "{chrom}" not in the database.'
-assert chrom in oligoDB.chromData.keys(), assert_msg
+assert oligoDB.has_chromosome(chrom), assert_msg
 
+oligoDB.read_chromosome(chrom)
 chromData = oligoDB.chromData[chrom]
 
 selectCondition = np.logical_and(

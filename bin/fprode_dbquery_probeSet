@@ -15,7 +15,14 @@
 # ==============================================================================
 
 import argparse
+import fish_prode as fp
+import logging
+import numpy as np
+import os
+import re
+import shutil
 import sys
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description = '''
 Design a FISH probe set in a genomic region, with the aim of having the probes
@@ -33,7 +40,8 @@ as homogeneously spaced as possible. Concisely, the script does the following:
 ''', formatter_class = argparse.RawDescriptionHelpFormatter)
 
 parser.add_argument('region', metavar = 'region', type = str,
-    help = 'Region of interest in chrN:XXX,YYY format.')
+    help = '''Region of interest in chrN:XXX,YYY format.
+    Use chrN only to run chromosome-wide.''')
 parser.add_argument('nProbes', metavar = 'nProbes', type = int,
     help = 'Number of probes to design.')
 parser.add_argument('database', metavar = 'database', type = str,
@@ -66,6 +74,10 @@ parser.add_argument('-f', action = 'store_const',
     dest = 'forceRun', const = True, default = False,
     help = '''Force overwriting of the query if already run.
         This is potentially dangerous.''')
+parser.add_argument('--no-net', action = 'store_const',
+        dest = 'hasNetwork', const = False, default = True,
+        help = '''Use when internet is not available. Then, chromosome size
+            defaults to the end of the last oligo.''')
 
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
@@ -96,21 +108,35 @@ logging.getLogger('').addHandler(console)
 if args.forceRun and os.path.isdir(args.outdir):
     logging.info('Overwriting previously run query.')
 
-chrom = args.region.split(":")[0]
-chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(',')]
-queried_region = (chrom, chromStart, chromEnd)
+roi_regexp = '^chr[0-9A-Za-z]+(:[0-9]+,[0-9]+)?$'
+assert_msg = 'the provided region does not match the expected pattern:'
+assert_msg += f' "{args.region}" [chrN:XXX:YYY|chrN]'
+assert type(None) != type(re.match(roi_regexp, args.region)), assert_msg
 
 logging.info("Reading database...")
 oligoDB = fp.query.OligoDatabase(args.database, False)
-oligoDB.read_chromosome(chrom)
+
+if ":" in args.region:
+    chrom = args.region.split(":")[0]
+    chromStart, chromEnd = [int(x)
+        for x in args.region.split(":")[1].split(',')]
+else:
+    chrom = args.region
+    chromStart = 0
+    if args.hasNetwork:
+        if fp.web.internet_on:
+            chromEnd = fp.web.get_chromosome_size(
+                chrom, oligoDB.get_reference_genome())
+        else:
+            assert_msg = f'chromosome "{chrom}" not in the database.'
+            assert oligoDB.has_chromosome(chrom), assert_msg
+            
+            oligoDB.read_chromosome(chrom)
+            chromEnd = oligoDB.chromData[chrom].iloc[:, 1].max()
+queried_region = (chrom, chromStart, chromEnd)
 
 assert_msg = 'databases with overlapping oligos are not supported yet.'
 assert not oligoDB.has_overlaps(), assert_msg
-
-roi_regexp = '^chr[0-9A-Za-z]+:[0-9]+,[0-9]+$'
-assert_msg = 'the provided region does not match the expected pattern:'
-assert_msg += f' "{args.region}" [chrN:XXX:YYY]'
-assert type(None) != type(re.match(roi_regexp, args.region)), assert_msg
 
 assert_msg = f'at least 2 features need, only {len(args.order)} found.'
 assert 2 <= len(args.order), assert_msg
@@ -130,6 +156,45 @@ if args.max_sets == -1:
     args.max_sets = np.inf
 assert_msg = f'at least 1 probe set in output: {args.max_sets}'
 assert args.max_sets >= 0, assert_msg
+
+if not chrom in oligoDB.chromData.keys():
+    oligoDB.read_chromosome(chrom)
+chromData = oligoDB.chromData[chrom]
+
+selectCondition = np.logical_and(
+    chromData.iloc[:, 0] >= chromStart,
+    chromData.iloc[:, 1] <= chromEnd)
+selectedOligos = chromData.loc[selectCondition, :]
+
+assert_msg = 'there are not enough oligos in the database.'
+assert_msg += f' Asked for {args.n_oligo}, {selectCondition.sum()} found.'
+assert args.n_oligo <= selectCondition.sum(), assert_msg
+logging.info(f'Found {selectCondition.sum()} oligos in {args.region}')
+
+if 3 > selectedOligos.shape[1]:
+    logging.info("Retrieving sequences from UCSC...")
+    sequences = []
+    for i in tqdm(selectedOligos.index):
+        region = selectedOligos.iloc[i, :2].tolist()
+        regionSequence = fp.web.get_sequence_from_UCSC(
+            config['DATABASE']['refGenome'], chrom, *region)
+        sequences.append(regionSequence)
+    selectedOligos.assign(name = pd.Series(sequences,
+        index = selectedOligos.index).values)
+
+logging.info("Building probe candidates...")
+candidateList = []
+for i in tqdm(range(0, selectedOligos.shape[0]-args.n_oligo)):
+    candidateList.append(fp.query.OligoProbe(queried_region[0], 
+        selectedOligos.iloc[i:(i+args.n_oligo), :], oligoDB))
+logging.info(f"Found {len(candidateList)} probe candidates.")
+
+logging.info("Describing candidates...")
+probeFeatureTable = fp.query.ProbeFeatureTable(
+    candidateList, queried_region, True)
+
+logging.info("Building window sets...")
+window_sets = []
 
 # END ==========================================================================
 
