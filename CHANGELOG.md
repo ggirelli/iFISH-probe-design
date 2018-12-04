@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     + UCSC DAS server related methods.
 - `query` module for query and database management.
     + Implemented oligo database class that asserts it when reading it.
+- `stats` module for statistics-related methods.
 - `fprode_mkdb` script: re-format a database to be compatible with FISH-ProDe.
     + List UCSC available reference genomes with `--list-refGenomes`.
     + `.config` file generated using the `configparser` package.
