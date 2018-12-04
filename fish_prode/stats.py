@@ -25,7 +25,7 @@ def calc_density(data, **kwargs):
             'y' : np.array([1]), 'f' : f
         })
 
-    data = data[np.logical_not(np.isnan(data.values))]
+    data = data[np.logical_not(np.isnan(data))]
     density = spStats.gaussian_kde(data)
     density.covariance_factor = lambda : sigma
     density._compute_covariance()

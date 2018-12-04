@@ -373,8 +373,8 @@ class OligoProbe(object):
         fig = plt.figure()
 
         startPositions = self.oligoData.iloc[1:, 0].values
-        endPositions = self.oligoData.iloc[:-1, 1]
-        diffs =  startPositions - endPositions
+        endPositions = self.oligoData.iloc[:-1, 1].values
+        diffs = startPositions - endPositions
         plt.hist(diffs, density = 1, facecolor = 'green', alpha = .5)
         density = fp.stats.calc_density(diffs, alpha = .5)
         plt.plot(density['x'].tolist(), density['y'].tolist(), 'b--',
@@ -477,6 +477,8 @@ class GenomicWindow(object):
         return GenomicWindow(self.chrom, self.chromStart + n, self.size)
 
 class GenomicWindowList(object):
+    '''Both a list genomic window and associated probe set.'''
+
     data = []
 
     def __init__(self, windows = None):
@@ -542,11 +544,13 @@ class GenomicWindowList(object):
                 plt.gca().add_patch(patches.Rectangle(
                     (window.chromStart, -1), window.size, 2, color = 'r'))
             plt.gca().text(window.midpoint, .5, wi + 1)
-        plt.axvline([window.chromEnd for window in self][-1],
-            ymin = -1, ymax = 1, color = 'k', linestyle = ':')
+        plt.axvline(self[0].chromStart, ymin = -1, ymax = 1,
+            color = 'k', linestyle = ':')
+        plt.axvline(self[-1].chromEnd, ymin = -1, ymax = 1,
+            color = 'k', linestyle = ':')
 
         plt.gca().add_patch(patches.Rectangle(
-            (region[1], -1), self[0].chromStart, 2, color = 'k'))
+            (region[1], -1), self[0].chromStart - region[1], 2, color = 'k'))
         plt.gca().add_patch(patches.Rectangle((self[-1].chromEnd, -1),
             region[2]-self[-1].chromEnd, 2, color = 'k'))
 
@@ -598,10 +602,10 @@ class GenomicWindowList(object):
 
         probes = [w.probe for w in self if type(None) != type(w.probe)]
 
-        starts = [p.chromStart for p in probes][1:]
-        ends = [p.chromEnd for p in probes][:-1]
+        starts = np.array([p.chromStart for p in probes][1:])
+        ends = np.array([p.chromEnd for p in probes][:-1])
         diffs = starts - ends
-        plt.hist(diffs, normed = 1, facecolor = 'green', alpha = .5)
+        plt.hist(diffs, density = 1, facecolor = 'green', alpha = .5)
 
         density = fp.stats.calc_density(diffs, alpha = .5)
         plt.plot(density['x'].tolist(), density['y'].tolist(), 'b--',
