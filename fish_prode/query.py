@@ -365,7 +365,7 @@ class ProbeFeatureTable(object):
     FEATURE_SORT = {
         'centrality' : {'ascending':False},
         'size' : {'ascending':True},
-        'spread' : {'ascending':True},
+        'spread' : {'ascending':False},
     }
 
     def __init__(self, candidateList, queried_region, verbose = False):
