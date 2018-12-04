@@ -63,7 +63,7 @@ parser.add_argument('--n-oligo', metavar = 'nOligo', type = int,
     default = 48, help = 'Number of oligos per probe.')
 parser.add_argument('--max-probes', metavar = 'maxProbes', type = int,
     default = -1, help = '''Maximum number of probe candidates to output.
-            Set to -1 to retrieve all candidates. Default: -1''')
+        Set to -1 to retrieve all candidates. Default: -1''')
 
 parser.add_argument('-f', action = 'store_const',
     dest = 'forceRun', const = True, default = False,
