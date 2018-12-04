@@ -414,11 +414,11 @@ class ProbeFeatureTable(object):
     def keep(self, condition, cumulative = False):
         if not cumulative:
             self.reset()
-        self.discarded = self.data.loc[np.logical_not(condition), :]
+        self.discarded = pd.concat([self.discarded,
+            self.data.loc[np.logical_not(condition), :]])
         self.data = self.data.loc[condition, :]
 
     def filter(self, feature, thr, cumulative = False):
-        ''''''
         assert_msg = f'fetature "{feature}" not recognized.'
         assert feature in self.FEATURE_SORT.keys(), assert_msg
 
@@ -434,7 +434,8 @@ class ProbeFeatureTable(object):
         discardCondition = [self.data[feature] < feature_range[0]]
         discardCondition.append(self.data[feature] > feature_range[1])
         discardCondition = np.logical_or(*discardCondition)
-        self.discarded = self.data.loc[discardCondition, :]
+        self.discarded = pd.concat([self.discarded,
+            self.data.loc[discardCondition, :]])
         self.data = self.data.loc[np.logical_not(discardCondition), :]
 
         return (feature_range, feature)
@@ -485,7 +486,7 @@ class GenomicWindowList(object):
         self.data.append(GenomicWindow(start, size))
 
     def count_probes(self):
-        return sum([1 for w in self if w.has_probe()])
+        return sum([w.has_probe() for w in self])
 
     def shift(self, n):
         return GenomicWindowList([window.shift(n) for window in self.data])

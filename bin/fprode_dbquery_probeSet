@@ -195,6 +195,10 @@ logging.info("Describing candidates...")
 probeFeatureTable = fp.query.ProbeFeatureTable(
     candidateList, queried_region, True)
 
+logging.info("Writing description table...")
+probeFeatureTable.data.to_csv(os.path.join(args.outdir, "candidates.tsv"),
+    "\t", index = False)
+
 assert_msg  =  'not enough probes in the region of interest: '
 assert_msg += f'{probeFeatureTable.data.shape[0]}/{args.nProbes}'
 assert args.nProbes < probeFeatureTable.data.shape[0], assert_msg
@@ -229,7 +233,6 @@ for wsi in range(len(window_setList)):
             probeFeatureTable.data.loc[:, 'chromEnd'] <= window.chromEnd)
         logging.info(f'Found {selectCondition.sum()} probe candidates' +
             f' in window #{wi} of set #{wsi}.')
-        logging.info(window_setList[wsi][wi])
 
         if 0 == selectCondition.sum():
             window_setList[wsi][wi].probe = None
@@ -241,13 +244,11 @@ for wsi in range(len(window_setList)):
             feature_range = np.round(feature_range, 6)
             logging.info(f" Selected {probeFeatureTable.data.shape[0]}" +
                 f" candidates in the range {feature_range} of '{feature}'.")
-
             logging.info(f" Ranking based on '{args.order[1]}'.")
             probeFeatureTable.rank(args.order[1])
 
         window_setList[wsi][wi].probe = candidateList[
             probeFeatureTable.data.index[0]]
-        logging.info(window_setList[wsi][wi])
 
 print([w.calc_probe_size_and_spread() for w in window_setList])
 
