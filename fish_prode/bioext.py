@@ -11,6 +11,7 @@
 # ==============================================================================
 
 import io
+import fish_prode as fp
 import os
 import pandas as pd
 from tqdm import tqdm
@@ -106,7 +107,13 @@ class UCSCbed(object):
     @staticmethod
     def add_sequence_to_raw_record(bedRecords):
         for record in bedRecords:
+            assert type("") == type(record)
             record = record.strip().split("\t")
+
+            assert_msg = "each record must have at least 3 columns,"
+            assert_msg += f" {len(record)} found."
+            assert 3 <= len(record), assert_msg
+
             if 4 > len(record):
                 oligoSequence = fp.web.get_sequence_from_UCSC(
                     (record[0], int(record[1]), int(record[2])), args.refGenome)
@@ -118,6 +125,11 @@ class UCSCbed(object):
     def add_sequence_to_parsed_record(bedRecords):
         for record in bedRecords:
             assert type(pd.DataFrame()) == type(bedRecords)
+
+            assert_msg = "each record must have at least 3 columns,"
+            assert_msg += f" {record.shape[0]} found."
+            assert 3 <= record.shape[0]
+            
             if 4 > record.shape[1]:
                 region = record.loc[:, ['chrom', 'chromStart', 'chromEnd']
                     ].iloc[0, :].tolist()
