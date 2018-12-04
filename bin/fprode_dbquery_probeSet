@@ -19,6 +19,7 @@ import fish_prode as fp
 import logging
 import numpy as np
 import os
+import pandas as pd
 import re
 import shutil
 import sys
@@ -196,7 +197,8 @@ probeFeatureTable = fp.query.ProbeFeatureTable(
     candidateList, queried_region, True)
 
 logging.info("Writing description table...")
-probeFeatureTable.data.to_csv(os.path.join(args.outdir, "candidates.tsv"),
+probeFeatureTable.data.to_csv(
+    os.path.join(args.outdir, "probe_candidates.tsv"),
     "\t", index = False)
 
 assert_msg  =  'not enough probes in the region of interest: '
@@ -211,7 +213,7 @@ window_size = int(window_size)
 
 skip = 1 + (0 != (chromEnd - chromStart) % window_size)
 for startPosition in range(chromStart, chromEnd, window_size)[:-skip]:
-    window_set.add(startPosition, window_size)
+    window_set.add(chrom, startPosition, window_size)
 
 window_shift = max(int(args.window_shift * window_size),
     args.min_d + oligoDB.get_oligo_length_range()[0])
@@ -244,13 +246,40 @@ for wsi in range(len(window_setList)):
             feature_range = np.round(feature_range, 6)
             logging.info(f" Selected {probeFeatureTable.data.shape[0]}" +
                 f" candidates in the range {feature_range} of '{feature}'.")
-            logging.info(f" Ranking based on '{args.order[1]}'.")
+            logging.info(f" Ranking probe candidates based on" + 
+                f" '{args.order[1]}'.")
             probeFeatureTable.rank(args.order[1])
 
         window_setList[wsi][wi].probe = candidateList[
             probeFeatureTable.data.index[0]]
 
-print([w.calc_probe_size_and_spread() for w in window_setList])
+logging.info("Comparing probe set candidates...")
+probeSetSpread = np.array([ws.calc_probe_size_and_spread()
+    for ws in window_setList])
+probeCount = np.array([ws.count_probes() for ws in window_setList])
+logging.info(f" {sum(probeCount == args.nProbes)}/{len(window_setList)}" +
+    f" probe set candidates have {args.nProbes} probes.")
+
+logging.info("Ranking based on #probes and spread (of probes and size)...")
+probeSetData = pd.DataFrame.from_dict({
+    'id' : range(len(window_setList)),
+    'spread' : probeSetSpread[np.argsort(probeCount)[::-1]],
+    'nProbes' : probeCount[np.argsort(probeCount)[::-1]]
+})
+probeSetData.sort_values(by = ['nProbes', 'spread'],
+    ascending = [False, False], inplace = True)
+probeSetData.drop("id", axis = 1).to_csv(
+    os.path.join(args.outdir, "set_candidates.tsv"), "\t", index = False)
+
+logging.info("Exporting probe sets...")
+window_setList = [window_setList[i] for i in probeSetData['id'].values]
+for wsi in tqdm(range(len(window_setList))):
+    window_set  = window_setList[wsi]
+    window_set_path = os.path.join(args.outdir, f"probe_set_{wsi}")
+    assert not os.path.isfile(window_set_path)
+    assert not os.path.isdir(window_set_path)
+    os.mkdir(window_set_path)
+    window_set.export(window_set_path)
 
 # END ==========================================================================
 

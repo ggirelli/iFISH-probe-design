@@ -259,12 +259,15 @@ class OligoProbe(object):
 
         return description
 
-    def get_fasta(self, path = None):
+    def get_fasta(self, path = None, prefix = ""):
+        if not prefix.startswith(" "):
+            prefix = " " + prefix
+            
         fasta = ""
         for i in self.oligoData.index:
             oligo = self.oligoData.loc[i, :]
             chromStart, chromEnd, sequence = oligo[:3]
-            fasta += f'> oligo_{i} [{self.refGenome}]'
+            fasta += f'>{prefix}oligo_{i} [{self.refGenome}]'
             fasta += f'{self.chrom}:{chromStart}-{chromEnd}\n'
             fasta += f'{sequence}\n'
 
@@ -275,12 +278,16 @@ class OligoProbe(object):
 
         return fasta
 
-    def get_bed(self, path = None):
+    def get_bed(self, path = None, prefix = ""):
+        if not prefix.endswith("_"):
+            prefix += "_"
+
         bed = f'track description="ref:{self.refGenome}"\n'
         for i in self.oligoData.index:
             oligo = self.oligoData.loc[i, :]
             chromStart, chromEnd, sequence = oligo[:3]
-            bed += f'{self.chrom}\t{chromStart}\t{chromEnd}\toligo_{i}\n'
+            bed += f'{self.chrom}\t{chromStart}\t{chromEnd}\t'
+            bed += f'{prefix}oligo_{i}\n'
 
         if not type(None) == type(path):
             assert os.path.isdir(os.path.dirname(path))
@@ -445,8 +452,9 @@ class ProbeFeatureTable(object):
             ascending = self.FEATURE_SORT[feature]['ascending'])
 
 class GenomicWindow(object):
-    def __init__(self, start, size):
+    def __init__(self, chrom, start, size):
         super(GenomicWindow, self).__init__()
+        self.chrom = chrom
         self.chromStart = start
         self.chromEnd = start + size
         self.midpoint = (self.chromStart + self.chromEnd) / 2
@@ -454,15 +462,18 @@ class GenomicWindow(object):
         self.probe = None
 
     def __str__(self):
-        s  = f'GenomicWindow:{self.chromStart}-{self.chromEnd}\n'
+        s  = f'[GenomicWindow]{self.chrom}:{self.chromStart}-{self.chromEnd}\n'
         s += f' Probe: {self.probe}'
         return s
+
+    def asRegion(self):
+        return (self.chrom, self.chromStart, self.chromEnd)
 
     def has_probe(self):
         return type(None) != type(self.probe)
 
     def shift(self, n):
-        return GenomicWindow(self.chromStart + n, self.size)
+        return GenomicWindow(self.chrom, self.chromStart + n, self.size)
 
 class GenomicWindowList(object):
     data = []
@@ -482,8 +493,8 @@ class GenomicWindowList(object):
     def __len__(self):
         return len(self.data)
 
-    def add(self, start, size):
-        self.data.append(GenomicWindow(start, size))
+    def add(self, chrom, start, size):
+        self.data.append(GenomicWindow(chrom, start, size))
 
     def count_probes(self):
         return sum([w.has_probe() for w in self])
@@ -519,6 +530,37 @@ class GenomicWindowList(object):
             'chromEnd' : ends,
             'size' : sizes
         })
+
+    def export(self, path):
+        probe_counter = 0
+        fasta = ""
+        bed = ""
+        for window in self:
+            if window.has_probe():
+                probe_dirName = f'probe_{probe_counter}'
+                probe_dirPath = os.path.join(path, probe_dirName)
+                probe = window.probe
+
+                assert not os.path.isfile(probe_dirPath)
+                assert not os.path.isdir(probe_dirPath)
+                os.mkdir(probe_dirPath)
+
+                probe.describe(window.asRegion(), os.path.join(
+                    probe_dirPath, f'probe_{probe_counter}.config'))
+                fasta += probe.get_fasta(os.path.join(
+                    probe_dirPath, f'probe_{probe_counter}.fasta'),
+                    f'probe{probe_counter}')
+                probe_bed = probe.get_bed(os.path.join(
+                    probe_dirPath, f'probe_{probe_counter}.bed'),
+                    f'probe{probe_counter}')
+                bed += "\n".join("\n".split(probe_bed)[1:])
+                probe.plot(probe_dirPath, window.asRegion())
+
+                probe_counter += 1
+
+        # Plots specific for probe set
+
+        return (fasta, bed)
 
 # END ==========================================================================
 
