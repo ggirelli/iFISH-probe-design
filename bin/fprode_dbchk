@@ -63,6 +63,7 @@ logging.basicConfig(level = logging.DEBUG, format = formatString)
 
 logging.info('Reading database...')
 oligoDB = fp.query.OligoDatabase(args.dbDirPath, hasNetwork = args.hasNetwork)
+oligoDB.read_all_chromosomes(True)
 logging.info(f'Database name: "{oligoDB.get_name()}"')
 
 refGenome = oligoDB.get_reference_genome()
