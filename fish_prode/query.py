@@ -13,6 +13,7 @@
 import matplotlib
 matplotlib.use('svg')
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 import configparser
 import fish_prode as fp
@@ -531,7 +532,92 @@ class GenomicWindowList(object):
             'size' : sizes
         })
 
-    def export(self, path):
+    def _plot_probe_set(self, outputDir, region):
+        fig = plt.figure(figsize = (20, 5))
+
+        for wi in range(len(self)):
+            window = self[wi]
+            plt.axvline(window.chromStart, ymin = -1, ymax = 1, color = 'k')
+            if not window.has_probe():
+                plt.gca().add_patch(patches.Rectangle(
+                    (window.chromStart, -1), window.size, 2, color = 'r'))
+            plt.gca().text(window.midpoint, .5, wi + 1)
+        plt.axvline([window.chromEnd for window in self][-1],
+            ymin = -1, ymax = 1, color = 'k', linestyle = ':')
+
+        plt.gca().add_patch(patches.Rectangle(
+            (region[1], -1), self[0].chromStart, 2, color = 'k'))
+        plt.gca().add_patch(patches.Rectangle((self[-1].chromEnd, -1),
+            region[2]-self[-1].chromEnd, 2, color = 'k'))
+
+        genome, = plt.plot([region[1], region[2]], [0, 0], 'k',
+            linewidth = 4.0, label = 'Genome')
+
+        for probe in [w.probe for w in self if type(None) != type(w.probe)]:
+            oligo, = plt.plot([probe.chromStart, probe.chromEnd], [0, 0], 'c',
+                linewidth = 2.0, label = 'Probe')
+            oligo_center, = plt.plot([probe.midpoint, probe.midpoint],
+                [-.1, .1], 'c:', label = 'Probe center', linewidth = 2.0)
+
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.ylim((-1,1))
+        msg = 'Empty windows are reported in red.'
+        plt.suptitle(f'Region: {region[0]}:{region[1]}-{region[2]}' +
+            ' & Probe set: ' +
+            f'{self[0].chrom}:{self[0].chromStart}-{self[-1].chromEnd}\n' + msg)
+        plt.xlabel('genomic coordinate [nt]')
+
+        plt.savefig(os.path.join(outputDir, 'windows.png'),
+            format = 'png', bbox_inches = 'tight')
+        plt.close(fig)
+
+    def _plot_probe_distr(self, outputDir):
+        fig = plt.figure()
+
+        probes = [w.probe for w in self if type(None) != type(w.probe)]
+
+        plt.plot([0, len(probes) - 1],
+            [probes[0].midpoint, probes[-1].midpoint], 'k-',
+            label = 'Homogeneous distribution')
+        plt.plot(list(range(len(probes))), [p.midpoint for p in probes],
+            'r.', label = 'Probe')
+
+        plt.suptitle(f'{probes[0].chrom}:' +
+            f'{probes[0].chromStart}{probes[-1].chromEnd}')
+        plt.xlabel('probe number')
+        plt.ylabel('genomic coordinate [nt]')
+        plt.xlim((-1, len(probes)))
+        plt.legend(fontsize = 'small', loc = 'best')
+
+        plt.savefig(os.path.join(outputDir, 'distr.png'),
+            format = 'png', bbox_inches = 'tight')
+        plt.close(fig)
+
+    def _plot_probe_distance(self, outputDir, region):
+        fig = plt.figure()
+
+        probes = [w.probe for w in self if type(None) != type(w.probe)]
+
+        starts = [p.chromStart for p in probes][1:]
+        ends = [p.chromEnd for p in probes][:-1]
+        diffs = starts - ends
+        plt.hist(diffs, normed = 1, facecolor = 'green', alpha = .5)
+
+        density = fp.stats.calc_density(diffs, alpha = .5)
+        plt.plot(density['x'].tolist(), density['y'].tolist(), 'b--',
+            label = 'Density distribution')
+
+        plt.suptitle(f'{probes[0].chrom}:' +
+            f'{probes[0].chromStart}{probes[-1].chromEnd}')
+        plt.xlabel('Distance between consecutive probes [nt]')
+        plt.ylabel('Density')
+        plt.legend(fontsize = 'small', loc = 'best')
+
+        plt.savefig(os.path.join(outputDir, 'distance.png'),
+            format = 'png', bbox_inches = 'tight')
+        plt.close(fig)
+
+    def export(self, path, region):
         probe_counter = 0
         fasta = ""
         bed = ""
@@ -554,11 +640,13 @@ class GenomicWindowList(object):
                     probe_dirPath, f'probe_{probe_counter}.bed'),
                     f'probe{probe_counter}')
                 bed += "\n".join("\n".split(probe_bed)[1:])
-                probe.plot(probe_dirPath, window.asRegion())
+                # probe.plot(probe_dirPath, window.asRegion())
 
                 probe_counter += 1
 
-        # Plots specific for probe set
+        self._plot_probe_set(path, region)
+        self._plot_probe_distr(path)
+        self._plot_probe_distance(path, region)
 
         return (fasta, bed)
 

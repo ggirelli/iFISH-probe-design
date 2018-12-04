@@ -271,7 +271,7 @@ probeSetData.sort_values(by = ['nProbes', 'spread'],
 probeSetData.drop("id", axis = 1).to_csv(
     os.path.join(args.outdir, "set_candidates.tsv"), "\t", index = False)
 
-logging.info("Exporting probe sets...")
+logging.info("Exporting probe set candidates...")
 window_setList = [window_setList[i] for i in probeSetData['id'].values]
 for wsi in tqdm(range(len(window_setList))):
     window_set  = window_setList[wsi]
@@ -279,7 +279,14 @@ for wsi in tqdm(range(len(window_setList))):
     assert not os.path.isfile(window_set_path)
     assert not os.path.isdir(window_set_path)
     os.mkdir(window_set_path)
-    window_set.export(window_set_path)
+    
+    fasta, bed = window_set.export(window_set_path, queried_region)
+    fasta_path = os.path.join(window_set_path, f'probe_set_{wsi}.fa')
+    bed_path = os.path.join(window_set_path, f'probe_set_{wsi}.bed')
+    with open(fasta_path, 'w+') as OH:
+        OH.write(fasta)
+    with open(bed_path, 'w+') as OH:
+        OH.write(bed)
 
 # END ==========================================================================
 
