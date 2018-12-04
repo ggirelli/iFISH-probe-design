@@ -13,6 +13,7 @@
 import io
 import os
 import pandas as pd
+from tqdm import tqdm
 
 class UCSCbed(object):
     '''Class to read a UCSC Bed format file into a pandas.DataFrame.'''
@@ -27,8 +28,12 @@ class UCSCbed(object):
         super(UCSCbed, self).__init__()
         self.path = path
         self.incrementChromEnd = incrementChromEnd
+        self.nrecords = self.count_records()
         if not bufferize:
             self.__read()
+    
+    def count_records(self):
+        return sum(1 for line in open(self.path))
 
     def __read(self):
         '''Reads the bed file into a pandas.DataFrame.'''
@@ -49,12 +54,13 @@ class UCSCbed(object):
         self.df = pd.concat(bedDF)
         self.df.index = range(self.df.shape[0])
         self.ncols = self.df.shape[1]
-    
-    def buffer(self, ncol = None):
-        '''Reads the bed file and yields one line at a time.
-        The content is not stored in the class. Each call to the buffer
-        function moves forward to the nect line. To restart, re-initialize the
-        class with bufferize=True.'''
+
+    def buffer(self, parse = True, enforceBED3 = False):
+        '''Reads the bed file and yields one line at a time. The content is not
+        stored in the class. Each call to the buffer function moves forward to
+        the next line. To restart, re-initialize the class with bufferize=True.
+        Use enforceBED3 to strip any additional column. Use parse to get a
+        formatted pd.DataFrame instead of a raw string.'''
 
         with open(self.path, 'r+') as IH:
             line = next(IH)
@@ -63,33 +69,63 @@ class UCSCbed(object):
                 self.header = line.strip()
             else:
                 self.custom = False
-                self.line = None
-                line = pd.read_csv(io.StringIO(line), '\t', header = None)
-                line.columns = UCSCbed.FIELD_NAMES[:line.shape[1]]
-                if self.incrementChromEnd:
-                    line.iloc[0, 2] += 1
-                yield line.iloc[:, :ncol]
-            for line in IH:
-                line = pd.read_csv(io.StringIO(line), '\t', header = None)
-                line.columns = UCSCbed.FIELD_NAMES[:line.shape[1]]
-                if self.incrementChromEnd:
-                    line.iloc[0, 2] += 1
-                yield line.iloc[:, :ncol]
+                self.header = None
+
+        with open(self.path, 'r+') as IH:
+            if self.custom:
+                next(IH)
+            for line in tqdm(IH, total = self.nrecords-1):
+                if parse:
+                    yield UCSCbed.parse_bed_line(line,
+                        enforceBED3, self.incrementChromEnd)
+                else:
+                    if self.incrementChromEnd:
+                        line = line.strip().split("\t")
+                        line[2] = str(int(line[2]) + 1)
+                        line = "\t".join(line) + '\n'
+                    yield line
 
     @staticmethod
-    def parse_bed_line(line):
+    def parse_bed_line(line, enforceBED3 = False, incrementChromEnd = False):
         '''Parses and checks one line of a bed file.
         Does not work on header lines.'''
         
         line = line.strip().split("\t")
         assert 3 <= len(line), f"at least 3 fields required, {len(line)} found."
+        line = line[:min(4 - enforceBED3, len(line))]
 
         lineDF = pd.DataFrame([
             UCSCbed.FORMATTER[UCSCbed.FIELD_FORMAT[i]](line[i])
             for i in range(len(line))]).transpose()
         lineDF.columns = UCSCbed.FIELD_NAMES[:len(line)]
 
+        lineDF.iloc[0, 2] += incrementChromEnd
+
         return(lineDF)
+
+    @staticmethod
+    def add_sequence_to_raw_record(bedRecords):
+        for record in bedRecords:
+            record = record.strip().split("\t")
+            if 4 > len(record):
+                oligoSequence = fp.web.get_sequence_from_UCSC(
+                    (record[0], int(record[1]), int(record[2])), args.refGenome)
+                record.append(oligoSequence)
+            record = record[:4]
+            yield("\t".join(record) + '\n')
+
+    @staticmethod
+    def add_sequence_to_parsed_record(bedRecords):
+        for record in bedRecords:
+            assert type(pd.DataFrame()) == type(bedRecords)
+            if 4 > record.shape[1]:
+                region = record.loc[:, ['chrom', 'chromStart', 'chromEnd']
+                    ].iloc[0, :].tolist()
+                oligoSequence = fp.web.get_sequence_from_UCSC(
+                    tuple(region), args.refGenome)
+                record.append(oligoSequence)
+            record = record.iloc[0, :4]
+            yield(record)
 
     def isBEDN(self, n):
         n = min(n, 12)

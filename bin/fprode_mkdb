@@ -18,6 +18,7 @@
 import argparse
 import configparser
 import fish_prode as fp
+from fish_prode.bioext import UCSCbed
 import logging
 import numpy as np
 import os
@@ -112,6 +113,7 @@ assert args.refGenome in refGenomeList, assert_msg
 if args.forceRun:
     if os.path.isdir(args.O):
         shutil.rmtree(args.O)
+        pass
 else:
     assert_msg = f'output folder already exists: "{args.O}"'
     assert not os.path.isdir(args.O), assert_msg
@@ -132,43 +134,30 @@ if args.forceRun and os.path.isdir(args.O):
     logging.warning('Overwritten previously run query.')
 
 logging.info("Buffering bed-like file...")
-bed = fp.bioext.UCSCbed(args.bedFile,
+bed = UCSCbed(args.bedFile,
     incrementChromEnd = args.incrementChromEnd, bufferize = True)
 
-ncol = 3 if args.enforceBED3 else None
-oligoGenerator = bed.buffer(ncol)
-
-def add_oligo_sequence(oligoList):
-    for oligo in oligoList:
-        if 4 > oligo.shape[1]:
-            sequences = []
-            region = oligo.loc[:, ['chrom', 'chromStart', 'chromEnd']
-                ].iloc[0, :].tolist()
-            regionSequence = fp.web.get_sequence_from_UCSC(
-                tuple(region), args.refGenome)
-            sequences.append(regionSequence)
-            oligo['name'] = pd.Series(sequences, index = oligo.index)
-        yield(oligo)
-
+oligoGenerator = bed.buffer(False, args.enforceBED3)
 if args.retainSequences:
     logging.info("Enabled sequence retrieval from UCSC...")
-    oligoGenerator = add_oligo_sequence(oligoGenerator)
+    oligoGenerator = UCSCbed.add_sequence_to_raw_record(oligoGenerator)
 
 logging.info("Writing database...")
 chromList = set()
 for line in oligoGenerator:
-    chrom = line['chrom'].values[0]
+    line = line.strip().split("\t")
+    chrom = line.pop(0)
+    line = "\t".join(line) + '\n'
     chromList.add(chrom)
-    line = "\t".join(line.iloc[0, 1:].astype('str').tolist())
     with open(os.path.join(args.O, chrom), 'a+') as OH:
-        OH.write(f'{line}\n')
+        OH.write(line)
 
 logging.info("Sorting oligos...")
 has_overlaps = False
 oligoLengthRange = [np.inf, -np.inf]
 for chrom in chromList:
     chromDF = pd.read_csv(os.path.join(args.O, chrom), "\t", header = None)
-    chromDF.columns = fp.bioext.UCSCbed.FIELD_NAMES[1:(chromDF.shape[1]+1)]
+    chromDF.columns = UCSCbed.FIELD_NAMES[1:(chromDF.shape[1]+1)]
 
     chromDF = chromDF.sort_values('chromStart')
     chromDF.to_csv(os.path.join(args.O, chrom), "\t",
