@@ -93,11 +93,14 @@ def check_reference_genome(refGenome, UCSC_DAS_URI = UCSC_DAS_URI):
       UCSC_DAS_URI = UCSC_DAS_URI)
     return refGenome in refGenomeList
 
+def get_chromosome_size(chrom, refGenome,
+    UCSC_DAS_URI = UCSC_DAS_URI):
+    return get_segment_size_from_UCSC(refGenome, chrom,
+        UCSC_DAS_URI = UCSC_DAS_URI)
+
 def check_chromosome_size(chrom, chromSize, refGenome,
     UCSC_DAS_URI = UCSC_DAS_URI):
-    chromSizeFound = get_segment_size_from_UCSC(
-        refGenome, chrom, UCSC_DAS_URI = UCSC_DAS_URI)
-    return chromSize <= chromSizeFound
+    return chromSize <= get_chromosome_size(chrom, refGenome, UCSC_DAS_URI)
 
 def check_sequence(region, sequence, refGenome, UCSC_DAS_URI = UCSC_DAS_URI):
     '''Connects to UCSC to check if a sequence is correct.'''
