@@ -379,14 +379,25 @@ class ProbeFeatureTable(object):
         self.data.index = range(self.data.shape[0])
 
         self.discarded = None
-    
+
+    def reset(self):
+        self.data = pd.concat([self.discarded, self.data])
+        self.discarded = None
+        self.data.sort_index(inplace = True)
+
+    def keep(self, condition, cumulative = False):
+        if not cumulative:
+            self.reset()
+        self.discarded = self.data.loc[np.logical_not(condition), :]
+        self.data = self.data.loc[condition, :]
+
     def filter(self, feature, thr):
         ''''''
         assert_msg = f'fetature "{feature}" not recognized.'
         assert feature in self.FEATURE_SORT.keys(), assert_msg
 
         if not type(None) == type(self.discarded):
-            self.data = pd.concat([self.discarded, self.data])
+            self.reset()
 
         self.rank(feature)
 
