@@ -169,6 +169,7 @@ class OligoProbe(object):
         self.refGenome = database.get_reference_genome()
         self.chromStart = self.oligoData.iloc[:, 0].min()
         self.chromEnd = self.oligoData.iloc[:, 1].max()
+        self.midpoint = (self.chromStart + self.chromEnd) / 2
         self.size = self.chromEnd - self.chromStart
         self.spread = self.get_probe_spread()
 
@@ -178,16 +179,38 @@ class OligoProbe(object):
         s += f' oligoSpread: {self.spread}'
         return s
 
+    def asDataFrame(self, region = None):
+        if type(None) == type(region):
+            return pd.DataFrame.from_dict({
+                'chrom' : [self.chrom],
+                'chromStart' : [self.chromStart],
+                'chromEnd' : [self.chromEnd],
+                'refGenome' : [self.refGenome],
+                'midpoint' : [self.midpoint],
+                'size' : [self.size],
+                'spread' : [self.spread]
+            })
+        else:
+            return pd.DataFrame.from_dict({
+                'chrom' : [self.chrom],
+                'chromStart' : [self.chromStart],
+                'chromEnd' : [self.chromEnd],
+                'refGenome' : [self.refGenome],
+                'midpoint' : [self.midpoint],
+                'size' : [self.size],
+                'spread' : [self.spread],
+                'regChromStart' : region[0],
+                'regChromEnd' : region[1]
+            })
+
     def get_probe_centrality(self, region):
         '''Calculate centrality, as location of the probe midpoint relative to
         the region midpoint. 1 when overlapping, 0 when the probe midpoint is
         at either of the region extremities.'''
-        probe_halfWidth = self.size / 2
         region_halfWidth = (region[2] - region[1]) / 2
-        probe_midPoint = self.oligoData.iloc[:, 0].min() + probe_halfWidth
         region_midPoint = region[1] + region_halfWidth
         centrality = (region_halfWidth - abs(
-            region_midPoint - probe_midPoint)) / region_halfWidth
+            region_midPoint - self.midpoint)) / region_halfWidth
         return centrality
 
     def get_probe_size(self):
@@ -365,8 +388,6 @@ class OligoProbe(object):
         self._plot_oligo_distance(outputDir)
 
 class ProbeFeatureTable(object):
-    """docstring for ProbeFeatureTable"""
-
     FEATURE_SORT = {
         'centrality' : {'ascending':False},
         'size' : {'ascending':True},
@@ -396,12 +417,12 @@ class ProbeFeatureTable(object):
         self.discarded = self.data.loc[np.logical_not(condition), :]
         self.data = self.data.loc[condition, :]
 
-    def filter(self, feature, thr):
+    def filter(self, feature, thr, cumulative = False):
         ''''''
         assert_msg = f'fetature "{feature}" not recognized.'
         assert feature in self.FEATURE_SORT.keys(), assert_msg
 
-        if not type(None) == type(self.discarded):
+        if not cumulative:
             self.reset()
 
         self.rank(feature)
@@ -426,7 +447,8 @@ class GenomicWindow(object):
     def __init__(self, start, size):
         super(GenomicWindow, self).__init__()
         self.chromStart = start
-        self.chromEnd = start + size + 1
+        self.chromEnd = start + size
+        self.midpoint = (self.chromStart + self.chromEnd) / 2
         self.size = size
         self.probe = None
 
@@ -467,6 +489,21 @@ class GenomicWindowList(object):
 
     def shift(self, n):
         return GenomicWindowList([window.shift(n) for window in self.data])
+
+    def sort(self):
+        midpointList = np.array([w.midpoint for w in self.data])
+        self.data = [self.data[i] for i in np.argsort(midpointList)]
+
+    def calc_probe_size_and_spread(self):
+        if 3 < self.count_probes():
+            return np.nan
+
+        probeData = pd.concat([w.probe.asDataFrame((w.chromStart, w.chromEnd))
+            for w in self if type(None) != type(w.probe)])
+        size_std = probeData['size'].values.std()
+        probe_spread = np.std(probeData['chromStart'].values[1:] - 
+            probeData['chromEnd'].values[:-1])
+        return 2 / (size_std + probe_spread)
 
     def asDataFrame(self):
         starts = []

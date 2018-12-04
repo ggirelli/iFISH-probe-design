@@ -223,19 +223,21 @@ for wsi in range(len(window_setList)):
     for wi in range(len(window_set)):
         window = window_set[wi]
         probeFeatureTable.reset()
+
         selectCondition = np.logical_and(
             probeFeatureTable.data.loc[:, 'chromStart'] >= window.chromStart,
             probeFeatureTable.data.loc[:, 'chromEnd'] <= window.chromEnd)
         logging.info(f'Found {selectCondition.sum()} probe candidates' +
             f' in window #{wi} of set #{wsi}.')
+        logging.info(window_setList[wsi][wi])
 
         if 0 == selectCondition.sum():
             window_setList[wsi][wi].probe = None
             continue
         elif 1 != selectCondition.sum():
-            probeFeatureTable.keep(selectCondition)
+            probeFeatureTable.keep(selectCondition, cumulative = True)
             feature_range, feature = probeFeatureTable.filter(
-                args.order[0], args.filter_thr)
+                args.order[0], args.filter_thr, cumulative = True)
             feature_range = np.round(feature_range, 6)
             logging.info(f" Selected {probeFeatureTable.data.shape[0]}" +
                 f" candidates in the range {feature_range} of '{feature}'.")
@@ -245,8 +247,9 @@ for wsi in range(len(window_setList)):
 
         window_setList[wsi][wi].probe = candidateList[
             probeFeatureTable.data.index[0]]
+        logging.info(window_setList[wsi][wi])
 
-print([ws.count_probes() for ws in window_setList])
+print([w.calc_probe_size_and_spread() for w in window_setList])
 
 # END ==========================================================================
 
