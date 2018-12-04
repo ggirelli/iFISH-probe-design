@@ -90,7 +90,7 @@ formatString = '%(asctime)-25s %(name)s %(levelname)-8s %(message)s'
 formatter = logging.Formatter(formatString)
 logging.basicConfig(
     filename = os.path.join(args.outdir, 'log'),
-    level = logging.DEBUG,
+    level = logging.INFO,
     format = formatString)
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
