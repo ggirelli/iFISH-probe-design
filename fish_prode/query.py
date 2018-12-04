@@ -21,7 +21,6 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
-
 class OligoDatabase(object):
     """FISH-ProDe Oligonucleotide Database class."""
 
@@ -172,6 +171,12 @@ class OligoProbe(object):
         self.chromEnd = self.oligoData.iloc[:, 1].max()
         self.size = self.chromEnd - self.chromStart
         self.spread = self.get_probe_spread()
+
+    def __str__(self):
+        s  = f'[{self.refGenome}]'
+        s += f'{self.chrom}:{self.chromStart}-{self.chromEnd};'
+        s += f' oligoSpread: {self.spread}'
+        return s
 
     def get_probe_centrality(self, region):
         '''Calculate centrality, as location of the probe midpoint relative to
@@ -416,6 +421,66 @@ class ProbeFeatureTable(object):
     def rank(self, feature):
         self.data = self.data.sort_values(feature,
             ascending = self.FEATURE_SORT[feature]['ascending'])
+
+class GenomicWindow(object):
+    def __init__(self, start, size):
+        super(GenomicWindow, self).__init__()
+        self.chromStart = start
+        self.chromEnd = start + size + 1
+        self.size = size
+        self.probe = None
+
+    def __str__(self):
+        s  = f'GenomicWindow:{self.chromStart}-{self.chromEnd}\n'
+        s += f' Probe: {self.probe}'
+        return s
+
+    def has_probe(self):
+        return type(None) != type(self.probe)
+
+    def shift(self, n):
+        return GenomicWindow(self.chromStart + n, self.size)
+
+class GenomicWindowList(object):
+    data = []
+
+    def __init__(self, windows = None):
+        super(GenomicWindowList, self).__init__()
+        if type(None) != type(windows):
+            self.data = windows
+
+    def __getitem__(self, i):
+        return self.data[i]
+
+    def __iter__(self):
+        for window in self.data:
+            yield window
+
+    def __len__(self):
+        return len(self.data)
+
+    def add(self, start, size):
+        self.data.append(GenomicWindow(start, size))
+
+    def count_probes(self):
+        return sum([1 for w in self if w.has_probe()])
+
+    def shift(self, n):
+        return GenomicWindowList([window.shift(n) for window in self.data])
+
+    def asDataFrame(self):
+        starts = []
+        ends = []
+        sizes = []
+        for window in self:
+            starts.append(window.chromStart)
+            ends.append(window.chromEnd)
+            sizes.append(window.size)
+        return pd.DataFrame.from_dict({
+            'chromStart' : starts,
+            'chromEnd' : ends,
+            'size' : sizes
+        })
 
 # END ==========================================================================
 
