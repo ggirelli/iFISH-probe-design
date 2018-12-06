@@ -124,16 +124,17 @@ if ":" in args.region:
 else:
     chrom = args.region
     chromStart = 0
+    chromEnd = None
     if args.hasNetwork:
         if fp.web.internet_on:
             chromEnd = fp.web.get_chromosome_size(
                 chrom, oligoDB.get_reference_genome())
-        else:
-            assert_msg = f'chromosome "{chrom}" not in the database.'
-            assert oligoDB.has_chromosome(chrom), assert_msg
-            
-            oligoDB.read_chromosome(chrom)
-            chromEnd = oligoDB.chromData[chrom].iloc[:, 1].max()
+    if type(None) == type(chromEnd):
+        assert_msg = f'chromosome "{chrom}" not in the database.'
+        assert oligoDB.has_chromosome(chrom), assert_msg
+        
+        oligoDB.read_chromosome(chrom)
+        chromEnd = oligoDB.chromData[chrom].iloc[:, 1].max()
 queried_region = (chrom, chromStart, chromEnd)
 
 assert_msg = 'databases with overlapping oligos are not supported yet.'
