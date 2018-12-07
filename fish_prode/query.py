@@ -17,6 +17,8 @@ import matplotlib.patches as patches
 
 import configparser
 import fish_prode as fp
+from ggc.args import check_threads
+from joblib import Parallel, delayed
 import numpy as np
 import os
 import pandas as pd
@@ -395,6 +397,9 @@ class OligoProbe(object):
         self._plot_oligo_distr(outputDir)
         self._plot_oligo_distance(outputDir)
 
+def describe_candidate(candidate, queried_region):
+    return candidate.describe(queried_region)
+
 class ProbeFeatureTable(object):
     FEATURE_SORT = {
         'centrality' : {'ascending':False},
@@ -402,13 +407,22 @@ class ProbeFeatureTable(object):
         'spread' : {'ascending':False},
     }
 
-    def __init__(self, candidateList, queried_region, verbose = False):
+    def __init__(self, candidateList, queried_region,
+        verbose = False, threads = 1):
         super(ProbeFeatureTable, self).__init__()
+        assert 0 < len(candidateList)
         
         self.data = []
-        candidateList = tqdm(candidateList) if verbose else candidateList
-        for candidate in candidateList:
-            self.data.append(candidate.describe(queried_region))
+        if 1 != threads:
+            verbose = 1 if verbose else 0
+            self.data = Parallel(n_jobs = threads,
+                backend = 'threading', verbose = verbose)(
+                delayed(describe_candidate)(candidate, queried_region)
+                for candidate in candidateList)
+        else:
+            candidateList = tqdm(candidateList) if verbose else candidateList
+            for candidate in candidateList:
+                self.data.append(candidate.describe(queried_region))
         self.data = pd.concat(self.data)
         self.data.index = range(self.data.shape[0])
 

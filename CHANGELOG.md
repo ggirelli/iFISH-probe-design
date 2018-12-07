@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     + List UCSC available reference genomes with `--list-refGenomes`.
     + `.config` file generated using the `configparser` package.
 - `fprode_dbchk`: checks database integrity.
+- Parallelization to probe set query script. (only local)
 
 ### Changed
 - Moved interface documents to separate sub-folder.

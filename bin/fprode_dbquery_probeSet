@@ -16,6 +16,8 @@
 
 import argparse
 import fish_prode as fp
+from ggc.args import check_threads
+from joblib import Parallel, delayed
 import logging
 import numpy as np
 import os
@@ -50,7 +52,6 @@ parser.add_argument('database', metavar = 'database', type = str,
 parser.add_argument('outdir', metavar = 'outputDirectory', type = str,
     help = 'Path to query output directory. Stops if it exists already.')
 
-
 featureList = ['size', 'spread', 'centrality']
 parser.add_argument('--order', metavar = 'featOrder', type = str,
     default = featureList, nargs = '+',
@@ -70,6 +71,9 @@ parser.add_argument('--max-sets', metavar = 'maxProbes', type = int,
         Set to -1 to retrieve all candidates. Default: -1''')
 parser.add_argument('--window-shift', metavar = 'winShift', type = float,
 	default = .1, help = '''Window fraction for windows shifting.''')
+parser.add_argument('-t', '--threads', metavar = "nthreads", type = int,
+    help = """Number of threads for parallelization. Default: 1""",
+    default = 1)
 
 parser.add_argument('-f', action = 'store_const',
     dest = 'forceRun', const = True, default = False,
@@ -187,15 +191,24 @@ if 3 > selectedOligos.shape[1]:
         index = selectedOligos.index).values)
 
 logging.info("Building probe candidates...")
-candidateList = []
-for i in tqdm(range(0, selectedOligos.shape[0]-args.n_oligo)):
-    candidateList.append(fp.query.OligoProbe(queried_region[0], 
-        selectedOligos.iloc[i:(i+args.n_oligo), :], oligoDB))
+
+args.threads = check_threads(args.threads)
+if 1 != args.threads:
+    candidateList = Parallel(n_jobs = args.threads,
+        backend = 'threading', verbose = 1)(
+        delayed(fp.query.OligoProbe)(queried_region[0], 
+            selectedOligos.iloc[ii:(ii+args.n_oligo), :], oligoDB)
+        for ii in range(0, selectedOligos.shape[0]-args.n_oligo))
+else:
+    candidateList = []
+    for i in tqdm(range(0, selectedOligos.shape[0]-args.n_oligo)):
+        candidateList.append(fp.query.OligoProbe(queried_region[0], 
+            selectedOligos.iloc[i:(i+args.n_oligo), :], oligoDB))
 logging.info(f"Found {len(candidateList)} probe candidates.")
 
 logging.info("Describing candidates...")
 probeFeatureTable = fp.query.ProbeFeatureTable(
-    candidateList, queried_region, True)
+    candidateList, queried_region, True, args.threads)
 
 logging.info("Writing description table...")
 probeFeatureTable.data.to_csv(
@@ -274,7 +287,8 @@ probeSetData.drop("id", axis = 1).to_csv(
 
 logging.info("Exporting probe set candidates...")
 window_setList = [window_setList[i] for i in probeSetData['id'].values]
-for wsi in tqdm(range(len(window_setList))):
+
+def export_window_set(window_setList, wsi):
     window_set  = window_setList[wsi]
     window_set_path = os.path.join(args.outdir, f"probe_set_{wsi}")
     assert not os.path.isfile(window_set_path)
@@ -288,6 +302,14 @@ for wsi in tqdm(range(len(window_setList))):
         OH.write(fasta)
     with open(bed_path, 'w+') as OH:
         OH.write(bed)
+
+if 1 != args.threads:
+    tmp = Parallel(n_jobs = args.threads, verbose = 1)(
+        delayed(export_window_set)(window_setList, wsi)
+        for wsi in range(len(window_setList)))
+else:
+    for wsi in tqdm(range(len(window_setList))):
+        export_window_set(window_setList, wsi)
 
 # END ==========================================================================
 
