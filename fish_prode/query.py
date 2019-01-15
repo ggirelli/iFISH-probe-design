@@ -657,7 +657,7 @@ class GenomicWindowList(object):
                 probe_bed = probe.get_bed(os.path.join(
                     probe_dirPath, f'probe_{probe_counter}.bed'),
                     f'probe{probe_counter}')
-                bed += "\n".join("\n".split(probe_bed)[1:])
+                bed += "\n".join(probe_bed.split("\n")[1:])
                 probe.plot(probe_dirPath, window.asRegion())
 
                 probe_counter += 1
