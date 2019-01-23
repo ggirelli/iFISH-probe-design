@@ -7,7 +7,7 @@
 
 #title {
 	margin-bottom: .75vw;
-	font-size: 15vw;
+	font-size: 7.5vw;
 	text-align: center;
 	font-weight: 600;
 
@@ -22,7 +22,7 @@
 
 @media screen and (min-width: 1200px) {
   #title {
-    font-size: 7.5vw;
+    font-size: 4vw;
     margin-bottom: 1.5vw;
   }
 }

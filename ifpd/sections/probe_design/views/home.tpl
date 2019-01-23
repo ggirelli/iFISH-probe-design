@@ -2,10 +2,10 @@
 
 <!-- header -->
 <div class="row">
-	<div id="main" class="col col-12 col-xl-8 offset-xl-2">
+	<div id="main" class="col col-xl-6 offset-xl-3 col-lg-12">
 
 		<h1 id="title">
-			Design
+			iFISH Probe Designer
 		</h1>
 		
 		%if breadcrumbs:
@@ -18,40 +18,39 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single probe &gt; Single query</a> page to design one probe in a region of interest. Instead, use the tool at <a href="javascript:$('a[aria-controls=\'new_queries\']').click();">Single probe &gt; Batch</a> to run multiple queries in one go if you have multiple regions of interest. Moreover, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting probe</a>. More details in the corresponding page.
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single &gt; Single query</a> page to design one probe in a region of interest. Instead, use the tool at <a href="javascript:$('a[aria-controls=\'new_queries\']').click();">Single &gt; Batch</a> to run multiple queries in one go if you have multiple regions of interest. Moreover, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting</a>. More details in the corresponding page.
 		</div>
 
 		<div class="row">
 			<!-- main panel -->
 			<div class="col col-12">
-				<div id="designer" class="card card-block">
+				<div id="designer" class="card">
 					<div class="card-header card-outline-primary">
 
 						<!-- Nav tabs -->
-						<ul class="nav nav-tabs card-header-tabs" role="tablist">
+						<ul class="nav nav-tabs card-header-tabs">
 							<li role="presentation" class="nav-item">
 								<a class="nav-link active" href="#index" aria-controls="index" role="tab" data-toggle="tab">Results</a>
 							</li>
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Single probe</a>
+								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Single</a>
 								<div class="dropdown-menu">
-									<a class="dropdown-item" href="#new_query" aria-controls="new_query" role="tab" data-toggle="tab">Single query</a>
+									<a class="dropdown-item" href="#new_query" aria-controls="new_query" role="tab" data-toggle="tab">Query</a>
 									<a class="dropdown-item" href="#new_queries" aria-controls="new_queries" role="tab" data-toggle="tab">Batch</a>
 								</div>
 							</li>
 							<li role="presentation" class="nav-item">
-								<a class="nav-link" href="#new_multi_query" aria-controls="new_multi_query" role="tab" data-toggle="tab">Spotting probe</a>
+								<a class="nav-link" href="#new_multi_query" aria-controls="new_multi_query" role="tab" data-toggle="tab">Spotting</a>
 							</li>
 							<li role="presentation" class="nav-item">
 								<a class="nav-link" href="#databases" aria-controls="databases" role="tab" data-toggle="tab">Databases</a>
 							</li>
-							<!-- left tab blocks starts with .ml-auto element -->
-							<li rolw="presentation" class="nav-item ml-auto float-right">
-								<a class="nav-link" href="https://ggirelli.github.io/iFISH-Probe-Design/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+							<li rolw="presentation" class="nav-item">
+								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
 									<span class="fa fa-info-circle"></span>
 								</a>
 							</li>
-							<li rolw="presentation" class="nav-item float-right">
+							<li rolw="presentation" class="nav-item">
 								<a class="nav-link" href="http://genome.ucsc.edu/cgi-bin/hgTracks" target="_new" data-toggle="tooltip" data-placement="top" title="Genome Browser">
 									<span class="fa fa-external-link-square"></span>
 								</a>
@@ -60,9 +59,8 @@
 
 					</div>
 
+					<!-- Tab panes -->
 					<div class="card-block">
-
-						<!-- Tab panes -->
 						<div class="tab-content">
 
 							<!-- index tab -->
@@ -90,7 +88,6 @@
 								% include(vpath + 'databases.tpl')
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
