@@ -40,11 +40,11 @@ setup(name='ifpd',
 		"scipy>=1.0.0"
 	],
 	scripts=[
-		"bin/fprode_mkdb",
-		"bin/fprode_dbchk",
-		"bin/fprode_dbquery_probe",
-		"bin/fprode_dbquery_probeSet",
-		"bin/fprode_serve"
+		"bin/ifpd_mkdb",
+		"bin/ifpd_dbchk",
+		"bin/ifpd_query_probe",
+		"bin/ifpd_query_set",
+		"bin/ifpd_serve"
 	],
 	package_data={
 		'ifpd': [
