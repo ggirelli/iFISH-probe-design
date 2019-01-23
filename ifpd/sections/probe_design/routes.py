@@ -326,26 +326,30 @@ class Routes(routes.Routes):
 		'''
 
 		fdata = bot.request.forms
+		print(fdata)
+		print(fdata.f1)
+		print(fdata.f2)
+		print(fdata.f3)
+
+		# ! Need to automatically decide the output folder
+		query_id = 0
 
 		# Build query command line
-		cmd = ['fprode_dbquery']
-		cmd.extend([Query.get_next_id(self.qpath, self.queue)])
-		cmd.extend([shlex.quote(fdata.name)])
-		cmd.extend([shlex.quote(fdata.chromosome)])
-		cmd.extend([shlex.quote(fdata.start)])
-		cmd.extend([shlex.quote(fdata.end)])
-		dbpath = '%s/db/%s' % (self.static_path, fdata.database)
-		cmd.extend([shlex.quote(dbpath)])
-		cmd.extend(['--n_oligo', shlex.quote(fdata.n_oligo)])
-		cmd.extend(['--f1_thr', shlex.quote(fdata.f1_threshold)])
-		cmd.extend(['--max_probes', shlex.quote(fdata.max_probes)])
-		feat_order = []
-		feat_order.append(fdata.f1)
-		feat_order.append(fdata.f2)
-		feat_order.append(fdata.f3)
-		cmd.extend(['--feat_order', shlex.quote(','.join(feat_order))])
-		cmd.extend(['--outdir', '%s/query/' % self.static_path])
-		cmd.extend(['--description', shlex.quote(fdata.description)])
+		cmd = ['ifpd_query_probe']
+		cmd.extend([shlex.quote(f'{fdata.chromosome}:{fdata.start},{fdata.end}')])
+		cmd.extend([shlex.quote(f'{self.static_path}/db/{fdata.database}')])
+		cmd.extend([shlex.quote(f'{self.static_path}/query/{query_id}')])
+		cmd.extend(['--order', shlex.quote(fdata.f1), shlex.quote(fdata.f2), shlex.quote(fdata.f3)])
+		cmd.extend(['--filter-thr', shlex.quote(fdata.f1_threshold)])
+		cmd.extend(['--n-oligo', shlex.quote(fdata.n_oligo)])
+		cmd.extend(['--max-probes', shlex.quote(fdata.max_probes)])
+
+		# Query ID and description should be stored somewhere that is not
+		# related to the ifpd_query_probe script, like a central database
+		#cmd.extend([Query.get_next_id(self.qpath, self.queue)])
+		#cmd.extend(['--description', shlex.quote(fdata.description)])
+
+		# Requires --min-d from database description
 
 		# Add query to the queue
 		self.queue.put(cmd)

@@ -48,8 +48,6 @@ class Enquirer(threading.Thread):
 				# Retreive query settings
 				cmd = self.queue.get()
 
-				print(cmd)
-
 				# If the queue released a task
 				if not type(None) == type(cmd):
 
