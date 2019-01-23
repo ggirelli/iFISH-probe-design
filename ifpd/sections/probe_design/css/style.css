@@ -14,3 +14,10 @@ html, body {
 
 	text-align: center;
 }
+
+#abstract {
+	margin-bottom: 1.5em;
+	margin-top: 1em;
+	font-size: 1.2em;
+	text-align: justify;
+}

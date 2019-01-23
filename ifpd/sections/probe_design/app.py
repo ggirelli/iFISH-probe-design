@@ -85,6 +85,7 @@ class App(rootApp.App):
 		self.vd['vpath'] = self.vpath
 		self.vd['qpath'] = self.qpath
 		self.vd['description'] = 'FISH probe designer application.'
+		self.vd['breadcrumbs'] = False
 
 		# Set default
 		if not type(None) == type(MAX_CURR):

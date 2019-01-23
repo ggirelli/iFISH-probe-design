@@ -1,22 +1,30 @@
 
 /* Probe Designer home stylesheet */
 
-#header {
+#main {
 	padding-top: 1em;
 }
 
 #title {
-	font-family: "Montserrat";
-	font-size: 5em;
-	font-weight: 600;
+	margin-bottom: .75vw;
+	font-size: 15vw;
 	text-align: center;
+	font-weight: 600;
+
+	color: white;
+	background-color: black;
+	background-image: url("/images/title_background.png");
+	background-size: cover;
+	background-position: center;
+	border-radius: 6px;
+	text-shadow: 0 0 10px #323232;
 }
 
-#header #description {
-	margin: 2em 0;
-	font-size: 1.4em;
-	line-height: 2em;
-	text-align: center;
+@media screen and (min-width: 1200px) {
+  #title {
+    font-size: 7.5vw;
+    margin-bottom: 1.5vw;
+  }
 }
 
 /* TABS */
@@ -57,4 +65,8 @@
 
 #query_search {
 	margin-bottom: 1em;
+}
+
+#queue {
+	margin-top: 2em;
 }

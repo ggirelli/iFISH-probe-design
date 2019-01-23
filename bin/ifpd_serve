@@ -138,17 +138,19 @@ def callback(path):
 def callback(path):
     return bot.static_file(path, '%s/interface/documents/' % root_path)
 
+# Load Sections ----------------------------------------------------------------
+
+pdApp = sec.probe_design.App(section_path, args.static,
+		root_path, ruri_complete, 'probe-design/')
+
 # Custom routes ----------------------------------------------------------------
 
 if not type(None) == type(args.custom_routes):
 	exec(open(args.custom_routes).read())
 
-# Sections ---------------------------------------------------------------------
+# Mount Sections ---------------------------------------------------------------
 
-# Probe designer
-root.mount('probe-design/',
-	sec.probe_design.App(section_path, args.static,
-		root_path, ruri_complete, 'probe-design/'))
+root.mount('probe-design/', pdApp)
 
 # RUN ==========================================================================
 
