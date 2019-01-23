@@ -1,6 +1,8 @@
 % include('header.tpl')
 
+% if not home_status:
 <script type="text/javascript">document.location = document.location + "probe-design/"</script>
+% end
 
 <div id="main" class="col col-md-6 offset-md-3">
 
