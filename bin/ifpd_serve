@@ -39,10 +39,13 @@ parser.add_argument('-s', '--static', metavar = 'port', type = str,
 
 parser.add_argument('-T', '--custom-templates', metavar = 'templateFolder',
 	type = str, help = 'Path to folder with custom templates.')
-parser.add_argument('-H', '--homepage', metavar = 'home', type = str,
-	help = '''Name of homepage folder. Homepage is off by default.
-	Use "home_default" to turn default on. When using a custom homepage,
-	-T must be specified.''')
+parser.add_argument('-H', '--homepage', metavar = 'homepageTemplate',
+	type = str, help = '''Name of homepage template. Homepage is off by default.
+	Use "-H home_default" to turn default homepage template on.
+	When using a custom homepage template, -T must be specified.''')
+
+parser.add_argument('-R', '--custom-routes', metavar = 'routesFile',
+	type = str, help = 'Path to custom routes Python file.')
 
 args = parser.parse_args()
 
@@ -82,6 +85,10 @@ if not type(None) == type(args.homepage):
 else:
 	home_template = "home_default"
 	home_status = False
+
+if not type(None) == type(args.custom_routes):
+	assert_msg = f"file not found: {args.custom_routes}"
+	assert os.path.isfile(args.custom_routes), assert_msg
 
 # Start root app
 root = bot.Bottle()
@@ -131,12 +138,10 @@ def callback(path):
 def callback(path):
     return bot.static_file(path, '%s/interface/documents/' % root_path)
 
-# Documentation ----------------------------------------------------------------
+# Custom routes ----------------------------------------------------------------
 
-@root.route('/docs/<path:re:.*>')
-def go_docs(path):
-	if 0 == len(path): path = 'index.html'
-	return bot.static_file(path, '%sdocs/_build/html/' % root_path)
+if not type(None) == type(args.custom_routes):
+	exec(open(args.custom_routes).read())
 
 # Sections ---------------------------------------------------------------------
 
