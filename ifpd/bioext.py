@@ -10,8 +10,8 @@
 
 # ==============================================================================
 
+import ifpd as fp
 import io
-import fish_prode as fp
 import os
 import pandas as pd
 from tqdm import tqdm

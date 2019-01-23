@@ -17,8 +17,8 @@
 
 import argparse
 import configparser
-import fish_prode as fp
-from fish_prode.bioext import UCSCbed
+import ifpd as fp
+from ifpd.bioext import UCSCbed
 import logging
 import numpy as np
 import os

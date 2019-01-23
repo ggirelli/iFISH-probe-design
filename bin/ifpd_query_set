@@ -15,8 +15,8 @@
 # ==============================================================================
 
 import argparse
-import fish_prode as fp
 from ggc.args import check_threads
+import ifpd as fp
 from joblib import Parallel, delayed
 import logging
 import numpy as np

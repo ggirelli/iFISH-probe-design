@@ -42,7 +42,7 @@
 				</li>
 				<!-- left tab blocks starts with .ml-auto element -->
 				<li rolw="presentation" class="nav-item ml-auto float-right">
-					<a class="nav-link" href="https://ggirelli.github.io/fish-prode/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+					<a class="nav-link" href="https://ggirelli.github.io/iFISH-Probe-Design/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
 						<span class="fa fa-info-circle"></span>
 					</a>
 				</li>

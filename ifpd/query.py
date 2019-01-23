@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 import configparser
-import fish_prode as fp
 from ggc.args import check_threads
+import ifpd as fp
 from joblib import Parallel, delayed
 import numpy as np
 import os

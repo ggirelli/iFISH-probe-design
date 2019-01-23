@@ -16,7 +16,7 @@
 # ==============================================================================
 
 import argparse
-import fish_prode as fp
+import ifpd as fp
 import logging
 import sys
 

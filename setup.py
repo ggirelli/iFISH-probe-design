@@ -12,12 +12,12 @@ from setuptools import setup, find_packages
 with open('README.md', "r") as f:
 	long_description = f.read()
 
-setup(name='fish_prode',
+setup(name='ifpd',
 	version='1.1.0.post1',
 	description='''A FISH probe design web interface.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
-	url='https://github.com/ggirelli/fish-prode',
+	url='https://github.com/ggirelli/iFISH-Probe-Design',
 	author='Gabriele Girelli',
 	author_email='gabriele.girelli@scilifelab.se',
 	license='MIT',
@@ -29,7 +29,7 @@ setup(name='fish_prode',
 		'Programming Language :: Python :: 3 :: Only',
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
-	packages=["fish_prode", "fish_prode.sections", "fish_prode.sections.probe_design"],
+	packages=["ifpd", "ifpd.sections", "ifpd.sections.probe_design"],
 	install_requires=[
 		"bottle>=0.12.13",
 		'ggc>=0.0.3',
@@ -47,7 +47,7 @@ setup(name='fish_prode',
 		"bin/fprode_serve"
 	],
 	package_data={
-		'fish_prode': [
+		'ifpd': [
 			'interface/css/bootstrap.css',
 			'interface/css/*',
 			'interface/fonts/*',
@@ -55,7 +55,7 @@ setup(name='fish_prode',
 			'interface/js/*',
 			'interface/views/*'
 		],
-		'fish_prode.sections.probe_design': [
+		'ifpd.sections.probe_design': [
 			'css/*', 'documents/*', 'views/*']
 	},
 	test_suite="nose.collector",

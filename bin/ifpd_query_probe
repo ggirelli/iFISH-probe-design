@@ -16,7 +16,7 @@
 
 import argparse
 import configparser
-import fish_prode as fp
+import ifpd as fp
 import logging
 import numpy as np
 import os

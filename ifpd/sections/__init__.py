@@ -13,12 +13,7 @@
 
 # DEPENDENCIES =================================================================
 
-from fish_prode.sections import *
-
-from . import bioext
-from . import web
-from . import stats
-from . import query
+from ifpd.sections import probe_design
 
 # END ==========================================================================
 

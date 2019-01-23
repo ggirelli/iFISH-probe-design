@@ -18,12 +18,11 @@
 
 import argparse
 import bottle as bot
+import ifpd as fp
+import ifpd.sections as sec
 import os
 from os.path import dirname
 import paste
-
-import fish_prode as fp
-import fish_prode.sections as sec
 
 # INPUT ========================================================================
 
@@ -51,7 +50,7 @@ ruri_complete = 'http://%s:%d/' % (args.url, args.port)
 section_path = "%s/" % dirname(sec.__file__)
 
 # App title
-title = 'FISH ProDe'
+title = 'iFISH Probe Design'
 
 # Add views folder to TEMPLATE_PATH
 bot.TEMPLATE_PATH.append(root_path)
