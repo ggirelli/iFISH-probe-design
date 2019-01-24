@@ -211,19 +211,13 @@ class Routes(routes.Routes):
 			self (App): ProbeDesigner.App instance.
 		'''
 
-		# Template dictionary
 		d = self.vd
 
-		# Page title and description
 		d['title'] = self.tprefix + 'Home'
-
-		# Local stylesheets
 		d['custom_stylesheets'] = ['home.css', 'style.css']
-
-		# Root stylesheets
 		d['custom_root_stylesheets'] = []
 
-		# Database list
+		
 		configPathList = [os.path.join(self.static_path, 'db', p, '.config')
 			for p in next(os.walk(os.path.join(self.static_path, 'db')))[1]]
 		configPathList.sort()
@@ -233,9 +227,12 @@ class Routes(routes.Routes):
 				parser = configparser.ConfigParser()
 				parser.read_string("".join(IH.readlines()))
 				d['dbdata'].append(parser)
-		d['dblist'] = [p['DATABASE']['name'] for p in d['dbdata']]
-
-		# Query list
+		d['dblist'] = {}
+		for p in d['dbdata']:
+			dbDir = os.path.basename(p['SOURCE']['outdirectory'])
+			dbName = p['DATABASE']['name']
+			d['dblist'][dbName] = dbDir
+		
 		d['qlist'] = []
 		qlist = [i for i in next(os.walk(self.qpath))[1]]
 		qlist.sort()
@@ -357,10 +354,29 @@ class Routes(routes.Routes):
 		cmd.extend(['--max-probes', shlex.quote(formData.max_probes)])
 		cmd.extend(['--min-dist', shlex.quote(min_dist)])
 
-		# Query ID and description should be stored somewhere that is not
-		# related to the ifpd_query_probe script, like a central database
-		#cmd.extend([Query.get_next_id(self.qpath, self.queue)])
-		#cmd.extend(['--description', shlex.quote(fdata.description)])
+		parser = configparser.ConfigParser()
+		config['GENERAL'] = {
+			'name' : formData.name,
+			'description' : formData.description
+		}
+		config['WHERE'] = {
+			'db' : formData.database,
+			'region' : queriedRegion
+		}
+		config['WHAT'] = {
+			'n_oligo' : formData.n_oligo,
+			'threshold' : formData.f1_threshold,
+			'max_probes' : formData.max_probes
+		}
+		config['HOW'] = {
+			'f1' : formData.f1,
+			'f2' : formData.f2,
+			'f3' : formData.f3
+		}
+		configPath = os.path.join(self.static_path, 'query',
+			f'{query_id}.config')
+		with open(configPath, 'w+') as OH:
+			config.write(OH)
 
 		# Add query to the queue
 		self.queue.put(cmd)

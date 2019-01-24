@@ -26,8 +26,8 @@
 					<label for="database">Database</label>
 					% if 0 != len(dblist):
 					<select name="database" id="database" class="form-control">
-					% for db in dblist:
-						<option value="{{db}}">{{db}}</option>
+					% for (dbName, dbDir) in dblist.items():
+						<option value="{{dbDir}}">{{dbName}}</option>
 					% end
 					</select>
 					% else:

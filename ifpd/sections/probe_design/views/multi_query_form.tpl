@@ -28,8 +28,8 @@
 					<label for="multi_database">Database</label>
 					% if 0 != len(dblist):
 					<select name="multi_database" id="multi_database" class="form-control">
-					% for db in dblist:
-						<option value="{{db}}">{{db}}</option>
+					% for (dbName, dbDir) in dblist.items():
+						<option value="{{dbDir}}">{{dbName}}</option>
 					% end
 					</select>
 					% else:

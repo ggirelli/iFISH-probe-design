@@ -3,9 +3,9 @@
 	<li class="list-group-item">
 		<h5>Available databases:</h5>
 		<ul class="database-list">
-			%for dbname in dblist:
+			% for (dbName, dbDir) in dblist.items():
 			<li>
-				<a href="#{{dbname}}">{{dbname}}</a>
+				<a href="#{{dbName}}">{{dbName}}</a>
 			</li>
 			%end
 		</ul>
