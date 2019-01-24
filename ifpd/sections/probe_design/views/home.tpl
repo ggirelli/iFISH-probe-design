@@ -44,12 +44,12 @@
 							</li>
 							<li rolw="presentation" class="nav-item">
 								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
-									<span class="fa fa-info-circle"></span>
+									<span class="fas fa-info-circle"></span>
 								</a>
 							</li>
 							<li rolw="presentation" class="nav-item">
 								<a class="nav-link" href="http://genome.ucsc.edu/cgi-bin/hgTracks" target="_new" data-toggle="tooltip" data-placement="top" title="Genome Browser">
-									<span class="fa fa-external-link-square"></span>
+									<span class="fas fa-dna"></span>
 								</a>
 							</li>
 						</ul>
@@ -89,12 +89,12 @@
 				<div class="card">
 
 					<!-- Nav tabs -->
-					<div class="card-header card-outline-warning">
+					<div class="card-header border-success">
 						<ul class="nav nav-tabs card-header-tabs" role="tablist">
 							<li role="presentation" class="nav-item"><a class="nav-link active" href="#queue" aria-controls="queue" role="tab" data-toggle="tooltip" data-placement="top" title="Here you can find the queries in the queue (i.e., waiting to run).">Queue</a></li>
 							<li rolw="presentation" class="nav-item ml-auto">
-								<a class="nav-link text-warning" href="{{app_uri}}" data-toggle="tooltip" data-placement="top" title="Refresh">
-									<span class="fa fa-refresh"></span>
+								<a class="nav-link text-success" href="{{app_uri}}" data-toggle="tooltip" data-placement="top" title="Refresh">
+									<span class="fas fa-redo-alt"></span>
 								</a>
 							</li>
 						</ul>

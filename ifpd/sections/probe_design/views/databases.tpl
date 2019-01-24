@@ -46,7 +46,7 @@
 					<p class="card-text reference"><b>Reference: </b>{{config['CUSTOM']['reference']}}</p>
 					%end
 					%if 'url' in config['CUSTOM'].keys():
-					<a href="{{config['CUSTOM']['url']}}" class="card-link">Database link</a>
+					<a href="{{config['CUSTOM']['url']}}" target="_new" class="card-link"><i class="fas fa-external-link-alt text-primary"></i> Database link</a>
 					%end
 				</div>
 			</div></div>

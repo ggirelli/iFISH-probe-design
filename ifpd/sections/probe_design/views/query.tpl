@@ -59,11 +59,6 @@
 				<ul class="nav nav-tabs card-header-tabs" role="tablist">
 					<li role="presentation" class="nav-item"><a class="nav-link active" href="#table_tab" aria-controls="table_tab" role="tab" data-toggle="tab">Table</a></li>
 					<li role="presentation" class="nav-item"><a class="nav-link" href="#comparison_tab" aria-controls="comparison_tab" role="tab" data-toggle="tab">Figures</a></li>
-					<li rolw="presentation" class="nav-item ml-auto">
-						<a class="nav-link" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh">
-							<span class="fa fa-refresh"></span>
-						</a>
-					</li>
 				</ul>
 			</div>
 
