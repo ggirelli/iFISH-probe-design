@@ -229,7 +229,7 @@ class Routes(routes.Routes):
 		# Query list
 		d['qlist'] = []
 		qpath = self.qpath
-		qlist = [int(i) for i in next(os.walk(qpath))[1]]
+		qlist = [i for i in next(os.walk(qpath))[1]]
 		qlist.sort()
 		for qid in qlist:
 			d['qlist'].append(Query.get_data(str(qid), self.qpath))
@@ -334,7 +334,10 @@ class Routes(routes.Routes):
 		encoder = hashlib.sha256()
 		encoder.update(bytes(query_id, "utf-8"))
 		query_id = encoder.hexdigest()
+
 		dbPath = f'{self.static_path}/db/{formData.database}'
+		oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork = False)
+		min_dist = oligoDB.get_oligo_min_dist()
 
 		cmd = ['ifpd_query_probe']
 		cmd.extend([shlex.quote(queriedRegion), shlex.quote(dbPath)])
@@ -344,15 +347,12 @@ class Routes(routes.Routes):
 		cmd.extend(['--filter-thr', shlex.quote(formData.f1_threshold)])
 		cmd.extend(['--n-oligo', shlex.quote(formData.n_oligo)])
 		cmd.extend(['--max-probes', shlex.quote(formData.max_probes)])
-
-		oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork = False)
+		cmd.extend(['--min-dist', shlex.quote(min_dist)])
 
 		# Query ID and description should be stored somewhere that is not
 		# related to the ifpd_query_probe script, like a central database
 		#cmd.extend([Query.get_next_id(self.qpath, self.queue)])
 		#cmd.extend(['--description', shlex.quote(fdata.description)])
-
-		# Requires --min-d from database description
 
 		# Add query to the queue
 		self.queue.put(cmd)
