@@ -35,3 +35,11 @@
 .query_settings {
 	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+
+#candidate_table, #candidate_figure_table {
+	text-align: center;
+}
+
+#candidate_figure_table td {
+	vertical-align: middle;
+}

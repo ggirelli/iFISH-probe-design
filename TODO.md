@@ -1,3 +1,3 @@
 
 * Check available chromosomes in a database through AJAX calls.
-* Add AJAX call to hide bookmark alert in query page.
+* Add jumbotron with fullscreen figure by clicking on them.

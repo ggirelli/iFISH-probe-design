@@ -92,7 +92,6 @@
 				</div>
 			</div>
 
-
 			<!-- queue panel -->
 			<div id="queue" class="col col-12">
 				<div class="card">

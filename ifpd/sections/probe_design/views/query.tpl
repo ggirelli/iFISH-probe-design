@@ -1,3 +1,4 @@
+%import numpy as np
 %import os
 %import time
 %include(vpath + 'header.tpl')
@@ -76,21 +77,142 @@
 
 			<div class="tab-content card-body">
 				<div role="tabpanel" class="tab-pane active overflow" id="table_tab">
-					Data. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					%if query['type'] == 'single':
+					<p>Showing top {{query['max_probes']}}/{{query['candidate_table'].shape[0]}} probe candidates.</p>
+
+					<table id="candidate_table" class="table table-striped table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th>id</th>
+								%for column in query['candidate_table'].columns:
+								<th>{{column}}</th>
+								%end
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for rowi in range(min(query['candidate_table'].shape[0], int(query['max_probes']))):
+								<tr>
+									<td>{{rowi}}</td>
+									%for coli in range(query['candidate_table'].shape[1]):
+									<td>
+										%if np.float64 == type(query['candidate_table'].iloc[rowi, coli]):
+										{{'%.6f'% query['candidate_table'].iloc[rowi, coli]}}
+										%else:
+										{{query['candidate_table'].iloc[rowi, coli]}}
+										%end
+									</td>
+									%end
+									<td>
+										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+									</td>
+								</tr>
+							%end
+						</tbody>
+					</table>
+
+					%else:
+
+					<p>Built {{query['candidate_table'].shape[0]}} probe set candidates.</p>
+
+					<table id="candidate_table" class="table table-striped table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th>id</th>
+								%for column in query['candidate_table'].columns:
+								<th>{{column}}</th>
+								%end
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for rowi in range(query['candidate_table'].shape[0]):
+								<tr>
+									<td>{{rowi}}</td>
+									%for coli in range(query['candidate_table'].shape[1]):
+									<td>
+										%if np.float64 == type(query['candidate_table'].iloc[rowi, coli]):
+										{{'%.6f'% query['candidate_table'].iloc[rowi, coli]}}
+										%else:
+										{{query['candidate_table'].iloc[rowi, coli]}}
+										%end
+									</td>
+									%end
+									<td>
+										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+									</td>
+								</tr>
+							%end
+						</tbody>
+					</table>
+
+					%end
 				</div>
 
 				<div role="tabpanel" class="tab-pane overflow" id="comparison_tab">
-					Figures. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					%if query['type'] == 'single':
+
+					<table id="candidate_figure_table" class="table table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th>id</th>
+								<th>Probe position</th>
+								<th>Oligo distance</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for rowi in range(min(query['candidate_table'].shape[0], int(query['max_probes']))):
+								<tr>
+									<td>{{rowi}}</td>
+									<td>
+										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{rowi}}/images/window.png" alt="Candidate #{{rowi}}, window" />
+									</td>
+									<td>
+										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{rowi}}/images/oligo.png" alt="Candidate #{{rowi}}, oligo" />
+									</td>
+									<td>
+										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+									</td>
+								</tr>
+							%end
+						</tbody>
+					</table>
+
+					%else:
+
+					<table id="candidate_figure_table" class="table table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th>id</th>
+								<th>Probe position</th>
+								<th>Probe distance</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for rowi in range(query['candidate_table'].shape[0]):
+								<tr>
+									<td>{{rowi}}</td>
+									<td>
+										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}/images/windows.png" alt="Candidate #{{rowi}}, windows" />
+									</td>
+									<td>
+										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}/images/distr.png" alt="Candidate #{{rowi}}, distr" />
+									</td>
+									<td>
+										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+									</td>
+								</tr>
+							%end
+						</tbody>
+					</table>
+
+					%end
 				</div>
 			</div>
 		</div></div>
@@ -155,7 +277,7 @@
 						<h3 class="card-title">Log</h3>
 						%if os.path.isdir(os.path.join(queryRoot, query['id'])):
 						%with open(os.path.join(queryRoot, query['id'], 'log')) as IH:
-						<pre class="m-0" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
+						<pre class="ws_wrap m-0" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
 						%end
 						%else:
 						<pre class="ws_wrap m-0" style="max-height: 25em;">Log not found.</pre>

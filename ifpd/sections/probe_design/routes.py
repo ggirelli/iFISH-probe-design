@@ -19,6 +19,7 @@ import configparser
 import datetime
 import hashlib
 import os
+import pandas as pd
 import shlex
 import time
 
@@ -113,7 +114,7 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = '%s/query/%s/candidates/probe_%s/' % (
+		ipath = '%s/query/%s/candidate_%s/' % (
 			self.static_path, query_id, candidate_id)
 		return(bot.static_file(path, ipath))
 
@@ -128,7 +129,7 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = '%s/query/%s/candidates/set_%s/' % (
+		ipath = '%s/query/%s/probe_set_%s/' % (
 			self.static_path, query_id, candidate_id)
 		return(bot.static_file(path, ipath))
 
@@ -256,7 +257,14 @@ class Routes(routes.Routes):
 		d['queryRoot'] = self.qpath
 
 		if 'done' == d['query']['status']:
-			pass
+			if 'single' == d['query']['type']:
+				d['query']['candidate_table'] = pd.read_csv(
+					os.path.join(self.qpath, query_id, "candidates.tsv"),
+					"\t")
+			elif 'spotting' == d['query']['type']:
+				d['query']['candidate_table'] = pd.read_csv(
+					os.path.join(self.qpath, query_id, "set_candidates.tsv"),
+					"\t")
 
 		d['queryTimeout'] = 24*60*60 # 1 day timeout
 
