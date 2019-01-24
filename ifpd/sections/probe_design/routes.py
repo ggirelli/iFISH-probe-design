@@ -253,8 +253,7 @@ class Routes(routes.Routes):
 		d['query'] = Query(query_id, self.qpath).data
 		d['queryRoot'] = self.qpath
 
-		#d['queryTimeout'] = 24*60*60 # 1 day timeout
-		d['queryTimeout'] = 45*60 # 1 minute timeout
+		d['queryTimeout'] = 24*60*60 # 1 day timeout
 
 		return(d)
 

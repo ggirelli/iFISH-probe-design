@@ -23,22 +23,28 @@
 		%end
 
 		%if query['status'] == 'queued':
-		%if time.time() - float(query['start_time']) > queryTimeout:
+		%if time.time() - float(query['time']) > queryTimeout:
 			<div class="alert alert-danger" role="alert">
-				This query timed out (queried @{{query['isotime']}}). Please, try again or contact the <a href="">server admin</a>.
+				This query timed out (queried@{{query['isotime']}}). Please, try again or contact the <a href="">server admin</a>.
 			</div>
 		%else:
 			<div class="alert alert-warning" role="alert">
-				<a class="text-warnin" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fa fa-refresh"></span></a>
+				<a class="text-warnin" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>
 				This query was queued at {{query['isotime']}}.
 			</div>
 		%end
 		%end
 		%if query['status'] == 'running':
-			<div class="alert alert-warning" role="alert">
-				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fa fa-refresh"></span></a>
-				This query has been running since {{query['start_isotime']}} ({{"%.3f" % (time.time() - float(query['start_time']))}} seconds), after being queued for {{"%.3f" % (float(query['start_time']) - float(query['time']))}} seconds.
+		%if time.time() - float(query['start_time']) > queryTimeout:
+			<div class="alert alert-danger" role="alert">
+				This query timed out (started@{{query['start_isotime']}}). Please, try again or contact the <a href="">server admin</a>.
 			</div>
+		%else:
+			<div class="alert alert-warning" role="alert">
+				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>
+				This query has been running since {{query['start_isotime']}} ({{"%.3f" % (time.time() - float(query['start_time']))}} seconds), after being queued for {{"%.3f" % (float(query['start_time']) - float(query['time']))}} seconds. {{queryTimeout}}
+			</div>
+		%end
 		%end
 		%if query['status'] == 'done':
 			<div class="alert alert-success" role="alert">
