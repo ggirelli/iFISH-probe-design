@@ -22,6 +22,12 @@
 		</nav>
 		%end
 
+		%if not 'hidden_bookmark_alter' in query.keys():
+		<div class="alert alert-dark" role="alert">
+			<b>Save the link to this page to be able get back here!</b><a class="float-right text-dark text-decoration-none" href="javascript:alert('Need to add AJAX request to hide this alert.');"><i class="fas fa-times"></i></a>
+		</div>
+		%end
+
 		%if query['status'] == 'queued':
 		%if time.time() - float(query['time']) > queryTimeout:
 			<div class="alert alert-danger" role="alert">
