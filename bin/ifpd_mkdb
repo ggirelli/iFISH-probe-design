@@ -155,6 +155,7 @@ for line in oligoGenerator:
 logging.info("Sorting oligos...")
 has_overlaps = False
 oligoLengthRange = [np.inf, -np.inf]
+oligoMinDist = np.inf
 for chrom in chromList:
     chromDF = pd.read_csv(os.path.join(args.O, chrom), "\t", header = None)
     chromDF.columns = UCSCbed.FIELD_NAMES[1:(chromDF.shape[1]+1)]
@@ -168,6 +169,8 @@ for chrom in chromList:
     if any(startPositions <= endPositions):
         has_overlaps = True
 
+    oligoMinDist = min(oligoMinDist, min(startPositions - endPositions - 1))
+
     oligoLengthList = np.unique(chromDF['chromEnd'] - chromDF['chromStart'])
     oligoLengthRange[0] = min(oligoLengthRange[0], oligoLengthList.min())
     oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
@@ -180,6 +183,7 @@ config['DATABASE'] = {
 }
 config['OLIGOS'] = {
     'sequence' : args.retainSequences,
+    'min_dist' : oligoMinDist,
     'min_length' : oligoLengthRange[0],
     'max_length' : oligoLengthRange[1],
     'overlaps' : has_overlaps
