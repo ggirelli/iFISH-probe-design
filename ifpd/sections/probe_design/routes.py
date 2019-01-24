@@ -16,6 +16,7 @@
 
 import bottle as bot
 import configparser
+import datetime
 import hashlib
 import os
 import shlex
@@ -352,12 +353,15 @@ class Routes(routes.Routes):
 		cmd.extend(['--filter-thr', shlex.quote(formData.f1_threshold)])
 		cmd.extend(['--n-oligo', shlex.quote(formData.n_oligo)])
 		cmd.extend(['--max-probes', shlex.quote(formData.max_probes)])
-		cmd.extend(['--min-dist', shlex.quote(min_dist)])
+		cmd.extend(['--min-d', shlex.quote(f'{min_dist}')])
 
-		parser = configparser.ConfigParser()
+		config = configparser.ConfigParser()
+		timestamp = time.time()
 		config['GENERAL'] = {
 			'name' : formData.name,
-			'description' : formData.description
+			'description' : formData.description,
+			'time' : timestamp,
+			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat()
 		}
 		config['WHERE'] = {
 			'db' : formData.database,
