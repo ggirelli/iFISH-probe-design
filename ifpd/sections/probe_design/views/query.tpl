@@ -16,9 +16,7 @@
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="/">Home</a></li>
 				<li class="breadcrumb-item"><a href="/probe-design/">Design</a></li>
-				<li class="breadcrumb-item break-all" aria-current="page">
-					<a href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="bottom" title="Right click on this link, and save it as a bookmark to re-visit it later.">Query: {{query['id']}}</a>
-				</li>
+				<li class="breadcrumb-item break-all" aria-current="page">Query: {{query['id']}}</li>
 			</ol>
 		</nav>
 		%end
@@ -104,7 +102,7 @@
 									</td>
 									%end
 									<td>
-										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="{{app_uri}}q/{{query['id']}}/c/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
 										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>
@@ -140,7 +138,7 @@
 									</td>
 									%end
 									<td>
-										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
 										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>

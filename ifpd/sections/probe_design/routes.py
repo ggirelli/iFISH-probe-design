@@ -281,22 +281,15 @@ class Routes(routes.Routes):
 			candidate_id (string): candidate folder name.
 		'''
 
-		# Template dictionary
 		d = self.vd
 
-		# Page title and description
 		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
-
-		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
-
-		# Root stylesheets
 		d['custom_root_stylesheets'] = []
+		
+		d['query'] = Query(query_id, self.qpath).data
+		d['queryRoot'] = self.qpath
 
-		# Query data (query folder)
-		d['query'] = Query.get_data(query_id, self.qpath)
-
-		# Candidate data
 		d['candidate'] = {'id' : candidate_id}
 
 		return(d)
@@ -310,22 +303,15 @@ class Routes(routes.Routes):
 			candidate_id (string): candidate folder name.
 		'''
 
-		# Template dictionary
 		d = self.vd
 
-		# Page title and description
 		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
-
-		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
-
-		# Root stylesheets
 		d['custom_root_stylesheets'] = []
+		
+		d['query'] = Query(query_id, self.qpath).data
+		d['queryRoot'] = self.qpath
 
-		# Query data (query folder)
-		d['query'] = Query.get_data(query_id, self.qpath)
-
-		# Candidate data
 		d['candidate'] = {'id' : candidate_id}
 
 		return(d)
