@@ -1,4 +1,6 @@
-% include(vpath + 'header.tpl')
+%import os
+%import time
+%include(vpath + 'header.tpl')
 
 <!-- header -->
 <div class="row">
@@ -14,10 +16,34 @@
 				<li class="breadcrumb-item"><a href="/">Home</a></li>
 				<li class="breadcrumb-item"><a href="/probe-design/">Design</a></li>
 				<li class="breadcrumb-item break-all" aria-current="page">
-					<a href="{{app_uri}}q/{{query['id']}}">Query: {{query['id']}}</a>
+					<a href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="bottom" title="Right click on this link, and save it as a bookmark to re-visit it later.">Query: {{query['id']}}</a>
 				</li>
 			</ol>
 		</nav>
+		%end
+
+		%if query['status'] == 'queued':
+		%if time.time() - float(query['start_time']) > queryTimeout:
+			<div class="alert alert-danger" role="alert">
+				This query timed out (queried @{{query['isotime']}}). Please, try again or contact the <a href="">server admin</a>.
+			</div>
+		%else:
+			<div class="alert alert-warning" role="alert">
+				<a class="text-warnin" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fa fa-refresh"></span></a>
+				This query was queued at {{query['isotime']}}.
+			</div>
+		%end
+		%end
+		%if query['status'] == 'running':
+			<div class="alert alert-warning" role="alert">
+				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fa fa-refresh"></span></a>
+				This query has been running since {{query['start_isotime']}} ({{"%.3f" % (time.time() - float(query['start_time']))}} seconds), after being queued for {{"%.3f" % (float(query['start_time']) - float(query['time']))}} seconds.
+			</div>
+		%end
+		%if query['status'] == 'done':
+			<div class="alert alert-success" role="alert">
+				This query was completed at {{query['done_isotime']}}, after running for {{"%.3f" % (float(query['done_time']) - float(query['start_time']))}} seconds.
+			</div>
 		%end
 
 		<div id="abstract">
@@ -26,12 +52,18 @@
 			{{query['description']}}
 		</div>
 
+		%if query['status'] == 'done':
 		<div class="container-fluid p-0"><div class="card mb-3">
 			<div class="card-header border-primary">
 				<!-- Nav tabs -->
 				<ul class="nav nav-tabs card-header-tabs" role="tablist">
 					<li role="presentation" class="nav-item"><a class="nav-link active" href="#table_tab" aria-controls="table_tab" role="tab" data-toggle="tab">Table</a></li>
 					<li role="presentation" class="nav-item"><a class="nav-link" href="#comparison_tab" aria-controls="comparison_tab" role="tab" data-toggle="tab">Figures</a></li>
+					<li rolw="presentation" class="nav-item ml-auto">
+						<a class="nav-link" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh">
+							<span class="fa fa-refresh"></span>
+						</a>
+					</li>
 				</ul>
 			</div>
 
@@ -55,32 +87,33 @@
 				</div>
 			</div>
 		</div></div>
+		%end
 
 		<div class="row">
 			<div class="col col-xl-6 col-12">
-				<div class="card bg-primary text-white mb-3">
+				<div class="card border-primary mb-3">
 					<div class="card-body">
 						<h3 class="card-title">Query settings</h3>
 						<ul class="list-group list-group-flush query_settings">
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Name:</b> {{query['name']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Time:</b> {{query['isotime']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Database:</b> {{query['db']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b># oligos per probe:</b> {{query['n_oligo']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Feature #1 threshold:</b> {{query['threshold']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Max # output probes:</b> {{query['max_probes']}}
 							</li>
-							<li class="list-group-item bg-primary">
+							<li class="list-group-item border-primary">
 								<b>Feature order::</b> {{query['f1']}}, {{query['f2']}}, {{query['f3']}}
 							</li>
 						</ul>
@@ -92,14 +125,22 @@
 				<div class="card border-secondary mb-3">
 					<div class="card-body">
 						<h3 class="card-title">Cmd</h3>
-						<pre class="ws_wrap m-0" style="max-height: 25em;"><code>{{query['cmd']}}</code></pre>
+						<pre class="ws_wrap m-0" style="max-height: 25em;">{{query['cmd']}}</pre>
 					</div>
 				</div>
+			</div>
 
+			<div class="col col-12">
 				<div class="card border-secondary mb-3">
 					<div class="card-body">
 						<h3 class="card-title">Log</h3>
-						<pre class="ws_wrap m-0" style="max-height: 25em;"><code>log</code></pre>
+						%if os.path.isdir(os.path.join(queryRoot, query['id'])):
+						%with open(os.path.join(queryRoot, query['id'], 'log')) as IH:
+						<pre class="m-0" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
+						%end
+						%else:
+						<pre class="ws_wrap m-0" style="max-height: 25em;">Log not found.</pre>
+						%end
 					</div>
 				</div>
 			</div>

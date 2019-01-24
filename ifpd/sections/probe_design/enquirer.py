@@ -14,10 +14,13 @@
 
 # DEPENDENCIES =================================================================
 
+import configparser
+import datetime
 import logging
 import os
 import subprocess as sp
 import threading
+import time
 
 # CLASSES ======================================================================
 
@@ -51,10 +54,30 @@ class Enquirer(threading.Thread):
 				if not type(None) == type(cmd):
 					query_id = os.path.basename(cmd[3])
 
+					config = configparser.ConfigParser()
+					with open(f'{cmd[3]}.config', 'r') as IH:
+						config.read_string("".join(IH.readlines()))
+
 					logging.debug(f'Running query "{query_id}"')
+					timestamp = time.time()
+					isotimestamp = datetime.datetime.fromtimestamp(
+						timestamp).isoformat()
+					config['GENERAL']['status'] = 'running'
+					config['GENERAL']['start_time'] = f'{timestamp}'
+					config['GENERAL']['start_isotime'] = isotimestamp
+					with open(f'{cmd[3]}.config', 'w+') as OH:
+						config.write(OH)
 					sp.call(cmd)
+					timestamp = time.time()
+					isotimestamp = datetime.datetime.fromtimestamp(
+						timestamp).isoformat()
 
 					logging.debug(f'Finished query "{query_id}"')
+					config['GENERAL']['status'] = 'done'
+					config['GENERAL']['done_time'] = f'{timestamp}'
+					config['GENERAL']['done_isotime'] = isotimestamp
+					with open(f'{cmd[3]}.config', 'w+') as OH:
+						config.write(OH)
 					cmd = self.queue.task_done(cmd)
 
 		return

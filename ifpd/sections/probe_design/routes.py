@@ -244,20 +244,17 @@ class Routes(routes.Routes):
 			query_id (string): query folder name.
 		'''
 
-		# Template dictionary
 		d = self.vd
 
-		# Page title and description
 		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
-
-		# Local stylesheets
 		d['custom_stylesheets'] = ['query.css', 'style.css']
-
-		# Root stylesheets
 		d['custom_root_stylesheets'] = []
 
-		# Query data (query folder)
 		d['query'] = Query(query_id, self.qpath).data
+		d['queryRoot'] = self.qpath
+
+		#d['queryTimeout'] = 24*60*60 # 1 day timeout
+		d['queryTimeout'] = 45*60 # 1 minute timeout
 
 		return(d)
 
@@ -356,7 +353,8 @@ class Routes(routes.Routes):
 			'description' : formData.description,
 			'time' : timestamp,
 			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
-			'cmd' : " ".join(cmd)
+			'cmd' : " ".join(cmd),
+			'status' : 'queued'
 		}
 		config['WHERE'] = {
 			'db' : formData.database,
@@ -379,7 +377,7 @@ class Routes(routes.Routes):
 
 		self.queue.put(cmd)
 
-		time.sleep(5)
+		bot.response.status = 303
 		bot.response.set_header('Location',
 			f'{self.root_uri}{self.app_uri}q/{query_id}')
 
