@@ -25,7 +25,7 @@
 		%if query['status'] == 'queued':
 		%if time.time() - float(query['time']) > queryTimeout:
 			<div class="alert alert-danger" role="alert">
-				This query timed out (queried@{{query['isotime']}}). Please, try again or contact the <a href="">server admin</a>.
+				This query timed out (queried@{{query['isotime']}}). Please, try again or contact the <a href="mailto:{{admin_email}}">server admin</a>.
 			</div>
 		%else:
 			<div class="alert alert-warning" role="alert">
@@ -37,7 +37,7 @@
 		%if query['status'] == 'running':
 		%if time.time() - float(query['start_time']) > queryTimeout:
 			<div class="alert alert-danger" role="alert">
-				This query timed out (started@{{query['start_isotime']}}). Please, try again or contact the <a href="">server admin</a>.
+				This query timed out (started@{{query['start_isotime']}}). Please, try again or contact the <a href="mailto:{{admin_email}}">server admin</a>.
 			</div>
 		%else:
 			<div class="alert alert-warning" role="alert">

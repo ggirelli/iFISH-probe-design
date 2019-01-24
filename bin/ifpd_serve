@@ -36,6 +36,8 @@ parser.add_argument('-s', '--static', metavar = 'port', type = str,
 	default = "%s/static/" % dirname(dirname(fp.__file__)),
 	help = 'Path to static folder (created if not found). Default: "%s"' % (
 		"%s/static/" % dirname(dirname(fp.__file__))))
+parser.add_argument('-m', '--mail', metavar = 'email', type = str,
+	default = "email@example.com", help = 'Email address of server admin.')
 
 parser.add_argument('-T', '--custom-templates', metavar = 'templateFolder',
 	type = str, help = 'Path to folder with custom templates.')
@@ -142,6 +144,7 @@ def callback(path):
 
 pdApp = sec.probe_design.App(section_path, args.static,
 		root_path, ruri_complete, 'probe-design/')
+pdApp.admin_email = args.mail
 
 # Custom routes ----------------------------------------------------------------
 

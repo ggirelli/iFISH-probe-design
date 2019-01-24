@@ -255,6 +255,8 @@ class Routes(routes.Routes):
 
 		d['queryTimeout'] = 24*60*60 # 1 day timeout
 
+		d['admin_email'] = self.admin_email
+
 		return(d)
 
 	def candidate_probe(routes, self, query_id, candidate_id):
