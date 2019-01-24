@@ -68,8 +68,8 @@ class Enquirer(threading.Thread):
 					isotimestamp = datetime.datetime.fromtimestamp(
 						timestamp).isoformat()
 					config['GENERAL']['status'] = 'running'
-					config['GENERAL']['start_time'] = f'{timestamp}'
-					config['GENERAL']['start_isotime'] = isotimestamp
+					config['WHEN']['start_time'] = f'{timestamp}'
+					config['WHEN']['start_isotime'] = isotimestamp
 					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
 						config.write(OH)
 					sp.call(cmd)
@@ -79,8 +79,8 @@ class Enquirer(threading.Thread):
 
 					logging.debug(f'Finished query "{query_id}"')
 					config['GENERAL']['status'] = 'done'
-					config['GENERAL']['done_time'] = f'{timestamp}'
-					config['GENERAL']['done_isotime'] = isotimestamp
+					config['WHEN']['done_time'] = f'{timestamp}'
+					config['WHEN']['done_isotime'] = isotimestamp
 					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
 						config.write(OH)
 					cmd = self.queue.task_done(cmd)

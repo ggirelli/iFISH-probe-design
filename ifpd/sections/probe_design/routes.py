@@ -91,6 +91,8 @@ class Routes(routes.Routes):
 
 		self.add_route('single_queries', 'post', '/single_queries')
 
+		self.add_route('hide_alert', 'post', '/hide_alert')
+
 		# Errors ---------------------------------------------------------------
 
 		self.add_route('error404', 'error', 404)
@@ -322,6 +324,27 @@ class Routes(routes.Routes):
 
 	# Form reception -----------------------------------------------------------
 
+
+	def hide_alert(routes, self):
+		'''Hide bookmark alert for a specific query.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+		'''
+
+		formData = bot.request.forms
+
+		query = Query(formData.query_id, self.qpath).data
+		config = configparser.ConfigParser()
+		configPath = os.path.join(self.qpath, f'{formData.query_id}.config')
+		with open(configPath, 'r') as IH:
+			config.read_string("".join(IH.readlines()))
+		config['GENERAL']['hidden_bookmark_alter'] = "True"
+		with open(configPath, 'w+') as OH:
+			config.write(OH)
+
+		return 'Done'
+
 	def single_query(routes, self):
 		'''Single probe query form reception route.
 
@@ -356,10 +379,12 @@ class Routes(routes.Routes):
 			'name' : formData.name,
 			'description' : formData.description,
 			'type' : 'single',
-			'time' : timestamp,
-			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
 			'cmd' : " ".join(cmd),
 			'status' : 'queued'
+		}
+		config['WHEN'] = {
+			'time' : timestamp,
+			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat()
 		}
 		config['WHERE'] = {
 			'db' : formData.database,
@@ -427,10 +452,12 @@ class Routes(routes.Routes):
 			'name' : formData.multi_name,
 			'description' : formData.multi_description,
 			'type' : 'spotting',
-			'time' : timestamp,
-			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
 			'cmd' : " ".join(cmd),
 			'status' : 'queued'
+		}
+		config['WHEN'] = {
+			'time' : timestamp,
+			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat()
 		}
 		config['WHERE'] = {
 			'db' : formData.multi_database,

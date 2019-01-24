@@ -39,6 +39,7 @@ class Query(object):
 			config = configparser.ConfigParser()
 			config.read_string("".join(IH.readlines()))
 			self.data.update(config['GENERAL'].items())
+			self.data.update(config['WHEN'].items())
 			self.data.update(config['WHERE'].items())
 			self.data.update(config['WHAT'].items())
 			self.data.update(config['HOW'].items())

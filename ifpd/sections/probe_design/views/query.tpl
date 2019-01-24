@@ -24,7 +24,7 @@
 
 		%if not 'hidden_bookmark_alter' in query.keys():
 		<div class="alert alert-dark" role="alert">
-			<b>Save the link to this page to be able get back here!</b><a class="float-right text-dark text-decoration-none" href="javascript:alert('Need to add AJAX request to hide this alert.');"><i class="fas fa-times"></i></a>
+			<b>Save the link to this page to be able get back here!</b><a class="float-right text-dark text-decoration-none" href="javascript:jQuery.post('{{app_uri}}hide_alert', {query_id:'{{query['id']}}'}, function(data) { document.location=document.location; });"><i class="fas fa-times"></i></a>
 		</div>
 		%end
 
