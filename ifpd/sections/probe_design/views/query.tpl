@@ -25,7 +25,7 @@
 
 		%if not 'hidden_bookmark_alter' in query.keys():
 		<div class="alert alert-dark" role="alert">
-			<b>Save the link to this page to be able get back here!</b><a class="float-right text-dark text-decoration-none" href="javascript:jQuery.post('{{app_uri}}hide_alert', {query_id:'{{query['id']}}'}, function(data) { document.location=document.location; });"><i class="fas fa-times"></i></a>
+			<b>Save the link to this page to be able get back here!</b>Or, save your query ID and then use the "search a query" tool in the design page to get back here.<a class="float-right text-dark text-decoration-none" href="javascript:jQuery.post('{{app_uri}}hide_alert', {query_id:'{{query['id']}}'}, function(data) { document.location=document.location; });"><i class="fas fa-times"></i></a>
 		</div>
 		%end
 
