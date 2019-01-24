@@ -70,10 +70,12 @@ refGenome = oligoDB.get_reference_genome()
 logging.info(f'Reference genome: "{refGenome}"')
 
 hasSequences = oligoDB.has_sequences()
+oligoMinDist = oligoDB.get_oligo_min_dist()
 oligoLengthRange = oligoDB.get_oligo_length_range()
 hasOverlaps = oligoDB.has_overlaps()
 logging.info(f'Contains sequences: {hasSequences}')
 logging.info(f'Contains overlaps: {hasOverlaps}')
+logging.info(f'Oligo min distance: {oligoMinDist}')
 logging.info(f'Oligo length range: {oligoLengthRange}')
 logging.info(f'Database checked.')
 

@@ -72,6 +72,10 @@ class OligoDatabase(object):
             self.config.getint('OLIGOS', 'max_length')
         )
 
+    def get_oligo_min_dist(self):
+        '''Reads consecutive oligo minimum distance from Database .config'''
+        return self.config.getint('OLIGOS', 'min_dist')
+
     def get_name(self):
         '''Reads Database name from Database .config'''
         return self.config['DATABASE']['name']
@@ -110,6 +114,14 @@ class OligoDatabase(object):
 
         assert_msg = f'found unsorted file: "{chromPath}"'
         assert all(chromData.iloc[:, 1].diff()[1:] >= 0), assert_msg
+
+        oligoMinDist = self.get_oligo_min_dist()
+        startValues = chromData.iloc[1:, 0].values
+        endValues = chromData.iloc[:-1, 1].values
+        oligoMinD_observed = min(startValues - endValues)
+        assert_msg = 'oligo min distance does not match: '
+        assert_msg += f'{oligoMinD_observed} instead of {oligoMinDist}.'
+        assert oligoMinD_observed == oligoMinDist, assert_msg
 
         oligoLengthRange = self.get_oligo_length_range()
         oligoLengthList = chromData.iloc[:, 1] - chromData.iloc[:, 0]
@@ -156,7 +168,7 @@ class OligoDatabase(object):
     def read_all_chromosomes(self, verbose):
         chromList = [d for d in os.listdir(self.dirPath)
             if not d.startswith('.')]
-        assert 1 < len(chromList), "no chromosome files found in {self.dirPath}"
+        assert 0 < len(chromList), "no chromosome files found in {self.dirPath}"
         chromList = tqdm(chromList) if verbose else chromList
 
         for chrom in chromList:
