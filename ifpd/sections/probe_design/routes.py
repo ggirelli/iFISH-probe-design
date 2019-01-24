@@ -355,6 +355,7 @@ class Routes(routes.Routes):
 		config['GENERAL'] = {
 			'name' : formData.name,
 			'description' : formData.description,
+			'type' : 'single',
 			'time' : timestamp,
 			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
 			'cmd' : " ".join(cmd),
@@ -394,36 +395,68 @@ class Routes(routes.Routes):
 			self (App): ProbeDesigner.App instance.
 		'''
 
-		fdata = bot.request.forms
+		formData = bot.request.forms
+		queriedRegion = f'{formData.multi_chromosome}:'
+		queriedRegion += f'{formData.multi_start},{formData.multi_end}'
+		query_id = f'{queriedRegion}:{time.time()}'
+		encoder = hashlib.sha256()
+		encoder.update(bytes(query_id, "utf-8"))
+		query_id = encoder.hexdigest()
 
-		# Build query command line
-		cmd = ['fprode_dbquery']
-		cmd.extend([Query.get_next_id(self.qpath, self.queue)])
-		cmd.extend([shlex.quote(fdata.multi_name)])
-		cmd.extend([shlex.quote(fdata.multi_chromosome)])
-		cmd.extend([shlex.quote(fdata.multi_start)])
-		cmd.extend([shlex.quote(fdata.multi_end)])
-		dbpath = '%s/db/%s' % (self.static_path, fdata.multi_database)
-		cmd.extend([shlex.quote(dbpath)])
-		cmd.extend(['--n_oligo', shlex.quote(fdata.multi_n_oligo)])
-		cmd.extend(['--f1_thr', shlex.quote(fdata.multi_f1_threshold)])
-		cmd.extend(['--n_probes', shlex.quote(fdata.multi_n_probes)])
-		cmd.extend(['--win_shift', shlex.quote(fdata.multi_win_shift)])
-		feat_order = []
-		feat_order.append(fdata.f1)
-		feat_order.append(fdata.f2)
-		feat_order.append(fdata.f3)
-		cmd.extend(['--feat_order', shlex.quote(','.join(feat_order))])
-		cmd.extend(['--outdir', '%s/query/' % self.static_path])
-		cmd.extend(['--description', shlex.quote(fdata.multi_description)])
+		dbPath = f'{self.static_path}/db/{formData.multi_database}'
+		oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork = False)
+		min_dist = oligoDB.get_oligo_min_dist()
 
-		# Add query to the queue
+		cmd = ['ifpd_query_set',
+			shlex.quote(queriedRegion),
+			shlex.quote(formData.multi_n_probes),
+			shlex.quote(dbPath),
+			shlex.quote(f'{self.static_path}/query/{query_id}'),
+			'--order',
+				shlex.quote(formData.f1),
+				shlex.quote(formData.f2),
+				shlex.quote(formData.f3),
+			'--filter-thr', shlex.quote(formData.multi_f1_threshold),
+			'--n-oligo', shlex.quote(formData.multi_n_oligo),
+			'--min-d', shlex.quote(f'{min_dist}'),
+			'--window-shift', shlex.quote(f'{formData.multi_win_shift}')]
+
+		config = configparser.ConfigParser()
+		timestamp = time.time()
+		config['GENERAL'] = {
+			'name' : formData.multi_name,
+			'description' : formData.multi_description,
+			'type' : 'spotting',
+			'time' : timestamp,
+			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
+			'cmd' : " ".join(cmd),
+			'status' : 'queued'
+		}
+		config['WHERE'] = {
+			'db' : formData.multi_database,
+			'region' : queriedRegion
+		}
+		config['WHAT'] = {
+			'n_oligo' : formData.multi_n_oligo,
+			'threshold' : formData.multi_f1_threshold,
+			'n_probes' : formData.multi_n_probes,
+			'window_shift' : formData.multi_win_shift
+		}
+		config['HOW'] = {
+			'f1' : formData.f1,
+			'f2' : formData.f2,
+			'f3' : formData.f3
+		}
+		configPath = os.path.join(self.static_path, 'query',
+			f'{query_id}.config')
+		with open(configPath, 'w+') as OH:
+			config.write(OH)
+
 		self.queue.put(cmd)
 
-		# Redirect
 		bot.response.status = 303
 		bot.response.set_header('Location',
-			"%s%s" % (self.root_uri, self.app_uri))
+			f'{self.root_uri}{self.app_uri}q/{query_id}')
 
 		# Output
 		return('Query received.')

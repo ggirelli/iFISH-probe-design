@@ -153,7 +153,7 @@ for o in args.order:
 assert_msg = f'first filter threshold must be a fraction: {args.filter_thr}'
 assert 0 <= args.filter_thr and 1 >= args.filter_thr, assert_msg
 assert_msg = f'window shift must be a fraction: {args.window_shift}'
-assert 0 <= args.window_shift and 1 >= args.window_shift, assert_msg
+assert 0 < args.window_shift and 1 >= args.window_shift, assert_msg
 
 assert_msg = 'negative minimum distance between consecutive oligos: '
 assert_msg += f'{args.min_d}'

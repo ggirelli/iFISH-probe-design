@@ -52,10 +52,15 @@ class Enquirer(threading.Thread):
 
 				# If the queue released a task
 				if not type(None) == type(cmd):
-					query_id = os.path.basename(cmd[3])
+					if 'ifpd_query_set' == cmd[0]:
+						outdir_id = 4
+					elif 'ifpd_query_probe' == cmd[0]:
+						outdir_id = 3
+
+					query_id = os.path.basename(cmd[outdir_id])
 
 					config = configparser.ConfigParser()
-					with open(f'{cmd[3]}.config', 'r') as IH:
+					with open(f'{cmd[outdir_id]}.config', 'r') as IH:
 						config.read_string("".join(IH.readlines()))
 
 					logging.debug(f'Running query "{query_id}"')
@@ -65,7 +70,7 @@ class Enquirer(threading.Thread):
 					config['GENERAL']['status'] = 'running'
 					config['GENERAL']['start_time'] = f'{timestamp}'
 					config['GENERAL']['start_isotime'] = isotimestamp
-					with open(f'{cmd[3]}.config', 'w+') as OH:
+					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
 						config.write(OH)
 					sp.call(cmd)
 					timestamp = time.time()
@@ -76,7 +81,7 @@ class Enquirer(threading.Thread):
 					config['GENERAL']['status'] = 'done'
 					config['GENERAL']['done_time'] = f'{timestamp}'
 					config['GENERAL']['done_isotime'] = isotimestamp
-					with open(f'{cmd[3]}.config', 'w+') as OH:
+					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
 						config.write(OH)
 					cmd = self.queue.task_done(cmd)
 

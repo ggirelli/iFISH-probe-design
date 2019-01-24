@@ -35,7 +35,7 @@
 			</div>
 		%else:
 			<div class="alert alert-warning" role="alert">
-				<a class="text-warnin" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>
+				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>&nbsp;
 				This query was queued at {{query['isotime']}}.
 			</div>
 		%end
@@ -47,7 +47,7 @@
 			</div>
 		%else:
 			<div class="alert alert-warning" role="alert">
-				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>
+				<a class="text-warning" href="{{app_uri}}q/{{query['id']}}" data-toggle="tooltip" data-placement="top" title="Refresh"><span class="fas fa-redo-alt"></span></a>&nbsp;
 				This query has been running since {{query['start_isotime']}} ({{"%.3f" % (time.time() - float(query['start_time']))}} seconds), after being queued for {{"%.3f" % (float(query['start_time']) - float(query['time']))}} seconds. {{queryTimeout}}
 			</div>
 		%end
@@ -109,6 +109,9 @@
 								<b>Time:</b> {{query['isotime']}}
 							</li>
 							<li class="list-group-item border-primary">
+								<b>Type:</b> {{query['type']}}
+							</li>
+							<li class="list-group-item border-primary">
 								<b>Database:</b> {{query['db']}}
 							</li>
 							<li class="list-group-item border-primary">
@@ -117,11 +120,20 @@
 							<li class="list-group-item border-primary">
 								<b>Feature #1 threshold:</b> {{query['threshold']}}
 							</li>
+							%if query['type'] == "single":
 							<li class="list-group-item border-primary">
 								<b>Max # output probes:</b> {{query['max_probes']}}
 							</li>
+							%else:
 							<li class="list-group-item border-primary">
-								<b>Feature order::</b> {{query['f1']}}, {{query['f2']}}, {{query['f3']}}
+								<b># of probes:</b> {{query['n_probes']}}
+							</li>
+							<li class="list-group-item border-primary">
+								<b>Windows shift:</b> {{query['window_shift']}}
+							</li>
+							%end
+							<li class="list-group-item border-primary">
+								<b>Feature order:</b> {{query['f1']}}, {{query['f2']}}, {{query['f3']}}
 							</li>
 						</ul>
 					</div>
