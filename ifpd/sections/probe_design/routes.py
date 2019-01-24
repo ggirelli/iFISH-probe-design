@@ -253,6 +253,9 @@ class Routes(routes.Routes):
 		d['query'] = Query(query_id, self.qpath).data
 		d['queryRoot'] = self.qpath
 
+		if 'done' == d['query']['status']:
+			pass
+
 		d['queryTimeout'] = 24*60*60 # 1 day timeout
 
 		d['admin_email'] = self.admin_email
