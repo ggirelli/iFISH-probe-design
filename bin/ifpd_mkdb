@@ -73,6 +73,9 @@ parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
     default = 'http://genome.ucsc.edu/cgi-bin/das/dsn',
     help = '''(advanced option) URI to UCSC DAS server.
         Default: http://genome.ucsc.edu/cgi-bin/das/''')
+parser.add_argument('--custom-config', metavar = 'config', type = str,
+    nargs = '*', help = '''Space separated "key:value" pairs to store in the
+    database .config file. No quotes needed.''')
 
 parser.add_argument('--increment-chrom-end', action = 'store_const',
     dest = 'incrementChromEnd', const = True, default = False,
@@ -193,6 +196,10 @@ config['SOURCE'] = {
     'enforced2bed3' : args.enforceBED3,
     'outDirectory' : args.O
 }
+if type(None) != type(args.custom_config):
+    config['CUSTOM'] = {}
+    config['CUSTOM'].update([tuple(x.split(":")) for x in args.custom_config])
+
 with open(os.path.join(args.O, '.config'), 'w+') as OH:
     config.write(OH)
 
