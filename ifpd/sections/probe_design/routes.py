@@ -15,9 +15,12 @@
 # DEPENDENCIES =================================================================
 
 import bottle as bot
+import hashlib
 import os
 import shlex
+import time
 
+import ifpd as fp
 from ifpd.sections import routes
 from ifpd.sections.probe_design.query import Query
 
@@ -325,24 +328,24 @@ class Routes(routes.Routes):
 			self (App): ProbeDesigner.App instance.
 		'''
 
-		fdata = bot.request.forms
-		print(fdata)
-		print(fdata.f1)
-		print(fdata.f2)
-		print(fdata.f3)
+		formData = bot.request.forms
+		queriedRegion = f'{formData.chromosome}:{formData.start},{formData.end}'
+		query_id = f'{queriedRegion}:{time.time()}'
+		encoder = hashlib.sha256()
+		encoder.update(bytes(query_id, "utf-8"))
+		query_id = encoder.hexdigest()
+		dbPath = f'{self.static_path}/db/{formData.database}'
 
-		# ! Need to automatically decide the output folder
-		query_id = 0
-
-		# Build query command line
 		cmd = ['ifpd_query_probe']
-		cmd.extend([shlex.quote(f'{fdata.chromosome}:{fdata.start},{fdata.end}')])
-		cmd.extend([shlex.quote(f'{self.static_path}/db/{fdata.database}')])
+		cmd.extend([shlex.quote(queriedRegion), shlex.quote(dbPath)])
 		cmd.extend([shlex.quote(f'{self.static_path}/query/{query_id}')])
-		cmd.extend(['--order', shlex.quote(fdata.f1), shlex.quote(fdata.f2), shlex.quote(fdata.f3)])
-		cmd.extend(['--filter-thr', shlex.quote(fdata.f1_threshold)])
-		cmd.extend(['--n-oligo', shlex.quote(fdata.n_oligo)])
-		cmd.extend(['--max-probes', shlex.quote(fdata.max_probes)])
+		cmd.extend(['--order', shlex.quote(formData.f1),
+			shlex.quote(formData.f2), shlex.quote(formData.f3)])
+		cmd.extend(['--filter-thr', shlex.quote(formData.f1_threshold)])
+		cmd.extend(['--n-oligo', shlex.quote(formData.n_oligo)])
+		cmd.extend(['--max-probes', shlex.quote(formData.max_probes)])
+
+		oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork = False)
 
 		# Query ID and description should be stored somewhere that is not
 		# related to the ifpd_query_probe script, like a central database
@@ -417,7 +420,6 @@ class Routes(routes.Routes):
 		# Submit query
 		for row in raw:
 			args = row.strip().split('\t')
-			print(args)
 
 			# Build query command line
 			cmd = ['fprode_dbquery']

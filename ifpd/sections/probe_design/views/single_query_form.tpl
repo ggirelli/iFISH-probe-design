@@ -5,12 +5,12 @@
 		<div class="card-block">
 			<h3 class="card-title">General</h3>
 			<div class="row">
-				<div class="form-group col col-xs-3">
+				<div class="form-group col col-3">
 					<label for="name">Name</label>
 					<input type="text" name="name" id="name" class="form-control" placeholder="Query name" data-toggle="tooltip" data-placement="bottom" title="Used to search for the query." />
 				</div>
 
-				<div class="form-group col col-xs-9">
+				<div class="form-group col col-9">
 					<label for="description">Description</label>
 					<textarea name="description" id="description" rows="3" class="form-control" placeholder="Query description"></textarea>
 				</div>

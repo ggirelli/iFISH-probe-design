@@ -115,7 +115,6 @@ assert_msg = 'databases with overlapping oligos are not supported yet.'
 assert not oligoDB.has_overlaps(), assert_msg
 
 assert_msg = f'at least 2 features needed, only {len(args.order)} found.'
-print(args.order)
 assert 2 <= len(args.order), assert_msg
 for o in args.order:
     assert_msg =  f'unrecognized feature "{o}". Should be one of {featureList}.'

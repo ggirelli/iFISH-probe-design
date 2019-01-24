@@ -18,7 +18,7 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single &gt; Single query</a> page to design one probe in a region of interest. Instead, use the tool at <a href="javascript:$('a[aria-controls=\'new_queries\']').click();">Single &gt; Batch</a> to run multiple queries in one go if you have multiple regions of interest. Moreover, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting</a>. More details in the corresponding page.
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe &gt; Single</a> page to design one probe in a region of interest. Instead, use the tool at <a href="javascript:$('a[aria-controls=\'new_queries\']').click();">Single Probe &gt; Batch</a> to run multiple queries in one go if you have multiple regions of interest. Moreover, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. More details in the corresponding page.
 		</div>
 
 		<div class="row">
@@ -29,18 +29,15 @@
 
 						<!-- Nav tabs -->
 						<ul class="nav nav-tabs card-header-tabs">
-							<li role="presentation" class="nav-item">
-								<a class="nav-link active" href="#index" aria-controls="index" role="tab" data-toggle="tab">Results</a>
-							</li>
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Single</a>
+								<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Single Probe</a>
 								<div class="dropdown-menu">
 									<a class="dropdown-item" href="#new_query" aria-controls="new_query" role="tab" data-toggle="tab">Query</a>
 									<a class="dropdown-item" href="#new_queries" aria-controls="new_queries" role="tab" data-toggle="tab">Batch</a>
 								</div>
 							</li>
 							<li role="presentation" class="nav-item">
-								<a class="nav-link" href="#new_multi_query" aria-controls="new_multi_query" role="tab" data-toggle="tab">Spotting</a>
+								<a class="nav-link" href="#new_multi_query" aria-controls="new_multi_query" role="tab" data-toggle="tab">Spotting Probe</a>
 							</li>
 							<li role="presentation" class="nav-item">
 								<a class="nav-link" href="#databases" aria-controls="databases" role="tab" data-toggle="tab">Databases</a>
@@ -63,13 +60,8 @@
 					<div class="card-block">
 						<div class="tab-content">
 
-							<!-- index tab -->
-							<div role="tabpanel" class="tab-pane active overflow" id="index">
-								% include(vpath + 'index_table.tpl')
-							</div>
-
 							<!-- single query tab -->
-							<div role="tabpanel" class="tab-pane overflow" id="new_query">
+							<div role="tabpanel" class="tab-pane active overflow" id="new_query">
 								% include(vpath + 'single_query_form.tpl')
 							</div>
 
