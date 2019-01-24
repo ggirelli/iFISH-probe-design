@@ -11,7 +11,7 @@
 	<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
 	<script type='text/javascript' src='{{root_uri}}js/jquery.min.js'></script>
-	<script type='text/javascript' src='{{root_uri}}js/tether.min.js'></script>
+	<script type='text/javascript' src='{{root_uri}}js/popper.min.js'></script>
 	<script type='text/javascript' src='{{root_uri}}js/bootstrap.min.js'></script>
 
 	<link rel="stylesheet" href="{{root_uri}}css/font-awesome.min.css" type="text/css" />

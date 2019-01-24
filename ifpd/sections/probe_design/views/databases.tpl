@@ -1,6 +1,56 @@
-<b>Here to download databases of oligos and get a list of available ones.</b> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+%import os
+<ul class="list-group list-group-flush">
+	<li class="list-group-item">
+		<h5>Available databases:</h5>
+		<ul class="database-list">
+			%for dbname in dblist:
+			<li>
+				<a href="#{{dbname}}">{{dbname}}</a>
+			</li>
+			%end
+		</ul>
+	</li>
+	<li class="list-group-item">
+		<div class="container-fluid row">
+			%for config in dbdata:
+			<div class="col col-12 col-md-6"><div class="card database-card">
+				<div class="card-body">
+					<h5 class="card-title"><a id="{{config['DATABASE']['name']}}">
+						{{config['DATABASE']['name']}}
+					</a></h5>
+					<h6 class="card-subtitle mb-2 text-muted">
+						<code>{{os.path.basename(config['SOURCE']['outdirectory'])}}</code>
+					</h6>
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						<b>Reference genome:</b> {{config['DATABASE']['refgenome']}}
+					</li>
+					<li class="list-group-item">
+						<b>Minimum oligo distance:</b> {{config['OLIGOS']['min_dist']}} nt
+					</li>
+					<li class="list-group-item">
+							<b>Oligo length range:</b> {{config['OLIGOS']['min_length']}}-{{config['OLIGOS']['max_length']}} nt
+					</li>
+					<li class="list-group-item">
+						<b>Overlapping oligos:</b> {{config['OLIGOS']['overlaps']}}
+					</li>
+					%for k in [k for k in config['CUSTOM'].keys() if not k in ['reference', 'url']]:
+					<li class="list-group-item">
+						<b>{{k}}:</b> {{config['CUSTOM'][k]}}
+					</li>
+					%end
+				</ul>
+				<div class="card-body">
+					%if 'reference' in config['CUSTOM'].keys():
+					<p class="card-text reference"><b>Reference: </b>{{config['CUSTOM']['reference']}}</p>
+					%end
+					%if 'url' in config['CUSTOM'].keys():
+					<a href="{{config['CUSTOM']['url']}}" class="card-link">Database link</a>
+					%end
+				</div>
+			</div></div>
+			%end
+		</div>
+	</li>
+</ul>

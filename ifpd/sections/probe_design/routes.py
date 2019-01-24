@@ -15,6 +15,7 @@
 # DEPENDENCIES =================================================================
 
 import bottle as bot
+import configparser
 import hashlib
 import os
 import shlex
@@ -223,13 +224,20 @@ class Routes(routes.Routes):
 		d['custom_root_stylesheets'] = []
 
 		# Database list
-		dbpath = '%s/db/' % self.static_path
-		d['dblist'] = next(os.walk(dbpath))[1]
+		configPathList = [os.path.join(self.static_path, 'db', p, '.config')
+			for p in next(os.walk(os.path.join(self.static_path, 'db')))[1]]
+		configPathList.sort()
+		d['dbdata'] = []
+		for configPath in configPathList:
+			with open(configPath, 'r') as IH:
+				parser = configparser.ConfigParser()
+				parser.read_string("".join(IH.readlines()))
+				d['dbdata'].append(parser)
+		d['dblist'] = [p['DATABASE']['name'] for p in d['dbdata']]
 
 		# Query list
 		d['qlist'] = []
-		qpath = self.qpath
-		qlist = [i for i in next(os.walk(qpath))[1]]
+		qlist = [i for i in next(os.walk(self.qpath))[1]]
 		qlist.sort()
 		for qid in qlist:
 			d['qlist'].append(Query.get_data(str(qid), self.qpath))

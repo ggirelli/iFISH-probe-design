@@ -70,3 +70,21 @@
 #queue {
 	margin-top: 2em;
 }
+
+.database-card {
+	margin-top: 1em;
+}
+
+.database-card .list-group-item {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: .8em;
+}
+
+.database-card .reference {
+	font-size: .8em;
+	text-align: justify;
+}
+
+.database-list {
+	margin-bottom: 1em;
+}
