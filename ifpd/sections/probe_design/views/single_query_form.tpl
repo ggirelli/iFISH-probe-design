@@ -1,8 +1,8 @@
 
 <form id="single_probe_form" action="{{app_uri}}single_query" method="post">
 
-	<div class="card card-primary card-inverse mb-3">
-		<div class="card-block">
+	<div class="card bg-primary text-white mb-3">
+		<div class="card-body">
 			<h3 class="card-title">General</h3>
 			<div class="row">
 				<div class="form-group col col-3">
@@ -18,8 +18,8 @@
 		</div>
 	</div>
 
-	<div class="card card-outline-info mb-3">
-		<div class="card-block">
+	<div class="card border-info mb-3">
+		<div class="card-body">
 			<h3 class="card-title">Where</h3>
 			<div class="row">
 				<div class="form-group col col-3">
@@ -78,8 +78,8 @@
 		</div>
 	</div>
 
-	<div class="card card-outline-info mb-3">
-		<div class="card-block">
+	<div class="card border-info mb-3">
+		<div class="card-body">
 			<h3 class="card-title">What</h3>
 
 			<div class="row">
@@ -101,8 +101,8 @@
 		</div>
 	</div>
 
-	<div id="probe-advanced" class="card card-outline-danger mb-3">
-		<div class="card-block">
+	<div id="probe-advanced" class="card border-danger mb-3">
+		<div class="card-body">
 			<h3 class="card-title">Advanced settings</h3>
 			<table class="table table-bordered tac">
 				<thead>

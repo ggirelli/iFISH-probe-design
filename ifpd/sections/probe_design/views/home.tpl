@@ -61,7 +61,7 @@
 						<div class="tab-content">
 
 							<!-- single query tab -->
-							<div role="tabpanel" class="tab-pane overflow" id="new_query">
+							<div role="tabpanel" class="tab-pane active overflow" id="new_query">
 								% include(vpath + 'single_query_form.tpl')
 							</div>
 
@@ -76,7 +76,7 @@
 							</div>
 
 							<!-- database tab -->
-							<div role="tabpanel" class="tab-pane active overflow" id="databases">
+							<div role="tabpanel" class="tab-pane overflow" id="databases">
 								% include(vpath + 'databases.tpl')
 							</div>
 						</div>
@@ -86,7 +86,7 @@
 
 			<!-- queue panel -->
 			<div id="queue" class="col col-12">
-				<div class="card card-block">
+				<div class="card">
 
 					<!-- Nav tabs -->
 					<div class="card-header card-outline-warning">
@@ -100,7 +100,7 @@
 						</ul>
 					</div>
 
-					<div class="card-block">
+					<div class="card-body">
 						<p></p>
 						<table>
 							% if 0 == len(queue.queue):

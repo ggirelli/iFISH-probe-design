@@ -1,7 +1,7 @@
 
 <form id="multi_probe_form" action="{{app_uri}}single_queries" method="post" enctype="multipart/form-data">
 
-	<div class="card-block">
+	<div class="card-body">
 
 		<div class="description">
 			<h3 class="card-title">Settings</h3>
