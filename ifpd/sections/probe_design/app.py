@@ -84,7 +84,7 @@ class App(rootApp.App):
 		self.vd['root_uri'] = root_uri
 		self.vd['vpath'] = self.vpath
 		self.vd['qpath'] = self.qpath
-		self.vd['description'] = 'FISH probe designer application.'
+		self.vd['description'] = 'iFISH probe designer application.'
 		self.vd['breadcrumbs'] = False
 
 		# Set default

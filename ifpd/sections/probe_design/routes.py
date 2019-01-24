@@ -234,12 +234,6 @@ class Routes(routes.Routes):
 			dbName = p['DATABASE']['name']
 			d['dblist'][dbName] = dbDir
 		
-		d['qlist'] = []
-		qlist = [i for i in next(os.walk(self.qpath))[1]]
-		qlist.sort()
-		for qid in qlist:
-			d['qlist'].append(Query.get_data(str(qid), self.qpath))
-		
 		return(d)
 
 	def query(routes, self, query_id):
@@ -263,7 +257,7 @@ class Routes(routes.Routes):
 		d['custom_root_stylesheets'] = []
 
 		# Query data (query folder)
-		d['query'] = Query.get_data(query_id, self.qpath)
+		d['query'] = Query(query_id, self.qpath).data
 
 		return(d)
 
@@ -361,7 +355,8 @@ class Routes(routes.Routes):
 			'name' : formData.name,
 			'description' : formData.description,
 			'time' : timestamp,
-			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat()
+			'isotime' : datetime.datetime.fromtimestamp(timestamp).isoformat(),
+			'cmd' : " ".join(cmd)
 		}
 		config['WHERE'] = {
 			'db' : formData.database,
@@ -382,15 +377,12 @@ class Routes(routes.Routes):
 		with open(configPath, 'w+') as OH:
 			config.write(OH)
 
-		# Add query to the queue
 		self.queue.put(cmd)
 
-		# Redirect
-		bot.response.status = 303
+		time.sleep(5)
 		bot.response.set_header('Location',
-			"%s%s" % (self.root_uri, self.app_uri))
+			f'{self.root_uri}{self.app_uri}q/{query_id}')
 
-		# Output
 		return('Query received.')
 
 	def multi_query(routes, self):

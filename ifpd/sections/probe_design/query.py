@@ -17,110 +17,39 @@
 
 # DEPENDENCIES =================================================================
 
+import configparser
 import numpy as np
 import os
 import pandas as pd
 
 # CLASSES ======================================================================
 
-class Query:
+class Query(object):
 	'''Single query class.'''
 
-	def get_next_id(query_path, queue):
-		'''Identify next query ID.
+	def __init__(self, query_id, query_root):
+		super(Query, self).__init__()
 
-		Args:
-			query_path (string): path to the query folder.
-			queue (Queue): a Queue object.
+		assert_msg = f'query "{query_id}" not found.'
+		assert Query.exists(query_id, query_root), assert_msg
 
-		Returns:
-			(string): the next query id.
-		'''
+		self.data = {}
+		self.data['id'] = query_id
+		with open(os.path.join(query_root, f'{query_id}.config'), 'r') as IH:
+			config = configparser.ConfigParser()
+			config.read_string("".join(IH.readlines()))
+			self.data.update(config['GENERAL'].items())
+			self.data.update(config['WHERE'].items())
+			self.data.update(config['WHAT'].items())
+			self.data.update(config['HOW'].items())
 
-		# Existing queries
-		qe = [int(x) for x in next(os.walk(query_path))[1]]
-
-		# Queued queries
-		qe.extend([int(task[1]) for task in queue.queue])
-
-		# Find next_id (fill gaps)
-		next_id = 0
-		while next_id in qe:
-			next_id += 1
-
-		# Output
-		return(str(next_id))
-
-	def get_data(query_id, query_path):
-		'''Retrieve query data.
-
-		Args:
-			query_id (string): query folder name.
-			query_path (string): path to the query folder.
-
-		Returns:
-			Dictionary containing query data.
-		'''
-
-		# Empty dictionary for output
-		d = {'query_id' : query_id}
-
-		# Check that the query exists
-		dpath = '%s%s/' % (query_path, query_id)
-		if not os.path.isdir(dpath):
-			return(d)
-
-		# Check DONE status
-		d['done'] = False
-		d['error'] = ''
-		if os.path.exists('%sDONE' % dpath):
-			d['done'] = True
-		else:
-			if os.path.exists('%sERROR' % dpath):
-				f = open('%sERROR' % dpath, 'r')
-				d['error'] = ''.join(f.readlines())
-				f.close()
-
-		# Read configuration
-		d['data'] = {}
-		d['nodata'] = False
-		if os.path.exists('%sconfig.tsv' % dpath):
-			f = open('%sconfig.tsv' % dpath, 'r')
-			for row in f.readlines():
-				row = row.strip('\r\n').split('\t')
-				d['data'][row[0]] = row[1]
-			f.close()
-		else:
-			d['nodata'] = True
-
-		# Read cmd
-		if os.path.exists('%scmd' % dpath):
-			f = open('%scmd' % dpath, 'r')
-			d['cmd'] = ''.join(f.readlines())
-			f.close()
-		else:
-			d['cmd'] = 'No command line found.'
-
-		# Read log
-		if os.path.exists('%slog' % dpath):
-			f = open('%slog' % dpath, 'r')
-			d['log'] = ''.join(f.readlines())
-			f.close()
-		else:
-			d['log'] = 'No log found'
-
-		# Read candidate table
-		if os.path.exists('%sprobes.tsv' % dpath):
-			d['candidates'] = pd.read_csv('%sprobes.tsv' % dpath, sep = '\t')
-			d['candidates'] = np.array(d['candidates']).tolist()
-		elif os.path.exists('%ssets.tsv' % dpath):
-			d['candidates'] = pd.read_csv('%ssets.tsv' % dpath, sep = '\t')
-			d['candidates'] = np.array(d['candidates']).tolist()
-		else:
-			d['candidates'] = np.array([])
-
-		# Output
-		return(d)
+	@staticmethod
+	def exists(query_id, query_root):
+		'''Check if a query exists.'''
+		#dirExists = os.path.isdir(os.path.join(query_root, query_id))
+		configExists = os.path.isfile(
+			os.path.join(query_root, f'{query_id}.config'))
+		return configExists# and dirExists
 
 # END ==========================================================================
 

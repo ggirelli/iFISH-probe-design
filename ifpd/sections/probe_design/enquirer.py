@@ -15,6 +15,7 @@
 # DEPENDENCIES =================================================================
 
 import logging
+import os
 import subprocess as sp
 import threading
 
@@ -44,26 +45,18 @@ class Enquirer(threading.Thread):
 
 		while True:
 			if not self.queue.empty():
-
-				# Retreive query settings
 				cmd = self.queue.get()
 
 				# If the queue released a task
 				if not type(None) == type(cmd):
+					query_id = os.path.basename(cmd[3])
 
-					# Start query
-					msg = 'Running query #%s' % str(cmd[1])
-					logging.debug(msg)
-
-					# Run query
+					logging.debug(f'Running query "{query_id}"')
 					sp.call(cmd)
 
-					# Finish query
-					msg = 'Finished query #%s' % str(cmd[1])
-					logging.debug(msg)
+					logging.debug(f'Finished query "{query_id}"')
 					cmd = self.queue.task_done(cmd)
 
-		# Close
 		return
 
 # END ==========================================================================

@@ -2,6 +2,21 @@ html, body {
 	padding-bottom: 3.5em;
 }
 
+#title {
+	margin-bottom: .75vw;
+	font-size: 7.5vw;
+	text-align: center;
+	font-weight: 600;
+
+	color: white;
+	background-color: black;
+	background-image: url("/images/title_background.png");
+	background-size: cover;
+	background-position: center;
+	border-radius: 6px;
+	text-shadow: 0 0 10px #323232;
+}
+
 #footer {
 	position: fixed;
 	bottom: 0;

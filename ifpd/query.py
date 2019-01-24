@@ -45,10 +45,9 @@ class OligoDatabase(object):
         assert_msg = f'missing "{configPath}" file.'
         assert os.path.isfile(configPath), assert_msg
 
-        IH = open(configPath, 'r')
-        self.config = configparser.ConfigParser()
-        self.config.read_string("".join(IH.readlines()))
-        IH.close()
+        with open(configPath, 'r') as IH:
+            self.config = configparser.ConfigParser()
+            self.config.read_string("".join(IH.readlines()))
 
         if self.hasNetwork:
             refGenome = self.get_reference_genome()

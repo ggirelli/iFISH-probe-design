@@ -7,7 +7,6 @@
 
 #title {
 	font-family: "Montserrat";
-	font-size: 5em;
 	text-align: center;
 }
 
@@ -18,8 +17,6 @@
 	text-align: center;
 }
 
-/* TABS */
-
 .nav.nav-tabs {
 	font-size: 1.5em;
 	font-weight: bold;
@@ -28,4 +25,13 @@
 .tab-content {
 	padding: 1em;
 	font-size: 1.2em;
+}
+
+.isotime {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: .75em;
+}
+
+.query_settings {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
