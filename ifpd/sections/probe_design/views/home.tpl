@@ -18,7 +18,7 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> tab to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. In the <a href="javascript:$('a[aria-controls=\'databases\']').click();">Databases</a> tab you can scroll through the available databases. To go to a previously ran query, use the <a href="javascript:$('a[aria-controls=\'search\']').click();">search</a> tool. More details in the corresponding page.
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> tab to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. In the <a href="javascript:$('a[aria-controls=\'databases\']').click();">Databases</a> tab you can scroll through the available databases. To go to a previously ran query, use the <a href="javascript:$('a[aria-controls=\'search\']').click();">search</a> tool. You can also check how many queries are currently in the <a href="javascript:$('a[aria-controls=\'queue\']').click();">Queue</a>. More details in the <a href="https://ggirelli.github.io/iFISH-probe-design/" target="_help">help</a> page.
 		</div>
 
 		<div class="row">
