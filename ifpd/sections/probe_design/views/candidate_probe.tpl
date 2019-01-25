@@ -73,7 +73,7 @@
 					<h3 class="card-title col col-12">Download as...</h3>
 					<a href="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/documents/candidate_{{candidate['id']}}.fasta/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-dna"></span>&nbsp;Fasta</button></a>
 					<a href="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/documents/candidate_{{candidate['id']}}.bed/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-bed"></span>&nbsp;Bed</button></a>
-					<a href="javascript:alert('TODO');" target="_download" class="col col-12 text-decoration-none mt-3"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-file-archive"></span>&nbsp;Zip</button></a>
+					<a href="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/download/" target="_download" class="col col-12 text-decoration-none mt-3"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-file-archive"></span>&nbsp;Zip</button></a>
 				</div>
 			</div></div>
 		</div>

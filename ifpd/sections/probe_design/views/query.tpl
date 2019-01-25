@@ -139,7 +139,7 @@
 									%end
 									<td>
 										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
-										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}/download/" target="_download" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>
 							%end
@@ -203,7 +203,7 @@
 									</td>
 									<td>
 										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
-										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
+										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}/download/" target="_download" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>
 							%end
