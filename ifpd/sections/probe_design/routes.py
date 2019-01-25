@@ -189,6 +189,19 @@ class Routes(routes.Routes):
 				f'probe_set_{candidate_id}'))
 		zipf.close()
 
+	def zipCandidateSetProbe(routes, self, query_id, candidate_id, probe_id):
+		zipDirPath = os.path.join(self.static_path, 'query', routes.zipDirName)
+		zipPath = os.path.join(zipDirPath,
+			f'{query_id}.probe_set_{candidate_id}.probe_{probe_id}.zip')
+		zipf = zipfile.ZipFile(zipPath, 'w', zipfile.ZIP_DEFLATED)
+		zipDir(
+			os.path.join(self.static_path, 'query',
+				query_id, f'probe_set_{candidate_id}', f'probe_{probe_id}'),
+			zipf,
+			os.path.join(self.static_path, 'query', query_id,
+				f'probe_set_{candidate_id}', f'probe_{probe_id}'))
+		zipf.close()
+
 	# Static files -------------------------------------------------------------
 
 	def candidate_static_file(routes, self,
@@ -352,10 +365,16 @@ class Routes(routes.Routes):
 			query_id (string): query folder name.
 			candidate_id (string): candidate folder name.
 		'''
-		ipath = '%s/query/%s/candidates/' % (self.static_path, query_id)
-		path = 'set_%s.zip' % (candidate_id)
-		outname = 'q_%s.%s' % (query_id, path)
-		return bot.static_file(path, ipath, download = outname)
+
+		routes.mkZipDir(self)
+		ipath = os.path.join(self.static_path, 'query', routes.zipDirName)
+		fName = f'{query_id}.probe_set_{candidate_id}.probe_{probe_id}.zip'
+		outname = f'query.{fName}'
+
+		if not os.path.isfile(os.path.join(ipath, fName)):
+			routes.zipCandidateSetProbe(self, query_id, candidate_id, probe_id)
+
+		return bot.static_file(fName, ipath, download = outname)
 
 	# Pages --------------------------------------------------------------------
 
