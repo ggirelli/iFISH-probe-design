@@ -145,6 +145,10 @@ class Routes(routes.Routes):
 		self.add_route('error404', 'error', 404)
 		self.add_route('error500', 'error', 500)
 
+		# AJAX requests --------------------------------------------------------
+
+		self.add_route('list_chromosomes', 'get', '/listChr/<dbDir>')
+
 		return
 
 	def mkZipDir(routes, self):
@@ -737,6 +741,15 @@ class Routes(routes.Routes):
 		return('Query received.')
 
 	# Error --------------------------------------------------------------------
+
+	# AJAX Requests ------------------------------------------------------------
+
+	def list_chromosomes(routes, self, dbDir):
+		dbPath = os.path.join(self.static_path, 'db', dbDir)
+		chrList = [x for x in os.listdir(dbPath) if not os.path.isdir(x)]
+		chrList = [x for x in chrList if not x in ['.log', '.config']]
+		chrList.sort()
+		return '{"chrList":["%s"]}' % '","'.join(chrList[::-1])
 
 # END ==========================================================================
 

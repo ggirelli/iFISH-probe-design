@@ -33,35 +33,27 @@
 					% else:
 					<input type="text" class="form-control" placeholder="No databases found." readonly/>
 					% end
+					<script type="text/javascript">
+						get_db_chrList = function(dbDir, target) {
+							$.get('{{app_uri}}listChr/'+dbDir, {}, function(data) {
+								$(target).children().remove();
+								for (var i = data['chrList'].length - 1; i >= 0; i--) {
+									chrLabel = data['chrList'][i];
+									chrOption = $('<option value="' + chrLabel + '">' + chrLabel + '</option>');
+									$(target).append(chrOption);
+								}
+							}, 'json');
+						}
+						$('#database').change(function(e) {
+							get_db_chrList($(this)[0].value, '#chromosome');
+						})
+						get_db_chrList($('#database')[0].value, '#chromosome');
+					</script>
 				</div>
 
 				<div class="form-group col col-3">
 					<label for="chromosome">Chromosome</label>
 					<select name="chromosome" id="chromosome" class="form-control">
-						<option value="chr1">Chr 1</option>
-						<option value="chr2">Chr 2</option>
-						<option value="chr3">Chr 3</option>
-						<option value="chr4">Chr 4</option>
-						<option value="chr5">Chr 5</option>
-						<option value="chr6">Chr 6</option>
-						<option value="chr7">Chr 7</option>
-						<option value="chr8">Chr 8</option>
-						<option value="chr9">Chr 9</option>
-						<option value="chr10">Chr 10</option>
-						<option value="chr11">Chr 11</option>
-						<option value="chr12">Chr 12</option>
-						<option value="chr13">Chr 13</option>
-						<option value="chr14">Chr 14</option>
-						<option value="chr15">Chr 15</option>
-						<option value="chr16">Chr 16</option>
-						<option value="chr17">Chr 17</option>
-						<option value="chr18">Chr 18</option>
-						<option value="chr19">Chr 19</option>
-						<option value="chr20">Chr 20</option>
-						<option value="chr21">Chr 21</option>
-						<option value="chr22">Chr 22</option>
-						<option value="chrX">Chr X</option>
-						<option value="chrY">Chr Y</option>
 					</select>
 				</div>
 

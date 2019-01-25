@@ -18,7 +18,7 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> page to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. More details in the corresponding page.
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> tab to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. In the <a href="javascript:$('a[aria-controls=\'databases\']').click();">Databases</a> tab you can scroll through the available databases. To go to a previously ran query, use the <a href="#search">Search a query</a> tool at the bottom of this page. More details in the corresponding page.
 		</div>
 
 		<div class="row">
@@ -73,7 +73,7 @@
 			</div>
 
 			<!-- query search panel -->
-			<div id="search" class="col col-12">
+			<div id="search" class="col col-12"><a id="search"></a>
 				<div class="card">
 
 					<!-- Nav tabs -->
