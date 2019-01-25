@@ -1,0 +1,45 @@
+
+/* Probe Designer single-probe stylesheet */
+
+#main {
+	padding-top: 1em;
+}
+
+#title {
+	font-family: "Montserrat";
+	text-align: center;
+}
+
+#description {
+	margin: 2em 0;
+	font-size: 1.4em;
+	line-height: 2em;
+	text-align: center;
+}
+
+.nav.nav-tabs {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.tab-content {
+	padding: 1em;
+	font-size: 1.2em;
+}
+
+.isotime {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: .75em;
+}
+
+.query_settings, .candidate_settings {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+#candidate_table, #candidate_figure_table {
+	text-align: center;
+}
+
+#candidate_figure_table td {
+	vertical-align: middle;
+}

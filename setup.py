@@ -12,12 +12,13 @@ from setuptools import setup, find_packages
 with open('README.md', "r") as f:
 	long_description = f.read()
 
-setup(name='fish_prode',
-	version='1.1.0.post2',
-	description='''A FISH probe design web interface.''',
+
+setup(name='ifpd',
+	version='2.0.0',
+	description='''An iFISH probe design pipeline, with web interface included.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
-	url='https://github.com/ggirelli/fish-prode',
+	url='https://github.com/ggirelli/iFISH-Probe-Design',
 	author='Gabriele Girelli',
 	author_email='gabriele.girelli@scilifelab.se',
 	license='MIT',
@@ -29,19 +30,34 @@ setup(name='fish_prode',
 		'Programming Language :: Python :: 3 :: Only',
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
-	packages=["fish_prode", "fish_prode.sections", "fish_prode.sections.probe_design"],
+	packages=["ifpd", "ifpd.sections", "ifpd.sections.probe_design"],
 	install_requires=[
 		"bottle>=0.12.13",
-		"matplotlib>=2.2.2",
+		'ggc>=0.0.3',
+		"matplotlib>=3.0.0",
 		"numpy>=1.14.2",
 		"pandas>=0.22.0",
 		"paste>=2.0.3",
 		"scipy>=1.0.0"
 	],
-	scripts=["bin/fprode_dbextract", "bin/fprode_dbquery", "bin/fprode_serve"],
+	scripts=[
+		"bin/ifpd_mkdb",
+		"bin/ifpd_dbchk",
+		"bin/ifpd_query_probe",
+		"bin/ifpd_query_set",
+		"bin/ifpd_serve"
+	],
 	package_data={
-		'fish_prode': ['css/bootstrap.css', 'css/*', 'fonts/*', 'js/*', 'views/*'],
-		'fish_prode.sections.probe_design': ['css/*', 'documents/*', 'views/*']
+		'ifpd': [
+			'interface/css/bootstrap.css',
+			'interface/css/*',
+			'interface/fonts/*',
+			'interface/images/*',
+			'interface/js/*',
+			'interface/views/*'
+		],
+		'ifpd.sections.probe_design': [
+			'css/*', 'documents/*', 'views/*']
 	},
 	test_suite="nose.collector",
 	tests_require=["nose"],

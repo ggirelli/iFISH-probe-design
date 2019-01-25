@@ -1,0 +1,164 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# ------------------------------------------------------------------------------
+# 
+# Author: Gabriele Girelli
+# Email: gigi.ga90@gmail.com
+# Version: 0.0.1
+# Description: Web-Server
+# 
+# TODO:
+# 	- Fix behavior when run from different working directory. (and in sections)
+# 
+# ------------------------------------------------------------------------------
+
+
+# DEPENDENCIES =================================================================
+
+import argparse
+import bottle as bot
+import ifpd as fp
+import ifpd.sections as sec
+import os
+from os.path import dirname
+import paste
+
+# INPUT ========================================================================
+
+parser = argparse.ArgumentParser(description = 'Run WebServer.')
+
+parser.add_argument('-u', '--url', metavar = 'url', type = str,
+	default = '0.0.0.0', help = 'URL hosting the web server. Default: 0.0.0.0')
+parser.add_argument('-p', '--port', metavar = 'port', type = int,
+	default = 8080, help = 'Web server port. Default: 8080')
+parser.add_argument('-s', '--static', metavar = 'port', type = str,
+	default = "%s/static/" % dirname(dirname(fp.__file__)),
+	help = 'Path to static folder (created if not found). Default: "%s"' % (
+		"%s/static/" % dirname(dirname(fp.__file__))))
+parser.add_argument('-m', '--mail', metavar = 'email', type = str,
+	default = "email@example.com", help = 'Email address of server admin.')
+
+parser.add_argument('-T', '--custom-templates', metavar = 'templateFolder',
+	type = str, help = 'Path to folder with custom templates.')
+parser.add_argument('-H', '--homepage', metavar = 'homepageTemplate',
+	type = str, help = '''Name of homepage template. Homepage is off by default.
+	Use "-H home_default" to turn default homepage template on.
+	When using a custom homepage template, -T must be specified.''')
+
+parser.add_argument('-R', '--custom-routes', metavar = 'routesFile',
+	type = str, help = 'Path to custom routes Python file.')
+
+args = parser.parse_args()
+
+# INIT =========================================================================
+
+# Server params
+root_path = "%s/" % dirname(fp.__file__)
+ruri_complete = 'http://%s:%d/' % (args.url, args.port)
+section_path = "%s/" % dirname(sec.__file__)
+
+# App title
+title = 'iFISH'
+
+bot.TEMPLATE_PATH.append(root_path)
+bot.TEMPLATE_PATH.append('%s/interface/views/' % root_path)
+if type(None) != type(args.custom_templates):
+	assert_msg = f"folder not found: '{args.custom_templates}'"
+	assert os.path.isdir(args.custom_templates), assert_msg
+	bot.TEMPLATE_PATH.append(args.custom_templates)
+
+assert_msg = "folder expected, file found: %s" % args.static
+assert not os.path.isfile(args.static), assert_msg
+
+if not os.path.isdir(args.static):
+	os.mkdir(args.static)
+if not os.path.isdir("%s/db" % args.static):
+	os.mkdir("%s/db" % args.static)
+if not os.path.isdir("%s/query" % args.static):
+	os.mkdir("%s/query" % args.static)
+
+if not type(None) == type(args.homepage):
+	if not "home_default" == args.homepage:
+		assert_msg = "-T option required when using -H."
+		assert type(None) != type(args.custom_templates), assert_msg
+	home_template = args.homepage
+	home_status = True
+else:
+	home_template = "home_default"
+	home_status = False
+
+if not type(None) == type(args.custom_routes):
+	assert_msg = f"file not found: {args.custom_routes}"
+	assert os.path.isfile(args.custom_routes), assert_msg
+
+# Start root app
+root = bot.Bottle()
+
+# ROUTES =======================================================================
+
+# Home
+@root.route('/')
+@bot.view(home_template)
+def index():
+	d = {}
+	d['custom_stylesheets'] = ['home.css']
+	d['title'] = title
+	d['description'] = title
+	d['home_status'] = home_status
+	return d
+
+# 404 Error
+@root.error(404)
+def error404(error):
+	return 'Nothing here, sorry :('
+
+# Static files -----------------------------------------------------------------
+
+# CSS files
+@root.route('/css/<path>')
+def callback(path):
+    return bot.static_file(path, '%s/interface/css/' % root_path)
+
+# JS files
+@root.route('/js/<path>')
+def callback(path):
+    return bot.static_file(path, '%s/interface/js/' % root_path)
+
+# Fonts files
+@root.route('/fonts/<path>')
+def callback(path):
+    return bot.static_file(path, '%s/interface/fonts/' % root_path)
+
+# Images
+@root.route('/images/<path>')
+def callback(path):
+    return bot.static_file(path, '%s/interface/images/' % root_path)
+
+# Documents
+@root.route('/documents/<path>')
+def callback(path):
+    return bot.static_file(path, '%s/interface/documents/' % root_path)
+
+# Load Sections ----------------------------------------------------------------
+
+pdApp = sec.probe_design.App(section_path, args.static,
+		root_path, ruri_complete, 'probe-design/')
+pdApp.admin_email = args.mail
+
+# Custom routes ----------------------------------------------------------------
+
+if not type(None) == type(args.custom_routes):
+	exec(open(args.custom_routes).read())
+
+# Mount Sections ---------------------------------------------------------------
+
+root.mount('probe-design/', pdApp)
+
+# RUN ==========================================================================
+
+root.run(host = args.url, port = args.port, debug = True, server = 'paste')
+
+# END ==========================================================================
+
+################################################################################

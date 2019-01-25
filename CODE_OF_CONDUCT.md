@@ -1,4 +1,4 @@
-# FISH-ProDe Code of Conduct
+# iFISH-Probe-Design Code of Conduct
 
 ## Our Pledge
 

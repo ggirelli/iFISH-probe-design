@@ -1,0 +1,84 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# ------------------------------------------------------------------------------
+# 
+# Author: Gabriele Girelli
+# Email: gigi.ga90@gmail.com
+# Date: 2018-11-29
+# Description: prepare database compatible with FISH-ProDe query script and
+#                            associated web-interface.
+# 
+# ------------------------------------------------------------------------------
+
+
+
+# ==============================================================================
+
+import argparse
+import ifpd as fp
+import logging
+import sys
+
+parser = argparse.ArgumentParser(description = '''
+Checks integrity of a database. Specifically:
+- a ".config" file must be present
+    * Chromosome length must correspond to the reference genome's.
+    * Overlapping status must match.
+    * Reference genome must be available at UCSC.
+        (requires internet connection)
+    * Sequence from reference genome can be verified.
+        (optional, use --check-seq, requires internet connection)
+- At least one non-empty chromosome file
+    * Appropriate format (2-3 columns).
+    * Positions must be sorted.
+    * An ODN must end after it starts.
+    * No ODNs can start from the same position.
+    * No ODNs can be totally included in another one.
+''', formatter_class = argparse.RawDescriptionHelpFormatter)
+
+parser.add_argument('dbDirPath', type = str, default = '.',
+        help = '''Path to database directory.''')
+
+parser.add_argument('--ucsc-das-uri', metavar = 'dasURI', type = str,
+        default = 'http://genome.ucsc.edu/cgi-bin/das/',
+        help = '''(advanced option) URI to UCSC DAS server.
+                Default: http://genome.ucsc.edu/cgi-bin/das/''')
+
+parser.add_argument('--check-seq', action = 'store_const',
+        dest = 'enforceBED3', const = True, default = False,
+        help = 'Consider only first 3 columns of the bed file.')
+parser.add_argument('--no-net', action = 'store_const',
+        dest = 'hasNetwork', const = False, default = True,
+        help = 'Skip checks that require internet connection.')
+
+version = "0.0.1"
+parser.add_argument('--version', action = 'version',
+        version = f'{sys.argv[0]} v{version}')
+
+args = parser.parse_args()
+
+formatString = '%(asctime)-25s %(name)s %(levelname)-8s %(message)s'
+logging.basicConfig(level = logging.DEBUG, format = formatString)
+
+logging.info('Reading database...')
+oligoDB = fp.query.OligoDatabase(args.dbDirPath, hasNetwork = args.hasNetwork)
+oligoDB.read_all_chromosomes(True)
+logging.info(f'Database name: "{oligoDB.get_name()}"')
+
+refGenome = oligoDB.get_reference_genome()
+logging.info(f'Reference genome: "{refGenome}"')
+
+hasSequences = oligoDB.has_sequences()
+oligoMinDist = oligoDB.get_oligo_min_dist()
+oligoLengthRange = oligoDB.get_oligo_length_range()
+hasOverlaps = oligoDB.has_overlaps()
+logging.info(f'Contains sequences: {hasSequences}')
+logging.info(f'Contains overlaps: {hasOverlaps}')
+logging.info(f'Oligo min distance: {oligoMinDist}')
+logging.info(f'Oligo length range: {oligoLengthRange}')
+logging.info(f'Database checked.')
+
+# END ==========================================================================
+
+################################################################################

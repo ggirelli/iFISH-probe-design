@@ -1,0 +1,74 @@
+
+/* General stylesheet. */
+
+html, body {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 3.5em;
+	width: 100%;
+
+	font-size: 14px;
+
+	font-family: "Open Sans", sans-serif;
+}
+
+.lobster {
+	font-family: "Montserrat", sans-serif;
+}
+
+.raleway {
+	font-family: "Open Sans", sans-serif;
+}
+
+.tac {
+	text-align: center;
+}
+
+.overflow {
+	overflow: auto;
+}
+
+.overflow::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.overflow::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.ws_wrap {
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+
+	background-color: #f8f8f8;
+	padding: 2em;
+}
+
+#footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	margin-top: 1.5em;
+	padding: 0.5em;
+
+	background-color: white;
+	border-top: 1px solid #bababa;
+
+	text-align: center;
+}
+
+.table.text-center thead th {
+	text-align: center;
+}
+
+.break-all {
+	white-space: normal;
+	white-space: -moz-normal;
+	white-space: -o-normal;
+	-ms-word-break: break-all;
+	word-break: break-all;
+}

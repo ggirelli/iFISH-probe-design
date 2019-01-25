@@ -1,0 +1,64 @@
+
+/* Probe Designer home stylesheet */
+
+#main {
+	padding-top: 1em;
+}
+
+/* TABS */
+
+.nav.nav-tabs {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.tab-content {
+	padding: 1em;
+	font-size: 1.2em;
+}
+
+/* FORM */
+
+#single_probe_form .wrap_submit,
+#multi_probe_form .wrap_submit {
+	margin: 1em 0;
+	text-align: right;
+}
+
+#multi_probe_form .description {
+	margin-bottom: 1em;
+}
+
+#multi_probe_form .description table th {
+	text-align: center;
+}
+
+#multi_probe_form .description table td {
+	padding: 0.5em 0;
+	text-align: center;
+	vertical-align: middle;
+}
+
+/* SEARCH */
+
+#query_search {
+	margin-bottom: 1em;
+}
+
+.database-card {
+	margin-top: 1em;
+}
+
+.database-card .list-group-item, #queue {
+	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: .8em;
+}
+
+.database-card .reference {
+	font-size: .8em;
+	text-align: justify;
+}
+
+.database-list {
+	margin-bottom: 1em;
+}
