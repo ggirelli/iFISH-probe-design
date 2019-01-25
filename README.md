@@ -1,6 +1,6 @@
 # iFISH-Probe-Design v2.0.0
 
-**iFISH-Probe-Design** (`ifpd`) is a Python3 package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-Probe-Design/) for more details.
+**iFISH-Probe-Design** (`ifpd`) is a Python3 package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
 
 Installation
 ---
