@@ -47,23 +47,23 @@
 		</div></div>
 	
 		<div class="row">
-			<div class="col col-6"><div class="card border-primary">
+			<div class="col col-6"><div class="card border-info">
 				<div class="card-body">
 					<h3 class="card-title">Details</h3>
 					<ul class="list-group list-group-flush candidate_settings">
-						<li class="list-group-item border-primary">
+						<li class="list-group-item border-info">
 							<b>Region: </b>{{probe['chrom']}}:{{probe['chromstart']}}-{{probe['chromend']}}
 						</li>
-						<li class="list-group-item border-primary">
+						<li class="list-group-item border-info">
 							<b># oligos: </b>{{probe['noligo']}}
 						</li>
-						<li class="list-group-item border-primary">
+						<li class="list-group-item border-info">
 							<b>Centrality: </b>{{probe['centrality']}}
 						</li>
-						<li class="list-group-item border-primary">
+						<li class="list-group-item border-info">
 							<b>Size: </b>{{probe['size']}}
 						</li>
-						<li class="list-group-item border-primary">
+						<li class="list-group-item border-info">
 							<b>Spread: </b>{{probe['spread']}}
 						</li>
 					</ul>
