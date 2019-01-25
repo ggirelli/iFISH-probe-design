@@ -19,6 +19,18 @@ sudo -H pip3 install .
 
 For a nice guide on installing packages served through PyPI, check out [this tutorial](https://packaging.python.org/tutorials/installing-packages/).
 
+Requirements
+---
+
+**iFISH-Probe-Designer** is fully implemented in Python3, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3 on your machine.
+
+If you install this package using `pip3` (as explained [above](#installation)), then all required libraries are also automatically installed. Here is a list (with version) of the required libraries:
+
+* `bottle>=0.12.13` and `paste>=2.0.3`: to run the web server interface.
+* `ggc>=0.0.3`: for functionalities common to all my packages.
+* `matplotlib>=3.0.0`: to plot.
+* `numpy>=1.14.2`, `pandas>=0.22.0`, and `scipy>=1.0.0`: for data manipulation.
+
 Usage
 ---
 
