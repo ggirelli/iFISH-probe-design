@@ -18,7 +18,7 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> tab to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. In the <a href="javascript:$('a[aria-controls=\'databases\']').click();">Databases</a> tab you can scroll through the available databases. To go to a previously ran query, use the <a href="#search">Search a query</a> tool at the bottom of this page. More details in the corresponding page.
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="javascript:$('a[aria-controls=\'new_query\']').click();">Single Probe</a> tab to design one probe in a region of interest. Instead, to query for a number of probes in a single region of interest use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').click();">Spotting Probe</a>. In the <a href="javascript:$('a[aria-controls=\'databases\']').click();">Databases</a> tab you can scroll through the available databases. To go to a previously ran query, use the <a href="javascript:$('a[aria-controls=\'search\']').click();">search</a> tool. More details in the corresponding page.
 		</div>
 
 		<div class="row">
@@ -37,6 +37,12 @@
 							</li>
 							<li role="presentation" class="nav-item">
 								<a class="nav-link" href="#databases" aria-controls="databases" role="tab" data-toggle="tab">Databases</a>
+							</li>
+							<li role="presentation" class="nav-item">
+								<a class="nav-link" href="#queue" aria-controls="queue" role="tab" data-toggle="tab">Queue</a>
+							</li>
+							<li role="presentation" class="nav-item">
+								<a class="nav-link" href="#search" aria-controls="search" role="tab" data-toggle="tab"><span class="fas fa-search"></span></a>
 							</li>
 							<li rolw="presentation" class="nav-item">
 								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
@@ -67,67 +73,38 @@
 							<div role="tabpanel" class="tab-pane overflow" id="databases">
 								% include(vpath + 'databases.tpl')
 							</div>
+
+							<div role="tabpanel" class="tab-pane overflow" id="queue">
+								<ul class="list-group"></ul>
+								<p class="mt-3 text-right"><a href="javascript:getQueueStatus('#queue>.list-group');" class="fas fa-redo text-decoration-none"></a></p>
+							</div>
+							<script type="text/javascript">
+								getQueueStatus = function(target) {
+									$.get('{{app_uri}}queueStatus', {}, function(data) {
+										$(target).children().remove();
+										if ( 0 == data['queue'].length ) {
+											$(target).prepend($('<li class="list-group-item">The queue is currently empty.</li>'));
+											return
+										}
+										for (var i = data['queue'].length - 1; i >= 0; i--) {
+											taskID = data['queue'][i];
+											$(target).prepend($('<li class="list-group-item"><b>' + (i+1) + ':</b> ' + taskID + '</li>'));
+										}
+									}, 'json');
+								}
+								getQueueStatus('#queue>.list-group');
+							</script>
+
+							<div role="tabpanel" class="tab-pane overflow" id="search">
+								<form action="javascript:document.location='{{app_uri}}q/'+$('#query_id_search')[0].value;">
+									<input id="query_id_search" class="form-control" type="text" name="search_query_by_id" placeholder="Insert your query ID and press enter." />
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- query search panel -->
-			<div id="search" class="col col-12"><a id="search"></a>
-				<div class="card">
-
-					<!-- Nav tabs -->
-					<div class="card-header border-warning">
-						<ul class="nav nav-tabs card-header-tabs" role="tablist">
-							<li role="presentation" class="nav-item"><a class="nav-link active" >Search a query</a></li>
-						</ul>
-					</div>
-
-					<div class="card-body">
-						<form action="javascript:document.location='{{app_uri}}q/'+$('#query_id_search')[0].value;">
-							<input id="query_id_search" class="form-control" type="text" name="search_query_by_id" placeholder="Insert your query ID and press enter." />
-						</form>
-					</div>
-
-				</div>
-			</div>
-
-			<!-- queue panel -->
-			<div id="queue" class="col col-12">
-				<div class="card">
-
-					<!-- Nav tabs -->
-					<div class="card-header border-success">
-						<ul class="nav nav-tabs card-header-tabs" role="tablist">
-							<li role="presentation" class="nav-item"><a class="nav-link active" href="#queue" aria-controls="queue" role="tab" data-toggle="tooltip" data-placement="top" title="Here you can find the queries in the queue (i.e., waiting to run).">Queue</a></li>
-							<li rolw="presentation" class="nav-item ml-auto">
-								<a class="nav-link text-success" href="{{app_uri}}" data-toggle="tooltip" data-placement="top" title="Refresh">
-									<span class="fas fa-redo-alt"></span>
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<div class="card-body">
-						<p></p>
-						<table>
-							% if 0 == len(queue.queue):
-							<tr>
-								<td>The queue is currently empty.</td>
-							</tr>
-							% end
-							% for i in range(len(queue.queue)):
-							<tr>
-								<td>
-									{{i + 1}}: Query #{{queue.queue[i][1]}} - {{queue.queue[i][2]}}
-								</td>
-							</tr>
-							% end
-						</table>
-					</div>
-
-				</div>
-			</div>
 		</div>
 	</div>
 </div>

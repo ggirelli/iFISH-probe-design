@@ -148,6 +148,7 @@ class Routes(routes.Routes):
 		# AJAX requests --------------------------------------------------------
 
 		self.add_route('list_chromosomes', 'get', '/listChr/<dbDir>')
+		self.add_route('queueStatus', 'get', '/queueStatus')
 
 		return
 
@@ -748,8 +749,22 @@ class Routes(routes.Routes):
 		dbPath = os.path.join(self.static_path, 'db', dbDir)
 		chrList = [x for x in os.listdir(dbPath) if not os.path.isdir(x)]
 		chrList = [x for x in chrList if not x in ['.log', '.config']]
+		if 0 == len(chrList): return '{"chrList":[]}'
 		chrList.sort()
 		return '{"chrList":["%s"]}' % '","'.join(chrList[::-1])
+
+	def queueStatus(routes, self):
+		taskList = []
+		for task in self.queue.queue:
+			if 'ifpd_query_set' == task[0]:
+				outdir_id = 4
+			elif 'ifpd_query_probe' == task[0]:
+				outdir_id = 3
+			query_id = os.path.basename(task[outdir_id])
+			data = Query(query_id, self.qpath).data
+			taskList.append(os.path.basename(task[1]) + f' @{data["isotime"]}')
+		if 0 == len(taskList): return '{"queue":[]}'
+		return '{"queue": ["%s"]}' % '", "'.join(taskList)
 
 # END ==========================================================================
 

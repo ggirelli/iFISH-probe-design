@@ -45,15 +45,11 @@
 	margin-bottom: 1em;
 }
 
-#queue, #search {
-	margin-top: 2em;
-}
-
 .database-card {
 	margin-top: 1em;
 }
 
-.database-card .list-group-item {
+.database-card .list-group-item, #queue {
 	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 	font-size: .8em;
 }
