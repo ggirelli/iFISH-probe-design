@@ -81,73 +81,67 @@
 				</div>
 
 				<div class="form-group col col-4" data-toggle="tooltip" data-placement="bottom" title="%range around best value.">
-					<label for="f1_threshold">Feature #1 threshold<sup>2</sup></label>
+					<label for="f1_threshold">First feature threshold<sup>1</sup></label>
 					<input type="number" name="f1_threshold" id="f1_threshold" class="form-control" placeholder=0.1 value=0.1 min="0" max="1" step="0.0000001" />
 				</div>
 
 				<div class="form-group col col-4" data-toggle="tooltip" data-placement="bottom" title="Set to -1 to retrieve all probes.">
-					<label for="max_probes">Max output probes<sup>1</sup></label>
+					<label for="max_probes">Max output probes<sup>2</sup></label>
 					<input type="number" name="max_probes" id="max_probes" class="form-control" placeholder=5 value=5 min=-1 />
 				</div>
 			</div>
+
+			<p><small><sup>2</sup> The more probe candidates you output, the longer the query will take.</small></p>
 		</div>
 	</div>
 
 	<div id="probe-advanced" class="card border-danger mb-3">
 		<div class="card-body">
 			<h3 class="card-title">Advanced settings</h3>
-			<table class="table table-bordered tac">
+			<table class="table table-bordered text-center">
 				<thead>
-					<th class='tac'>Feature</th>
-					<th class='tac'>
+					<th>Feature</th>
+					<th>Use</th>
+					<th>
 						Size<br />
 						<small>(minimize)</small>
 					</th>
-					<th class='tac'>
+					<th>
 						Centrality<br />
 						<small>(maximize)</small>
 					</th>
-					<th class='tac'>
+					<th>
 						Spread<br />
-						<small>(homogeneous)</small>
+						<small>(maximize)</small>
 					</th>
 				</thead>
 				<tr>
-					<td>
-						#1, select<sup>2</sup>
-					</td>
+					<td>First<sup>1</sup></td>
+					<td>Filter probe candidates.</td>
 					<td><input class='radio-feature' type="radio" name='f1' value='size' checked /></td>
 					<td><input class='radio-feature' type="radio" name='f1' value='centrality' /></td>
 					<td><input class='radio-feature' type="radio" name='f1' value='spread' /></td>
 				</tr>
 				<tr>
-					<td>
-						#2, rank
-					</td>
+					<td>Second</td>
+					<td>Rank probe andidates.</td>
 					<td><input class='radio-feature' type="radio" name='f2' value='size' /></td>
 					<td><input class='radio-feature' type="radio" name='f2' value='centrality' /></td>
 					<td><input class='radio-feature' type="radio" name='f2' value='spread' checked /></td>
 				</tr>
 				<tr>
-					<td>
-						#3
-					</td>
+					<td>Third</td>
+					<td><i>Not used.</i></td>
 					<td><input class='radio-feature' type="radio" name='f3' value='size' /></td>
 					<td><input class='radio-feature' type="radio" name='f3' value='centrality' checked /></td>
 					<td><input class='radio-feature' type="radio" name='f3' value='spread' /></td>
 				</tr>
 			</table>
+			<p><small><sup>1</sup> Candidate probes are selected based on the first feature, in the range <code class="text-danger">best_f1_value&plusmn;(best_f1_value · threshold)</code>.</small></p>
 		</div>
 	</div>
 
-	<div class="wrap_submit">
-		<input type="submit" class="btn btn-success" />
-	</div>
-
-	<div class="col-xs-12">
-		<p><small><sup>1</sup> The more probe candidates you want in your output, the longer generating plots will take.</small></p>
-		<p><small><sup>2</sup> Candidates will be selected based on feature #1, in a range <code>&plusmn;(best_f1_value · threshold)</code>.</small></p>
-	</div>
+	<input type="submit" class="btn btn-success btn-block btn-lg" />
 
 </form>
 
