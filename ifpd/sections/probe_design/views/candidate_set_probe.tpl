@@ -14,30 +14,31 @@
 				<li class="breadcrumb-item"><a href="/">Home</a></li>
 				<li class="breadcrumb-item"><a href="/probe-design/">Design</a></li>
 				<li class="breadcrumb-item"><a href="{{app_uri}}q/{{query['id']}}">Query: {{query['id']}}</a></li>
-				<li class="breadcrumb-item" aria-current="page">Candidate: {{candidate['id']}}</li>
+				<li class="breadcrumb-item"><a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}">Candidate: {{candidate['id']}}</a></li>
+				<li class="breadcrumb-item" aria-current="page">Probe: {{probe['id']}}</li>
 			</ol>
 		</nav>
 		%end
 		
 		<div class="container-fluid p-0"><div class="card mb-3">
-			<div class="card-header">Candidate #{{candidate['id']}}</div>
+			<div class="card-header">Probe #{{probe['id']}}</div>
 			<div class="card-body">
 				<table>
 					<tbody>
 						<tr>
 							<td colspan="3">
-								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/images/probe.png" alt="Candidate #{{candidate['id']}}, probe" />
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/images/probe.png" alt="Probe #{{probe['id']}}, probe" />
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/images/window.png" alt="Candidate #{{candidate['id']}}, window" />
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/images/window.png" alt="Probe #{{probe['id']}}, window" />
 							</td>
 							<td>
-								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/images/oligo.png" alt="Candidate #{{candidate['id']}}, oligo" />
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/images/oligo.png" alt="Probe #{{probe['id']}}, oligo" />
 							</td>
 							<td>
-								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/images/distance.png" alt="Candidate #{{candidate['id']}}, distance" />
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/images/distance.png" alt="Probe #{{probe['id']}}, distance" />
 							</td>
 						</tr>
 					</tbody>
@@ -51,19 +52,19 @@
 					<h3 class="card-title">Details</h3>
 					<ul class="list-group list-group-flush candidate_settings">
 						<li class="list-group-item border-primary">
-							<b>Region: </b>{{candidate['chrom']}}:{{candidate['chromstart']}}-{{candidate['chromend']}}
+							<b>Region: </b>{{probe['chrom']}}:{{probe['chromstart']}}-{{probe['chromend']}}
 						</li>
 						<li class="list-group-item border-primary">
-							<b># oligos: </b>{{candidate['noligo']}}
+							<b># oligos: </b>{{probe['noligo']}}
 						</li>
 						<li class="list-group-item border-primary">
-							<b>Centrality: </b>{{candidate['centrality']}}
+							<b>Centrality: </b>{{probe['centrality']}}
 						</li>
 						<li class="list-group-item border-primary">
-							<b>Size: </b>{{candidate['size']}}
+							<b>Size: </b>{{probe['size']}}
 						</li>
 						<li class="list-group-item border-primary">
-							<b>Spread: </b>{{candidate['spread']}}
+							<b>Spread: </b>{{probe['spread']}}
 						</li>
 					</ul>
 				</div>
@@ -71,8 +72,8 @@
 			<div class="col col-6"><div class="card">
 				<div class="card-body row">
 					<h3 class="card-title col col-12">Download as...</h3>
-					<a href="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/documents/candidate_{{candidate['id']}}.fasta/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-dna"></span>&nbsp;Fasta</button></a>
-					<a href="{{app_uri}}q/{{query['id']}}/c/{{candidate['id']}}/documents/candidate_{{candidate['id']}}.bed/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-bed"></span>&nbsp;Bed</button></a>
+					<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/documents/probe_{{probe['id']}}.fasta/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-dna"></span>&nbsp;Fasta</button></a>
+					<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{probe['id']}}/documents/probe_{{probe['id']}}.bed/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-bed"></span>&nbsp;Bed</button></a>
 					<a href="javascript:alert('TODO');" target="_download" class="col col-12 text-decoration-none mt-3"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-file-archive"></span>&nbsp;Zip</button></a>
 				</div>
 			</div></div>

@@ -48,25 +48,32 @@ class Routes(routes.Routes):
 		dname = ('<dname:re:(images|documents)>',)
 		route = '/q/<query_id>/c/<candidate_id>/%s/<path>' % dname
 		self.add_route('candidate_static_file', 'route', route)
+		route = '/q/<query_id>/download/'
+		self.add_route('query_download', 'route', route)
+
+		route = '/q/<query_id>/c/<candidate_id>/documents/'
+		route += '<path:re:.*>/download/'
+		self.add_route('candidate_static_file_download', 'route', route)
+		route = '/q/<query_id>/c/<candidate_id>/download/'
+		self.add_route('candidate_download', 'route', route)
 
 		dname = ('<dname:re:(images|documents)>',)
 		route = '/q/<query_id>/cs/<candidate_id>/%s/<path>' % dname
 		self.add_route('candidate_set_static_file', 'route', route)
-
-		route = '/q/<query_id>/c/<candidate_id>/documents/<path:re:.*>/download/'
-		self.add_route('candidate_static_file_download', 'route', route)
-
-		route = '/q/<query_id>/cs/<candidate_id>/documents/<path:re:.*>/download/'
+		route = '/q/<query_id>/cs/<candidate_id>/documents/'
+		route += '<path:re:.*>/download/'
 		self.add_route('candidate_set_static_file_download', 'route', route)
-
-		route = '/q/<query_id>/download/'
-		self.add_route('query_download', 'route', route)
-
-		route = '/q/<query_id>/c/<candidate_id>/download/'
-		self.add_route('candidate_download', 'route', route)
 
 		route = '/q/<query_id>/cs/<candidate_id>/download/'
 		self.add_route('candidate_set_download', 'route', route)
+
+		dname = ('<dname:re:(images|documents)>',)
+		route = '/q/<query_id>/cs/<candidate_id>/p/<probe_id>/%s/<path>' % dname
+		self.add_route('candidate_set_probe_static_file', 'route', route)
+		route = '/q/<query_id>/cs/<candidate_id>/p/<probe_id>/documents/'
+		route += '<path:re:.*>/download/'
+		self.add_route('candidate_set_probe_static_file_download',
+			'route', route)
 
 		# Pages ----------------------------------------------------------------
 
@@ -81,8 +88,12 @@ class Routes(routes.Routes):
 		self.add_route('candidate_probe', 'view', 'candidate_probe.tpl')
 
 		uri = '/q/<query_id>/cs/<candidate_id>'
-		self.add_route('candidate_probe_set', 'route', uri)
-		self.add_route('candidate_probe_set', 'view', 'candidate_probe_set.tpl')
+		self.add_route('candidate_set', 'route', uri)
+		self.add_route('candidate_set', 'view', 'candidate_set.tpl')
+
+		uri = '/q/<query_id>/cs/<candidate_id>/p/<probe_id>'
+		self.add_route('candidate_set_probe', 'route', uri)
+		self.add_route('candidate_set_probe', 'view', 'candidate_set_probe.tpl')
 
 		# Forms ----------------------------------------------------------------
 
@@ -118,21 +129,6 @@ class Routes(routes.Routes):
 			self.static_path, query_id, candidate_id)
 		return(bot.static_file(path, ipath))
 
-	def candidate_set_static_file(routes, self,
-		query_id, candidate_id, dname, path):
-		'''Access candidate static files.
-
-		Args:
-			self (App): ProbeDesigner.App instance.
-			query_id (string): query folder name.
-			candidate_id (string): candidate folder name.
-			dname (string): file type.
-			path (string): file name.
-		'''
-		ipath = '%s/query/%s/probe_set_%s/' % (
-			self.static_path, query_id, candidate_id)
-		return(bot.static_file(path, ipath))
-
 	def candidate_static_file_download(routes, self,
 		query_id, candidate_id, path):
 		'''Download candidate static files.
@@ -149,6 +145,21 @@ class Routes(routes.Routes):
 		outname = '%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
+	def candidate_set_static_file(routes, self,
+		query_id, candidate_id, dname, path):
+		'''Access candidate static files.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+			query_id (string): query folder name.
+			candidate_id (string): candidate folder name.
+			dname (string): file type.
+			path (string): file name.
+		'''
+		ipath = '%s/query/%s/probe_set_%s/' % (
+			self.static_path, query_id, candidate_id)
+		return(bot.static_file(path, ipath))
+
 	def candidate_set_static_file_download(routes, self,
 		query_id, candidate_id, path):
 		'''Download candidate static files.
@@ -163,6 +174,37 @@ class Routes(routes.Routes):
 		ipath = '%s/query/%s/probe_set_%s/' % (
 			self.static_path, query_id, candidate_id)
 		outname = '%s.%s' % (query_id, path)
+		return(bot.static_file(path, ipath, download = outname))
+
+	def candidate_set_probe_static_file(routes, self,
+		query_id, candidate_id, probe_id, dname, path):
+		'''Access candidate static files.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+			query_id (string): query folder name.
+			candidate_id (string): candidate folder name.
+			dname (string): file type.
+			path (string): file name.
+		'''
+		ipath = '%s/query/%s/probe_set_%s/probe_%s/' % (
+			self.static_path, query_id, candidate_id, probe_id)
+		return(bot.static_file(path, ipath))
+
+	def candidate_set_probe_static_file_download(routes, self,
+		query_id, candidate_id, probe_id, path):
+		'''Download candidate static files.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+			query_id (string): query folder name.
+			candidate_id (string): candidate folder name.
+			dname (string): file type.
+			path (string): file name.
+		'''
+		ipath = '%s/query/%s/probe_set_%s/probe_%s/' % (
+			self.static_path, query_id, candidate_id, probe_id)
+		outname = '%s.probe_set_%s.%s' % (query_id, candidate_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
 	def query_download(routes, self,
@@ -302,7 +344,7 @@ class Routes(routes.Routes):
 
 		return(d)
 
-	def candidate_probe_set(routes, self, query_id, candidate_id):
+	def candidate_set(routes, self, query_id, candidate_id):
 		'''Candidate output page.
 
 		Args:
@@ -319,8 +361,45 @@ class Routes(routes.Routes):
 		
 		d['query'] = Query(query_id, self.qpath).data
 		d['queryRoot'] = self.qpath
+		d['query']['candidate_table'] = pd.read_csv(
+			os.path.join(self.qpath, query_id, "set_candidates.tsv"), "\t")
 
 		d['candidate'] = {'id' : candidate_id}
+
+		return(d)
+
+	def candidate_set_probe(routes, self, query_id, candidate_id, probe_id):
+		'''Candidate output page.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+			query_id (string): query folder name.
+			candidate_id (string): candidate folder name.
+		'''
+
+		d = self.vd
+
+		d['title'] = '%s Query: %s' % (self.tprefix, query_id)
+		d['custom_stylesheets'] = ['query.css', 'style.css']
+		d['custom_root_stylesheets'] = []
+		
+		d['query'] = Query(query_id, self.qpath).data
+		d['queryRoot'] = self.qpath
+		d['query']['candidate_table'] = pd.read_csv(
+			os.path.join(self.qpath, query_id, "set_candidates.tsv"), "\t")
+
+		d['candidate'] = {'id' : candidate_id}
+
+		d['probe'] = {'id' : probe_id}
+		configPath = os.path.join(self.qpath, query_id,
+			f"probe_set_{candidate_id}", f"probe_{probe_id}",
+			f"probe_{probe_id}.config")
+		with open(configPath, 'r') as IH:
+			config = configparser.ConfigParser()
+			config.read_string("".join(IH.readlines()))
+			d['probe'].update(config['REGION'].items())
+			d['probe'].update(config['PROBE'].items())
+			d['probe'].update(config['FEATURES'].items())
 
 		return(d)
 

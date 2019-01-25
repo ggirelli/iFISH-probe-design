@@ -172,7 +172,7 @@
 										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/c/{{rowi}}/images/oligo.png" alt="Candidate #{{rowi}}, oligo" />
 									</td>
 									<td>
-										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="{{app_uri}}q/{{query['id']}}/c/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
 										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>
@@ -202,7 +202,7 @@
 										<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}/images/distr.png" alt="Candidate #{{rowi}}, distr" />
 									</td>
 									<td>
-										<a href="" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
+										<a href="{{app_uri}}q/{{query['id']}}/cs/{{rowi}}" class="fas fa-external-link-square-alt" data-toggle="tooltip" data-placement="top" title="Open candidate #{{rowi}}"></a>&nbsp;
 										<a href="" class="fas fa-download" data-toggle="tooltip" data-placement="top" title="Download candidate #{{rowi}}"></a>
 									</td>
 								</tr>
