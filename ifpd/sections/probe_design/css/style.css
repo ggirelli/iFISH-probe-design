@@ -17,6 +17,14 @@ html, body {
 	text-shadow: 0 0 10px #323232;
 }
 
+
+@media screen and (min-width: 1200px) {
+  #title {
+    font-size: 4vw;
+    margin-bottom: 1.5vw;
+  }
+}
+
 #footer {
 	position: fixed;
 	bottom: 0;
