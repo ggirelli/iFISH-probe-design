@@ -32,7 +32,7 @@
 	font-size: .75em;
 }
 
-.query_settings {
+.query_settings, .candidate_settings {
 	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 

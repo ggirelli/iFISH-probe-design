@@ -144,9 +144,9 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = '%s/query/%s/candidates/probe_%s/' % (
+		ipath = '%s/query/%s/candidate_%s/' % (
 			self.static_path, query_id, candidate_id)
-		outname = 'q_%s.%s' % (query_id, path)
+		outname = '%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
 	def candidate_set_static_file_download(routes, self,
@@ -160,9 +160,9 @@ class Routes(routes.Routes):
 			dname (string): file type.
 			path (string): file name.
 		'''
-		ipath = '%s/query/%s/candidates/set_%s/' % (
+		ipath = '%s/query/%s/probe_set_%s/' % (
 			self.static_path, query_id, candidate_id)
-		outname = 'q_%s.%s' % (query_id, path)
+		outname = '%s.%s' % (query_id, path)
 		return(bot.static_file(path, ipath, download = outname))
 
 	def query_download(routes, self,
@@ -291,6 +291,14 @@ class Routes(routes.Routes):
 		d['queryRoot'] = self.qpath
 
 		d['candidate'] = {'id' : candidate_id}
+		configPath = os.path.join(self.qpath, query_id,
+			f"candidate_{candidate_id}", f"candidate_{candidate_id}.config")
+		with open(configPath, 'r') as IH:
+			config = configparser.ConfigParser()
+			config.read_string("".join(IH.readlines()))
+			d['candidate'].update(config['REGION'].items())
+			d['candidate'].update(config['PROBE'].items())
+			d['candidate'].update(config['FEATURES'].items())
 
 		return(d)
 
