@@ -38,10 +38,5 @@ License
 
 ```
 MIT License
-<<<<<<< HEAD
-Copyright (c) 2017-2018 Gabriele Girelli
-```
-=======
 Copyright (c) 2016-2019 Gabriele Girelli
 ```
->>>>>>> dev
