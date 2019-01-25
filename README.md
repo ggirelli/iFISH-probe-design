@@ -1,26 +1,32 @@
 # iFISH-Probe-Design v2.0.0
 
-**iFISH-Probe-Design** is a Python3 package suite of tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface to simplify the selection and remove any need for programming skills.
+**iFISH-Probe-Design** (`ifpd`) is a Python3 package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills.
 
-Read the [documentation](https://ggirelli.github.io/iFISH-Probe-Design/) for more details.
+Read the online [documentation](https://ggirelli.github.io/iFISH-Probe-Design/) for more details.
+
+Requirements
+---
+
+* `Python3`
+* `pip3`
 
 Installation
 ---
 
-Install from pypi with `sudo -H pip3 install ifpd`, and that's it! That's as easy as it gets.
+If you have Python3 and pip3 installed on your computer, you can simply run `sudo -H pip3 install ifpd` on a terminal. That's it! As easy as it gets.
 
 You can also install from github (any point in history, although we suggest to stick with realease tags) as follows:
 
 ```bash
-git clone https://github.com/ggirelli/ifish-probe-design/
-cd ifish-probe-design
-sudo -H pip3 install -e .
+git clone https://github.com/ggirelli/iFISH-probe-design/
+cd iFISH-probe-design
+sudo -H pip3 install .
 ```
 
 Usage
 ---
 
-More details on how to run **iFISH-Probe-Design** are available in the [documentation](https://ggirelli.github.io/iFISH-probe-design/usage).
+More details on how to run **iFISH-Probe-Design** are available in the online [documentation](https://ggirelli.github.io/iFISH-probe-design/usage).
 
 Contributing
 ---
@@ -32,5 +38,5 @@ License
 
 ```
 MIT License
-Copyright (c) 2017-2018 Gabriele Girelli
+Copyright (c) 2016-2019 Gabriele Girelli
 ```

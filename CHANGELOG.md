@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+### ...
+- ...
+
+## [2.0.0] - 2019-01-25
 ### Added
 - `bioext` module for biological file extension methods.
     + `UCSCbed` class to read files in UCSC bed format.
@@ -32,9 +36,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     + Query ID now handled server-side, for easier standalone script execution.
     + Region of interest now passed as `chrN:XXX,YYY`, for convenience.
     + Query name and description now handled only server-side, i.e., removed as input parameters of the query scripts.
+- Refined user interface.
+- Queue in web interface now reports region and isotimestamp for each queued query.
+- Queries can be reached by knowing their ID only.
+- Using newer version of JavaScript libraries.
 
 ### Removed
 - `fprode_dbextract`
+- Single probe batch query interface.
+- Query table from interface.
 
 
 

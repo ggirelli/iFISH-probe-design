@@ -13,8 +13,8 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='ifpd',
-	version='1.1.0.post1',
-	description='''A FISH probe design web interface.''',
+	version='2.0.0',
+	description='''An iFISH probe design pipeline, with web interface included.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
 	url='https://github.com/ggirelli/iFISH-Probe-Design',
