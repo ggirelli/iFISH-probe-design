@@ -22,18 +22,52 @@ import os
 import pandas as pd
 import shlex
 import time
+import zipfile
 
 import ifpd as fp
 from ifpd.sections import routes
 from ifpd.sections.probe_design.query import Query
 
-# CLASSES ======================================================================
+# ==============================================================================
+
+def zipFile(path, ziph, root = None):
+	'''Zips a file.
+	Args:
+		path (string): file path.
+		ziph (Zipfile): zipfile handler.
+	Returns:
+		None.
+	'''
+	assert os.path.isfile(path), 'file expected.'
+	oldRoot = ""
+	new_path = path
+	if not type(None) == type(root):
+		oldRoot = os.path.commonpath([root, path])
+		if 0 != len(oldRoot):
+			if new_path.startswith(oldRoot):
+				new_path = new_path[len(oldRoot):]
+	ziph.write(path, new_path)
+
+def zipDir(path, ziph, mainRoot = None):
+	'''Zips a directory. Based on https://goo.gl/GeCPVm.
+	Args:
+		path (string): directory path.
+		ziph (Zipfile): zipfile handler.
+	Returns:
+		None.
+	'''
+
+	assert os.path.isdir(path), 'folder expected.'
+	for root, dirs, files in os.walk(path):
+		for file in files:
+			zipFile(os.path.join(root, file), ziph, mainRoot)
 
 class Routes(routes.Routes):
 	'''Routes class.'''
 	
 	# Empty routes dictionary
 	data = {}
+	zipDirName = 'zips'
 
 	def __init__(self):
 		'''
@@ -45,12 +79,12 @@ class Routes(routes.Routes):
 
 		# Static files ---------------------------------------------------------
 
-		dname = ('<dname:re:(images|documents)>',)
-		route = '/q/<query_id>/c/<candidate_id>/%s/<path>' % dname
-		self.add_route('candidate_static_file', 'route', route)
 		route = '/q/<query_id>/download/'
 		self.add_route('query_download', 'route', route)
 
+		dname = ('<dname:re:(images|documents)>',)
+		route = '/q/<query_id>/c/<candidate_id>/%s/<path>' % dname
+		self.add_route('candidate_static_file', 'route', route)
 		route = '/q/<query_id>/c/<candidate_id>/documents/'
 		route += '<path:re:.*>/download/'
 		self.add_route('candidate_static_file_download', 'route', route)
@@ -63,7 +97,6 @@ class Routes(routes.Routes):
 		route = '/q/<query_id>/cs/<candidate_id>/documents/'
 		route += '<path:re:.*>/download/'
 		self.add_route('candidate_set_static_file_download', 'route', route)
-
 		route = '/q/<query_id>/cs/<candidate_id>/download/'
 		self.add_route('candidate_set_download', 'route', route)
 
@@ -74,6 +107,8 @@ class Routes(routes.Routes):
 		route += '<path:re:.*>/download/'
 		self.add_route('candidate_set_probe_static_file_download',
 			'route', route)
+		route = '/q/<query_id>/cs/<candidate_id>/p/<probe_id>/download/'
+		self.add_route('candidate_set_probe_download', 'route', route)
 
 		# Pages ----------------------------------------------------------------
 
@@ -111,6 +146,22 @@ class Routes(routes.Routes):
 		self.add_route('error500', 'error', 500)
 
 		return
+
+	def mkZipDir(routes, self):
+		zipDirPath = os.path.join(self.static_path, 'query', routes.zipDirName)
+		if not os.path.isdir(zipDirPath):
+			os.mkdir(zipDirPath)
+
+	def zipQuery(routes, self, query_id):
+		zipDirPath = os.path.join(self.static_path, 'query', routes.zipDirName)
+		zipPath = os.path.join(zipDirPath, f'{query_id}.zip')
+		zipf = zipfile.ZipFile(zipPath, 'w', zipfile.ZIP_DEFLATED)
+		zipDir(os.path.join(self.static_path, 'query', query_id), zipf,
+			os.path.join(self.static_path, 'query'))
+		zipFile(os.path.join(self.static_path, 'query',
+			f'{query_id}.config'), zipf,
+			os.path.join(self.static_path, 'query'))
+		zipf.close()
 
 	# Static files -------------------------------------------------------------
 
@@ -215,10 +266,16 @@ class Routes(routes.Routes):
 			self (App): ProbeDesigner.App instance.
 			query_id (string): query folder name.
 		'''
-		ipath = '%s/query/%s/' % (self.static_path, query_id)
-		path = '%s.zip' % query_id
-		outname = 'q_%s' % path
-		return(bot.static_file(path, ipath, download = outname))
+
+		routes.mkZipDir(self)
+		ipath = os.path.join(self.static_path, 'query', routes.zipDirName)
+		fName = '%s.zip' % query_id
+		outname = 'query.%s' % fName
+
+		if not os.path.isfile(os.path.join(ipath, fName)):
+			routes.zipQuery(self, query_id)
+
+		return(bot.static_file(fName, ipath, download = outname))
 
 	def candidate_download(routes, self,
 		query_id, candidate_id):
@@ -236,6 +293,20 @@ class Routes(routes.Routes):
 
 	def candidate_set_download(routes, self,
 		query_id, candidate_id):
+		'''Download compressed candidate output.
+
+		Args:
+			self (App): ProbeDesigner.App instance.
+			query_id (string): query folder name.
+			candidate_id (string): candidate folder name.
+		'''
+		ipath = '%s/query/%s/candidates/' % (self.static_path, query_id)
+		path = 'set_%s.zip' % (candidate_id)
+		outname = 'q_%s.%s' % (query_id, path)
+		return bot.static_file(path, ipath, download = outname)
+
+	def candidate_set_probe_download(routes, self,
+		query_id, candidate_id, probe_id):
 		'''Download compressed candidate output.
 
 		Args:

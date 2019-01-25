@@ -285,6 +285,15 @@
 			</div>
 		</div>
 
+		<div class="row"><div class="col col-12">
+			<div class="card"><div class="card-body">
+				<a href="{{app_uri}}q/{{query['id']}}/download/" target="_download" class="text-decoration-none">
+					<button class="btn btn-lg btn-block btn-success"><span class="fas fa-download"></span>&nbsp;Download</button>
+				</a>
+				<small><b>Note! </b>The first time you click this button, it might take a few moments to generate the compressed folder.</small>
+			</div></div>
+		</div></div>
+
 	</div>
 </div>
 
