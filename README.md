@@ -4,12 +4,6 @@
 
 Read the online [documentation](https://ggirelli.github.io/iFISH-Probe-Design/) for more details.
 
-Requirements
----
-
-* `Python3`
-* `pip3`
-
 Installation
 ---
 
@@ -22,6 +16,8 @@ git clone https://github.com/ggirelli/iFISH-probe-design/
 cd iFISH-probe-design
 sudo -H pip3 install .
 ```
+
+For a nice guide on installing packages served through PyPI, check out [this tutorial](https://packaging.python.org/tutorials/installing-packages/).
 
 Usage
 ---
