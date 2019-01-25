@@ -43,6 +43,16 @@ class Enquirer(threading.Thread):
 		# Close
 		return
 
+	def readQueryConfig(self, queryDir):
+		config = configparser.ConfigParser()
+		with open(f'{queryDir}.config', 'r') as IH:
+			config.read_string("".join(IH.readlines()))
+		return config
+
+	def writeQueryConfig(self, queryDir, config):
+		with open(f'{queryDir}.config', 'w+') as OH:
+			config.write(OH)
+
 	def run(self):
 		'''Run one query from the queue.'''
 
@@ -59,30 +69,27 @@ class Enquirer(threading.Thread):
 
 					query_id = os.path.basename(cmd[outdir_id])
 
-					config = configparser.ConfigParser()
-					with open(f'{cmd[outdir_id]}.config', 'r') as IH:
-						config.read_string("".join(IH.readlines()))
 
 					logging.debug(f'Running query "{query_id}"')
 					timestamp = time.time()
 					isotimestamp = datetime.datetime.fromtimestamp(
 						timestamp).isoformat()
+					config = self.readQueryConfig(cmd[outdir_id])
 					config['GENERAL']['status'] = 'running'
 					config['WHEN']['start_time'] = f'{timestamp}'
 					config['WHEN']['start_isotime'] = isotimestamp
-					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
-						config.write(OH)
+					self.writeQueryConfig(cmd[outdir_id], config)
+
 					sp.call(cmd)
 					timestamp = time.time()
 					isotimestamp = datetime.datetime.fromtimestamp(
 						timestamp).isoformat()
-
 					logging.debug(f'Finished query "{query_id}"')
+					config = self.readQueryConfig(cmd[outdir_id])
 					config['GENERAL']['status'] = 'done'
 					config['WHEN']['done_time'] = f'{timestamp}'
 					config['WHEN']['done_isotime'] = isotimestamp
-					with open(f'{cmd[outdir_id]}.config', 'w+') as OH:
-						config.write(OH)
+					self.writeQueryConfig(cmd[outdir_id], config)
 					cmd = self.queue.task_done(cmd)
 
 		return

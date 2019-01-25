@@ -134,7 +134,7 @@ class Routes(routes.Routes):
 
 		self.add_route('single_query', 'post', '/single_query')
 
-		self.add_route('multi_query', 'post', '/multi_query')
+		self.add_route('spotting_query', 'post', '/spotting_query')
 
 		self.add_route('single_queries', 'post', '/single_queries')
 
@@ -622,7 +622,7 @@ class Routes(routes.Routes):
 
 		return('Query received.')
 
-	def multi_query(routes, self):
+	def spotting_query(routes, self):
 		'''Multi probe query form reception route.
 
 		Args:

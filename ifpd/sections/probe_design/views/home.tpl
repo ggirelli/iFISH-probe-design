@@ -61,7 +61,7 @@
 							</div>
 
 							<div role="tabpanel" class="tab-pane overflow" id="new_multi_query">
-								% include(vpath + 'multi_query_form.tpl')
+								% include(vpath + 'spotting_query_form.tpl')
 							</div>
 
 							<div role="tabpanel" class="tab-pane overflow" id="databases">

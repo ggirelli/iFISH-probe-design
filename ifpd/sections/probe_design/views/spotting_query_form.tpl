@@ -1,5 +1,5 @@
 
-<form id="multi_probe_form" action="{{app_uri}}multi_query" method="post">
+<form id="multi_probe_form" action="{{app_uri}}spotting_query" method="post">
 	<div class="card bg-primary text-white mb-3">
 		<div class="card-body">
 			<h3 class="card-title">General</h3>

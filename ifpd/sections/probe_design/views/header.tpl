@@ -13,6 +13,7 @@
 	<script type='text/javascript' src='{{root_uri}}js/jquery.min.js'></script>
 	<script type='text/javascript' src='{{root_uri}}js/popper.min.js'></script>
 	<script type='text/javascript' src='{{root_uri}}js/bootstrap.min.js'></script>
+	<script type='text/javascript' src='{{root_uri}}js/clipboard.min.js'></script>
 
 	<link rel="stylesheet" href="{{root_uri}}css/font-awesome.min.css" type="text/css" />
 	<link rel="stylesheet" href="{{root_uri}}css/bootstrap.min.css" type="text/css" />
