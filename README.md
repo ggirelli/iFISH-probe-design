@@ -1,4 +1,7 @@
-# FISH-ProDe v1.1.0.post1
+**IMPORTANT! The `fish-prode` Python package has been renamed [`ifpd`](https://pypi.org/project/ifpd/). Check there for newer versions.**
+
+
+# FISH-ProDe v1.1.0.post2
 
 **FISH Pro**be **De**sign (**FISH-ProDe**, pronounced "pro‧de", "brave" or "valiant" in *italian*) is a Python3 package suite of tools for selection of complementary oligonucleotides to build FISH probes. It also includes a web interface to simplify the selection and remove any need for programming skills.
 
