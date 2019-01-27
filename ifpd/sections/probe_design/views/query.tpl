@@ -14,6 +14,9 @@
 		%if breadcrumbs:
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
+				%if not type(None) == type(menu_template):
+					%include(menu_template)
+				%end
 				<li class="breadcrumb-item"><a href="/">Home</a></li>
 				<li class="breadcrumb-item"><a href="/probe-design/">Design</a></li>
 				<li class="breadcrumb-item break-all" aria-current="page">Query: {{query['id']}}</li>
