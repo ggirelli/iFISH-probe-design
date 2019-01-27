@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 ### Added
 - Option for cookie consent banner.
+- Menu advanced options.
+
+### Changed
+- Moved link to close bookmark alert to the right.
 
 
 
