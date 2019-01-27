@@ -11,7 +11,7 @@
 		%if breadcrumbs:
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
-				%if not type(None) == type(menu_template)
+				%if not type(None) == type(menu_template):
 					%include(menu_template)
 				%end
 				<li class="breadcrumb-item"><a href="/">Home</a></li>
