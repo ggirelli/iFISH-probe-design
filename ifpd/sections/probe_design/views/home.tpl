@@ -48,7 +48,7 @@
 								<a class="nav-link" href="#search" aria-controls="search" role="tab" data-toggle="tab"><span class="fas fa-search"></span></a>
 							</li>
 							<li rolw="presentation" class="nav-item">
-								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/interface/" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/interface" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
 									<span class="fas fa-info-circle"></span>
 								</a>
 							</li>
