@@ -86,6 +86,7 @@ class App(rootApp.App):
 		self.vd['qpath'] = self.qpath
 		self.vd['description'] = 'iFISH probe designer application.'
 		self.vd['breadcrumbs'] = False
+		self.vd['menu_template'] = None
 		self.vd['SHOW_COOKIE_CONSENT_BANNER'] = False
 
 		# Set default
