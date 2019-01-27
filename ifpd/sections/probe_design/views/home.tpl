@@ -44,8 +44,8 @@
 							<li role="presentation" class="nav-item">
 								<a class="nav-link" href="#queue" aria-controls="queue" role="tab" data-toggle="tab">Queue</a>
 							</li>
-							<li role="presentation" class="nav-item">
-								<a class="nav-link" href="#search" aria-controls="search" role="tab" data-toggle="tab" data-toggle="tooltip" data-placement="top" title="Search a query"><span class="fas fa-search"></span></a>
+							<li role="presentation" class="nav-item" data-toggle="tooltip" data-placement="top" title="Search a query">
+								<a class="nav-link" href="#search" aria-controls="search" role="tab" data-toggle="tab"><span class="fas fa-search"></span></a>
 							</li>
 							<li rolw="presentation" class="nav-item">
 								<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/interface" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
