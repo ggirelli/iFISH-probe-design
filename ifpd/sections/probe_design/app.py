@@ -50,7 +50,6 @@ class App(rootApp.App):
 	vd = {}
 	BUF_SIZE = 0
 	MAX_CURR = 1
-	SHOW_COOKIE_CONSENT_BANNER = False
 
 	def __init__(self, section_path, static_path,
 		root_path, root_uri, app_uri,
@@ -87,6 +86,7 @@ class App(rootApp.App):
 		self.vd['qpath'] = self.qpath
 		self.vd['description'] = 'iFISH probe designer application.'
 		self.vd['breadcrumbs'] = False
+		self.vd['SHOW_COOKIE_CONSENT_BANNER'] = False
 
 		# Set default
 		if not type(None) == type(MAX_CURR):
