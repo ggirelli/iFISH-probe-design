@@ -50,6 +50,7 @@ class App(rootApp.App):
 	vd = {}
 	BUF_SIZE = 0
 	MAX_CURR = 1
+	SHOW_COOKIE_CONSENT_BANNER = False
 
 	def __init__(self, section_path, static_path,
 		root_path, root_uri, app_uri,
