@@ -33,6 +33,7 @@ setup(name='ifpd',
 	install_requires=[
 		"bottle>=0.12.13",
 		'ggc>=0.0.3',
+		'joblib>=0.11',
 		"matplotlib>=3.0.0",
 		"numpy>=1.14.2",
 		"pandas>=0.22.0",
