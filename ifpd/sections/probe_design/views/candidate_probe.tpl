@@ -66,7 +66,7 @@
 							<b>Size: </b>{{candidate['size']}}
 						</li>
 						<li class="list-group-item border-primary">
-							<b>Spread: </b>{{candidate['spread']}}
+							<b>Homogeneity: </b>{{candidate['homogeneity']}}
 						</li>
 					</ul>
 				</div>

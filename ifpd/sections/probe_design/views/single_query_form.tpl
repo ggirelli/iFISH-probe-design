@@ -5,12 +5,12 @@
 		<div class="card-body">
 			<h3 class="card-title">General</h3>
 			<div class="row">
-				<div class="form-group col col-3">
+				<div class="form-group col col-12 col-md-3">
 					<label for="name">Name</label>
 					<input type="text" name="name" id="name" class="form-control" placeholder="Query name" data-toggle="tooltip" data-placement="bottom" title="Used to search for the query." />
 				</div>
 
-				<div class="form-group col col-9">
+				<div class="form-group col col-12 col-md-9">
 					<label for="description">Description</label>
 					<textarea name="description" id="description" rows="3" class="form-control" placeholder="Query description"></textarea>
 				</div>
@@ -22,7 +22,7 @@
 		<div class="card-body">
 			<h3 class="card-title">Where</h3>
 			<div class="row">
-				<div class="form-group col col-3">
+				<div class="form-group col col-12 col-md-3">
 					<label for="database">Database</label>
 					% if 0 != len(dblist):
 					<select name="database" id="database" class="form-control">
@@ -51,18 +51,18 @@
 					</script>
 				</div>
 
-				<div class="form-group col col-3">
+				<div class="form-group col col-12 col-md-3">
 					<label for="chromosome">Chromosome</label>
 					<select name="chromosome" id="chromosome" class="form-control">
 					</select>
 				</div>
 
-				<div class="form-group col col-3">
+				<div class="form-group col col-12 col-md-3">
 					<label for="start">Start position</label>
 					<input type="number" name="start" id="start" class="form-control" placeholder="0" value=0 min=0 />
 				</div>
 
-				<div class="form-group col col-3">
+				<div class="form-group col col-12 col-md-3">
 					<label for="end">End position</label>
 					<input type="number" name="end" id="end" class="form-control" placeholder="0" value=0 min=0 />
 				</div>
@@ -75,17 +75,17 @@
 			<h3 class="card-title">What</h3>
 
 			<div class="row">
-				<div class="form-group col col-4">
+				<div class="form-group col col-12 col-md-4">
 					<label for="n_oligo"># Oligomers</label>
 					<input type="number" name="n_oligo" id="n_oligo" class="form-control" placeholder=48 value=48 min="1" />
 				</div>
 
-				<div class="form-group col col-4" data-toggle="tooltip" data-placement="bottom" title="%range around best value.">
+				<div class="form-group col col-12 col-md-4" data-toggle="tooltip" data-placement="bottom" title="%range around best value.">
 					<label for="f1_threshold">First feature threshold<sup>1</sup></label>
 					<input type="number" name="f1_threshold" id="f1_threshold" class="form-control" placeholder=0.1 value=0.1 min="0" max="1" step="0.0000001" />
 				</div>
 
-				<div class="form-group col col-4" data-toggle="tooltip" data-placement="bottom" title="Set to -1 to retrieve all probes.">
+				<div class="form-group col col-12 col-md-4" data-toggle="tooltip" data-placement="bottom" title="Set to -1 to retrieve all probes.">
 					<label for="max_probes">Max output probes<sup>2</sup></label>
 					<input type="number" name="max_probes" id="max_probes" class="form-control" placeholder=5 value=5 min=-1 />
 				</div>
@@ -111,7 +111,7 @@
 						<small>(maximize)</small>
 					</th>
 					<th>
-						Spread<br />
+						Homogeneity<br />
 						<small>(maximize)</small>
 					</th>
 				</thead>
@@ -120,21 +120,21 @@
 					<td>Filter probe candidates.</td>
 					<td><input class='radio-feature' type="radio" name='f1' value='size' checked /></td>
 					<td><input class='radio-feature' type="radio" name='f1' value='centrality' /></td>
-					<td><input class='radio-feature' type="radio" name='f1' value='spread' /></td>
+					<td><input class='radio-feature' type="radio" name='f1' value='homogeneity' /></td>
 				</tr>
 				<tr>
 					<td>Second</td>
 					<td>Rank probe andidates.</td>
 					<td><input class='radio-feature' type="radio" name='f2' value='size' /></td>
 					<td><input class='radio-feature' type="radio" name='f2' value='centrality' /></td>
-					<td><input class='radio-feature' type="radio" name='f2' value='spread' checked /></td>
+					<td><input class='radio-feature' type="radio" name='f2' value='homogeneity' checked /></td>
 				</tr>
 				<tr>
 					<td>Third</td>
 					<td><i>Not used.</i></td>
 					<td><input class='radio-feature' type="radio" name='f3' value='size' /></td>
 					<td><input class='radio-feature' type="radio" name='f3' value='centrality' checked /></td>
-					<td><input class='radio-feature' type="radio" name='f3' value='spread' /></td>
+					<td><input class='radio-feature' type="radio" name='f3' value='homogeneity' /></td>
 				</tr>
 			</table>
 			<p><small><sup>1</sup> Candidate probes are selected based on the first feature, in the range <code class="text-danger">best_f1_value&plusmn;(best_f1_value · threshold)</code>.</small></p>
@@ -172,7 +172,7 @@ $('#single_probe_form .radio-feature').change(function(e) {
 
 	// Find empty row
 	var erow = ''
-	$.each(['size', 'centrality', 'spread'], function(k1, v1) {
+	$.each(['size', 'centrality', 'homogeneity'], function(k1, v1) {
 		found = false;
 
 		$.each(['f1', 'f2', 'f3'], function(k2, v2) {

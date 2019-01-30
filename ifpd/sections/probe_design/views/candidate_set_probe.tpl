@@ -67,7 +67,7 @@
 							<b>Size: </b>{{probe['size']}}
 						</li>
 						<li class="list-group-item border-info">
-							<b>Spread: </b>{{probe['spread']}}
+							<b>Homogeneity: </b>{{probe['homogeneity']}}
 						</li>
 					</ul>
 				</div>

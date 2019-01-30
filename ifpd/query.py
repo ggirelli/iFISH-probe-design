@@ -185,12 +185,12 @@ class OligoProbe(object):
         self.chromEnd = self.oligoData.iloc[:, 1].max()
         self.midpoint = (self.chromStart + self.chromEnd) / 2
         self.size = self.chromEnd - self.chromStart
-        self.spread = self.get_probe_spread()
+        self.homogeneity = self.get_probe_homogeneity()
 
     def __str__(self):
         s  = f'[{self.refGenome}]'
         s += f'{self.chrom}:{self.chromStart}-{self.chromEnd};'
-        s += f' oligoSpread: {self.spread}'
+        s += f' oligoSpread: {self.homogeneity}'
         return s
 
     def asDataFrame(self, region = None):
@@ -202,7 +202,7 @@ class OligoProbe(object):
                 'refGenome' : [self.refGenome],
                 'midpoint' : [self.midpoint],
                 'size' : [self.size],
-                'spread' : [self.spread]
+                'homogeneity' : [self.homogeneity]
             })
         else:
             return pd.DataFrame.from_dict({
@@ -212,7 +212,7 @@ class OligoProbe(object):
                 'refGenome' : [self.refGenome],
                 'midpoint' : [self.midpoint],
                 'size' : [self.size],
-                'spread' : [self.spread],
+                'homogeneity' : [self.homogeneity],
                 'regChromStart' : region[0],
                 'regChromEnd' : region[1]
             })
@@ -232,8 +232,8 @@ class OligoProbe(object):
         and end of the last one.'''
         return self.oligoData.iloc[:, 1].max() - self.oligoData.iloc[:, 0].min()
 
-    def get_probe_spread(self):
-        '''Probe spread, as the inverse of the standard deviation of the
+    def get_probe_homogeneity(self):
+        '''Probe homogeneity, as the inverse of the standard deviation of the
         distance between consecutive oligos, calculated from their start
         position, disregarding oligo length.'''
         std = np.std(np.diff(self.oligoData.iloc[:, 1]))
@@ -247,7 +247,7 @@ class OligoProbe(object):
             'chromEnd' : [self.oligoData.iloc[:, 1].max()],
             'centrality' : [self.get_probe_centrality(region)],
             'size' : [self.size],
-            'spread' : [self.spread]
+            'homogeneity' : [self.homogeneity]
         })
 
         if not type(None) == type(path):
@@ -266,7 +266,7 @@ class OligoProbe(object):
             config['FEATURES'] = {
                 'centrality' : description['centrality'].values[0],
                 'size' : description['size'].values[0],
-                'spread' : description['spread'].values[0]
+                'homogeneity' : description['homogeneity'].values[0]
             }
             with open(path, 'w+') as OH:
                 config.write(OH)
@@ -415,7 +415,7 @@ class ProbeFeatureTable(object):
     FEATURE_SORT = {
         'centrality' : {'ascending':False},
         'size' : {'ascending':True},
-        'spread' : {'ascending':False},
+        'homogeneity' : {'ascending':False},
     }
 
     def __init__(self, candidateList, queried_region,
@@ -534,16 +534,16 @@ class GenomicWindowList(object):
         midpointList = np.array([w.midpoint for w in self.data])
         self.data = [self.data[i] for i in np.argsort(midpointList)]
 
-    def calc_probe_size_and_spread(self):
+    def calc_probe_size_and_homogeneity(self):
         if 3 > self.count_probes():
             return np.nan
 
         probeData = pd.concat([w.probe.asDataFrame((w.chromStart, w.chromEnd))
             for w in self if type(None) != type(w.probe)])
         size_std = probeData['size'].values.std()
-        probe_spread = np.std(probeData['chromStart'].values[1:] - 
+        probe_homogeneity = np.std(probeData['chromStart'].values[1:] - 
             probeData['chromEnd'].values[:-1])
-        return 2 / (size_std + probe_spread)
+        return 2 / (size_std + probe_homogeneity)
 
     def asDataFrame(self):
         starts = []

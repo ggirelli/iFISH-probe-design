@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+### ...
+- ...
+
+
+
+## [2.0.1] - 2019-01-30
 ### Added
 - Option for cookie consent banner.
 - Menu advanced options.
 
 ### Changed
 - Moved link to close bookmark alert to the right.
+- Renamed `spread` feature to `homogeneity`.
+- Made fields in query form responsiv.
 
 
 
