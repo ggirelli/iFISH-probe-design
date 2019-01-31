@@ -58,7 +58,7 @@ parser.add_argument('--filter-thr', metavar = 'filterThr', type = float,
     a range around the best value (percentage range around it). Accepts values
     from 0 to 1. Default: 0.1''')
 parser.add_argument('--min-d', metavar = 'minD', type = int, default = 10,
-    help = 'Minimum distance between consecutive oligos. Default: 10')
+    help = '*DEPRECATED* Minimum distance between consecutive oligos. Default: 10')
 parser.add_argument('--n-oligo', metavar = 'nOligo', type = int,
     default = 48, help = 'Number of oligos per probe. Default: 48')
 parser.add_argument('--max-probes', metavar = 'maxProbes', type = int,
