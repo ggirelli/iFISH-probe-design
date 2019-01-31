@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
-## [2.0.1.post2] - 2019-01-31
+## [2.0.1.post3] - 2019-01-31
 ### Fixed
 - Calculation of oligonucleotide midpoint for plotting.
 
