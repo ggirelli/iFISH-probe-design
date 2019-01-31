@@ -81,7 +81,7 @@ parser.add_argument('--increment-chrom-end', action = 'store_const',
     dest = 'incrementChromEnd', const = True, default = False,
     help = '''Use this option if your input bed file is not in UCSC bed format,
         and the last position (chromEnd) is actually included. This forces
-        a unit increase of that position convert to UCSC bed format.''')
+        a unit increase of that position to convert to UCSC bed format.''')
 parser.add_argument('--enforce-bed3', action = 'store_const',
     dest = 'enforceBED3', const = True, default = False,
     help = 'Consider only first 3 columns of the bed file.')
