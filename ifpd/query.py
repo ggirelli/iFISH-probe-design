@@ -339,7 +339,7 @@ class OligoProbe(object):
 
         for i in self.oligoData.index:
             oligo = self.oligoData.loc[i, :]
-            oligo_midpoint = (oligo['chromStart'] + oligo['chromStart']) / 2.
+            oligo_midpoint = (oligo['chromStart'] + oligo['chromEnd']) / 2.
             oligo_handle, = plt.plot([oligo['chromStart'], oligo['chromEnd']],
                 [0, 0], 'c', linewidth = 2.0, label = 'Oligo')
             oligoCenter_handle, = plt.plot(
