@@ -32,7 +32,7 @@ Builds a database of complementary oligodeoxyribonucleotides (ODNs) in a format
 compatible with FISH-ProDe.
 
 DISCLAIMER: this script does NOT generate a new database. It only re-formats an
-existing database to in a format compatible with FISH-ProDe.
+existing database to a format compatible with FISH-ProDe.
 
 The script uses takes as input a BED file (BED3) format and the reference
 genome. The reference genome name must be compatible with UCSC standard.
