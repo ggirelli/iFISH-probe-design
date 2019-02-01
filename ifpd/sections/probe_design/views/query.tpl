@@ -77,6 +77,11 @@
 				This query was completed at {{query['done_isotime']}}, after running for {{"%.3f" % (float(query['done_time']) - float(query['start_time']))}} seconds.
 			</div>
 		%end
+		%if query['status'] == 'error':
+		<div class="alert alert-danger" role="alert">
+			An error occurred while running the query. Please, try again or contact the <a href="mailto:{{admin_email}}">server admin</a>.
+		</div>
+		%end
 
 		<div id="abstract">
 			<h4>{{query['name']}}</h4>
@@ -295,9 +300,15 @@
 					<div class="card-body">
 						<h3 class="card-title">Log</h3>
 						%if os.path.isdir(os.path.join(queryRoot, query['id'])):
-						%with open(os.path.join(queryRoot, query['id'], 'log')) as IH:
-						<pre id="log_textarea" class="ws_wrap m-0" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
-						%end
+							%if 'error' == query['status']:
+								%with open(os.path.join(queryRoot, query['id']+'.error.log')) as IH:
+								<pre id="log_textarea" class="ws_wrap m-0 text-danger" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
+								%end
+							%else:
+								%with open(os.path.join(queryRoot, query['id'], 'log')) as IH:
+								<pre id="log_textarea" class="ws_wrap m-0" style="max-height: 25em;">{{"".join(IH.readlines())}}</pre>
+								%end
+							%end
 						%else:
 						<pre id="log_textarea" class="ws_wrap m-0" style="max-height: 25em;">Log not found.</pre>
 						%end

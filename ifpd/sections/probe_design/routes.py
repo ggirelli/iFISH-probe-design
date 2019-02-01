@@ -433,13 +433,13 @@ class Routes(routes.Routes):
 
 		if 'done' == d['query']['status']:
 			if 'single' == d['query']['type']:
-				d['query']['candidate_table'] = pd.read_csv(
-					os.path.join(self.qpath, query_id, "candidates.tsv"),
-					"\t")
+				fpath = os.path.join(self.qpath, query_id, "candidates.tsv")
 			elif 'spotting' == d['query']['type']:
-				d['query']['candidate_table'] = pd.read_csv(
-					os.path.join(self.qpath, query_id, "set_candidates.tsv"),
-					"\t")
+				fpath = os.path.join(self.qpath, query_id, "set_candidates.tsv")
+			if not os.path.isfile(fpath):
+				d['query']['status'] = 'error'
+			else:
+				d['query']['candidate_table'] = pd.read_csv(fpath, "\t")
 
 		d['queryTimeout'] = 24*60*60 # 1 day timeout
 

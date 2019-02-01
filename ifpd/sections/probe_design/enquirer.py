@@ -68,6 +68,8 @@ class Enquirer(threading.Thread):
 						outdir_id = 3
 
 					query_id = os.path.basename(cmd[outdir_id])
+					EH = open(f"{cmd[outdir_id]}.error.log", "w+")
+
 
 
 					logging.debug(f'Running query "{query_id}"')
@@ -80,7 +82,7 @@ class Enquirer(threading.Thread):
 					config['WHEN']['start_isotime'] = isotimestamp
 					self.writeQueryConfig(cmd[outdir_id], config)
 
-					sp.call(cmd)
+					sp.call(cmd, stderr = EH)
 					timestamp = time.time()
 					isotimestamp = datetime.datetime.fromtimestamp(
 						timestamp).isoformat()
@@ -91,6 +93,7 @@ class Enquirer(threading.Thread):
 					config['WHEN']['done_isotime'] = isotimestamp
 					self.writeQueryConfig(cmd[outdir_id], config)
 					cmd = self.queue.task_done(cmd)
+					EH.close()
 
 		return
 

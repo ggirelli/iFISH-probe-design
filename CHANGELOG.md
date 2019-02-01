@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## [2.0.1.post4] - 2019-02-01
+### Changed
+- Now showing error log if a query crashes.
+
+
+
 ## [2.0.1.post3] - 2019-01-31
 ### Fixed
 - Calculation of oligonucleotide midpoint for plotting.
