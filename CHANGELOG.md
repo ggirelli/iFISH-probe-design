@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## [2.0.1.post5] - 2019-02-04
+### Fixed
+- Changed links in headers for CORS.
+- Changed routes to Probe design app for "/" management.
+
+
+
 ## [2.0.1.post4] - 2019-02-01
 ### Changed
 - Now showing error log if a query crashes.
@@ -35,7 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
-## [2.0.0] - 2019-01-25
+## [2.0.0.post1] - 2019-01-25
 ### Added
 - `bioext` module for biological file extension methods.
     + `UCSCbed` class to read files in UCSC bed format.
@@ -82,6 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.0.1] - 2017-08-06 - First release
 
 
-
+[2.0.1] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.1
+[2.0.0.post1] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.0.post1
 [1.1.0] https://github.com/ggirelli/iFISH-Probe-Design/releases/tag/v1.1.0  
 [0.0.1] https://github.com/ggirelli/iFISH-Probe-Design/releases/tag/v0.0.1  
