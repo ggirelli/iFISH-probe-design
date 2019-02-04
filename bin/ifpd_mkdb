@@ -27,6 +27,27 @@ import shutil
 import sys
 from tqdm import tqdm
 
+
+if "--list-refGenomes" in sys.argv:
+    if "--ucsc-das-uri" in sys.argv:
+        ucsc_das_uri_id = sys.argv.index("--ucsc-das-uri") + 1
+        if ucsc_das_uri_id < len(sys.argv):
+            ucsc_das_uri = sys.argv[ucsc_das_uri_id]
+            assert_msg = f"invalid URI: '{ucsc_das_uri}'."
+            assert not ucsc_das_uri.startswith("-"), assert_msg
+    else:
+        ucsc_das_uri = "http://genome.ucsc.edu/cgi-bin/das/dsn"
+
+    try:
+        ucsc_das_uri
+    except NameError as e:
+        pass
+    else:
+        refGenomeList = fp.web.list_UCSC_reference_genomes(
+            UCSC_DAS_URI = ucsc_das_uri, verbose = True)
+        sys.exit()
+
+
 parser = argparse.ArgumentParser(description = '''
 Builds a database of complementary oligodeoxyribonucleotides (ODNs) in a format
 compatible with FISH-ProDe.
@@ -102,11 +123,6 @@ parser.add_argument('--version', action = 'version',
     version = f'{sys.argv[0]} v{version}')
 
 args = parser.parse_args()
-
-refGenomeList = fp.web.list_UCSC_reference_genomes(
-    UCSC_DAS_URI = args.ucsc_das_uri, verbose = args.listRefGenomes)
-if args.listRefGenomes:
-    sys.exit()
 
 assert os.path.isfile(args.bedFile), f'bed file not found: "{args.bedFile}"'
 assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
