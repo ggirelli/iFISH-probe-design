@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## [2.0.1.post6] - 2019-02-04
+### Changed
+- Bootstrap grid and card layout in database tab.
+
+
+
 ## [2.0.1.post5] - 2019-02-04
 ### Fixed
 - Changed links in headers for CORS.
