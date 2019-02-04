@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Bootstrap grid and card layout in database tab.
 
+### Fixed
+- Fixed behaviour of `--list-refGenomes` option.
+
 
 
 ## [2.0.1.post5] - 2019-02-04
