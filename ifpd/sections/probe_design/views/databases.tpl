@@ -13,14 +13,12 @@
 	<li class="list-group-item">
 		<div class="container-fluid row">
 			%for config in dbdata:
-			<div class="col col-12 col-md-6"><div class="card database-card">
-				<div class="card-body">
-					<h5 class="card-title"><a id="{{config['DATABASE']['name']}}">
+			<div class="col col-12 col-md-6 col-lg-6 col-xl-12"><div class="card database-card">
+				<div class="card-header">
+					<a id="{{config['DATABASE']['name']}}">
 						{{config['DATABASE']['name']}}
-					</a></h5>
-					<h6 class="card-subtitle mb-2 text-muted">
-						<code>{{os.path.basename(config['SOURCE']['outdirectory'])}}</code>
-					</h6>
+					</a><br />
+					<small class="mt-0"><code>{{os.path.basename(config['SOURCE']['outdirectory'])}}</code></small>
 				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item">
