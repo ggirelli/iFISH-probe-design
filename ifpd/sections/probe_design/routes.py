@@ -112,6 +112,7 @@ class Routes(routes.Routes):
 
 		# Pages ----------------------------------------------------------------
 
+		self.add_route('home', 'route', '')
 		self.add_route('home', 'route', '/')
 		self.add_route('home', 'view', 'home.tpl')
 
