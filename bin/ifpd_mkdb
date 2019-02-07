@@ -28,24 +28,25 @@ import sys
 from tqdm import tqdm
 
 refGenomeList = []
-if "--list-refGenomes" in sys.argv:
-    if "--das-uri" in sys.argv:
-        das_uri_id = sys.argv.index("--das-uri") + 1
-        if das_uri_id < len(sys.argv):
-            das_uri = sys.argv[das_uri_id]
-            assert_msg = f"invalid URI: '{das_uri}'."
-            assert not das_uri.startswith("-"), assert_msg
-    else:
-        das_uri = "http://genome.ucsc.edu/cgi-bin/das/dsn"
+if not '--no-net' in sys.argv:
+    if "--list-refGenomes" in sys.argv:
+        if "--das-uri" in sys.argv:
+            das_uri_id = sys.argv.index("--das-uri") + 1
+            if das_uri_id < len(sys.argv):
+                das_uri = sys.argv[das_uri_id]
+                assert_msg = f"invalid URI: '{das_uri}'."
+                assert not das_uri.startswith("-"), assert_msg
+        else:
+            das_uri = "http://genome.ucsc.edu/cgi-bin/das/dsn"
 
-    try:
-        das_uri
-    except NameError as e:
-        pass
-    else:
-        refGenomeList = fp.web.list_UCSC_reference_genomes(
-            UCSC_DAS_URI = das_uri, verbose = True)
-        sys.exit()
+        try:
+            das_uri
+        except NameError as e:
+            pass
+        else:
+            refGenomeList = fp.web.list_UCSC_reference_genomes(
+                UCSC_DAS_URI = das_uri, verbose = True)
+            sys.exit()
 
 
 parser = argparse.ArgumentParser(description = '''
@@ -53,6 +54,7 @@ Builds a database of complementary oligodeoxyribonucleotides (ODNs) in a format
 compatible with FISH-ProDe. This script requires a connection to internet to
 contact a DAS server and obtain reference genome information. Alternatively,
 if you have a local DAS server, you can specify it with the --das-uri option.
+If you do not have internet connection, use the --no-net option.
 
 DISCLAIMER: this script does NOT generate a new database. It only re-formats an
 existing database to a format compatible with FISH-ProDe.
@@ -91,7 +93,7 @@ parser.add_argument('dbName', metavar = 'dbName', type = str,
 
 parser.add_argument('-O', metavar = 'dirPath', type = str, default = '.',
     help = '''Path to directory where to build the database. Created if missing.
-        Defaults to current directory.''')
+        Defaults a subfolder of current directory with database name.''')
 parser.add_argument('--das-uri', metavar = 'dasURI', type = str,
     default = 'http://genome.ucsc.edu/cgi-bin/das/dsn',
     help = '''(advanced option) URI to DAS server.
@@ -119,6 +121,9 @@ parser.add_argument('-f', action = 'store_const',
     dest = 'forceRun', const = True, default = False,
     help = '''Force overwriting of the query if already run.
         This is potentially dangerous.''')
+parser.add_argument('--no-net', action = 'store_const',
+        dest = 'hasNetwork', const = False, default = True,
+        help = 'Skip checks that require internet connection.')
 
 version = "0.0.1"
 parser.add_argument('--version', action = 'version',
@@ -126,14 +131,18 @@ parser.add_argument('--version', action = 'version',
 
 args = parser.parse_args()
 
-if 0 == len(refGenomeList):
-    refGenomeList = fp.web.list_UCSC_reference_genomes(
-        UCSC_DAS_URI = args.das_uri, verbose = False)
+
+if '.' == args.O:
+    args.O = args.dbName
 
 assert os.path.isfile(args.bedFile), f'bed file not found: "{args.bedFile}"'
 assert not os.path.isfile(args.O), f'expected folder, file found: "{args.O}"'
-assert_msg = f'genome "{args.refGenome}" not found @DAS'
-assert args.refGenome in refGenomeList, assert_msg
+
+if 0 == len(refGenomeList) and args.hasNetwork:
+    refGenomeList = fp.web.list_UCSC_reference_genomes(
+        UCSC_DAS_URI = args.das_uri, verbose = False)
+    assert_msg = f'genome "{args.refGenome}" not found @DAS'
+    assert args.refGenome in refGenomeList, assert_msg
 
 if args.forceRun:
     if os.path.isdir(args.O):
