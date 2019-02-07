@@ -174,7 +174,8 @@ bed = UCSCbed(args.bedFile,
 oligoGenerator = bed.buffer(False, args.enforceBED3)
 if args.retainSequences:
     logging.info("Enabled sequence retrieval from UCSC...")
-    oligoGenerator = UCSCbed.add_sequence_to_raw_record(oligoGenerator)
+    oligoGenerator = UCSCbed.add_sequence_to_raw_record(
+        oligoGenerator, args.hasNetwork)
 
 logging.info("Writing database...")
 chromList = set()

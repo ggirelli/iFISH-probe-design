@@ -105,7 +105,7 @@ class UCSCbed(object):
         return(lineDF)
 
     @staticmethod
-    def add_sequence_to_raw_record(bedRecords):
+    def add_sequence_to_raw_record(bedRecords, hasNetwork = False):
         for record in bedRecords:
             assert type("") == type(record)
             record = record.strip().split("\t")
@@ -114,7 +114,7 @@ class UCSCbed(object):
             assert_msg += f" {len(record)} found."
             assert 3 <= len(record), assert_msg
 
-            if 4 > len(record):
+            if 4 > len(record) and hasNetwork:
                 oligoSequence = fp.web.get_sequence_from_UCSC(
                     (record[0], int(record[1]), int(record[2])), args.refGenome)
                 record.append(oligoSequence)
