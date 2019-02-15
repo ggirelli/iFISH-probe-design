@@ -13,7 +13,7 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='ifpd',
-	version='2.0.2',
+	version='2.0.2.post1',
 	description='''An iFISH probe design pipeline, with web interface included.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
