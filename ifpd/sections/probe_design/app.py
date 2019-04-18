@@ -88,6 +88,7 @@ class App(rootApp.App):
 		self.vd['breadcrumbs'] = False
 		self.vd['menu_template'] = None
 		self.vd['SHOW_COOKIE_CONSENT_BANNER'] = False
+		self.vd['google_analytics_token'] = ""
 
 		# Set default
 		if not type(None) == type(MAX_CURR):
