@@ -38,13 +38,13 @@ window.cookieconsent.initialise({
 
 %if 0 != len(google_analytics_token):
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={google_analytics_token}"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={{google_analytics_token}}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', '{google_analytics_token}');
+  gtag('config', '{{google_analytics_token}}');
 </script>
 %end
 
