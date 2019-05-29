@@ -102,7 +102,13 @@
 			<div class="tab-content card-body">
 				<div role="tabpanel" class="tab-pane active overflow" id="table_tab">
 					%if query['type'] == 'single':
+					%if "-1" == query['max_probes']:
+					%max_probes = np.inf
+					<p>Showing all {{query['candidate_table'].shape[0]}} probe candidates.</p>
+					%else:
+					%max_probes = query['max_probes']
 					<p>Showing top {{query['max_probes']}}/{{query['candidate_table'].shape[0]}} probe candidates.</p>
+					%end
 
 					<table id="candidate_table" class="table table-striped table-sm">
 						<thead class="thead-dark">
@@ -115,7 +121,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							%for rowi in range(min(query['candidate_table'].shape[0], int(query['max_probes']))):
+							%for rowi in range(min(query['candidate_table'].shape[0], max_probes)):
 								<tr>
 									<td>{{rowi}}</td>
 									%for coli in range(query['candidate_table'].shape[1]):

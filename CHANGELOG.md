@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Option to easily add google analytics tokens to design interface.
 
+### Fixed
+- Showing all probe candidates when using -1 option.
+
 
 
 ## [2.0.2] - 2019-02-07
