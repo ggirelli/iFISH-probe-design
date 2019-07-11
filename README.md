@@ -9,7 +9,7 @@
 Installation
 ---
 
-If you have Python3 and `pip3` installed on your computer, you can simply run `sudo -H pip3 install ifpd` on a terminal. That's it! As easy as it gets.
+If you have Python3.6+ and `pip3` installed on your computer, you can simply run `sudo -H pip3 install ifpd` on a terminal. That's it! As easy as it gets.
 
 You can also install from github (any point in history, although we suggest to stick with release tags) as follows:
 
