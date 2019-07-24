@@ -13,7 +13,7 @@ with open('README.md', "r") as f:
 	long_description = f.read()
 
 setup(name='ifpd',
-	version='2.0.3',
+	version='2.0.3.post1',
 	description='''An iFISH probe design pipeline, with web interface included.''',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -27,6 +27,7 @@ setup(name='ifpd',
 		'Topic :: Scientific/Engineering :: Bio-Informatics',
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python :: 3 :: Only',
+		'Programming Language :: Python :: 3.6'
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
 	packages=["ifpd", "ifpd.sections", "ifpd.sections.probe_design"],

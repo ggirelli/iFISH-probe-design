@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div id="footer" class="col col-12">
-		iFISH Probe Designer v2.0.2 - &copy; Gabriele Girelli 2016-19
+		iFISH Probe Designer - &copy; Gabriele Girelli 2016-19
 	</div>
 </div>
 
