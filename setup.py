@@ -27,6 +27,7 @@ setup(name='ifpd',
 		'Topic :: Scientific/Engineering :: Bio-Informatics',
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python :: 3 :: Only',
+		'Programming Language :: Python :: 3.6'
 	],
 	keywords='biology cell DNA RNA FISH fluorescence hybridization bioimaging genome',
 	packages=["ifpd", "ifpd.sections", "ifpd.sections.probe_design"],
