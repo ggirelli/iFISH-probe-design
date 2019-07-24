@@ -33,18 +33,22 @@
 					<li class="list-group-item">
 						<b>Overlapping oligos:</b> {{config['OLIGOS']['overlaps']}}
 					</li>
-					%for k in [k for k in config['CUSTOM'].keys() if not k in ['reference', 'url']]:
-					<li class="list-group-item">
-						<b>{{k}}:</b> {{config['CUSTOM'][k]}}
-					</li>
+					%if "CUSTOM" in config.keys():
+						%for k in [k for k in config['CUSTOM'].keys() if not k in ['reference', 'url']]:
+						<li class="list-group-item">
+							<b>{{k}}:</b> {{config['CUSTOM'][k]}}
+						</li>
+						%end
 					%end
 				</ul>
 				<div class="card-body">
-					%if 'reference' in config['CUSTOM'].keys():
-					<p class="card-text reference"><b>Reference: </b>{{config['CUSTOM']['reference']}}</p>
-					%end
-					%if 'url' in config['CUSTOM'].keys():
-					<a href="{{config['CUSTOM']['url']}}" target="_new" class="card-link"><i class="fas fa-external-link-alt text-primary"></i> Database link</a>
+					%if "CUSTOM" in config.keys():
+						%if 'reference' in config['CUSTOM'].keys():
+						<p class="card-text reference"><b>Reference: </b>{{config['CUSTOM']['reference']}}</p>
+						%end
+						%if 'url' in config['CUSTOM'].keys():
+						<a href="{{config['CUSTOM']['url']}}" target="_new" class="card-link"><i class="fas fa-external-link-alt text-primary"></i> Database link</a>
+						%end
 					%end
 				</div>
 			</div></div>
