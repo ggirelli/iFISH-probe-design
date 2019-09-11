@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - ...
 
 
+## [2.0.3.post2] - 2019-07-24
+## Fixed
+- Bug crashing web interface due to missing str2int conversion.
+
 
 ## [2.0.3.post1] - 2019-07-24
 ### Fixed
@@ -121,6 +125,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+[2.0.3.post2] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.3.post2
 [2.0.3.post1] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.3.post1
 [2.0.3] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.3
 [2.0.2] https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.2
