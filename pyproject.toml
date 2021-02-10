@@ -22,14 +22,12 @@ classifiers = [
 include = [
 	"CHANGELOG.md",
 	"LICENSE",
-	"ifpd/interface/css/bootstrap.css",
 	"ifpd/interface/css/*",
 	"ifpd/interface/fonts/*",
 	"ifpd/interface/images/*",
 	"ifpd/interface/js/*",
 	"ifpd/interface/views/*",
 	"ifpd/sections/probe_design/css/*",
-	"ifpd/sections/probe_design/documents/*",
 	"ifpd/sections/probe_design/views/*"
 ]
 
