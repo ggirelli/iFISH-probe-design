@@ -103,22 +103,22 @@ class Routes(routes.Routes):
 
         self.add_route("home", "route", "")
         self.add_route("home", "route", "/")
-        self.add_route("home", "view", "home.tpl")
+        self.add_route("home", "view", "home.tpl.html")
 
         self.add_route("query", "route", "/q/<query_id>")
-        self.add_route("query", "view", "query.tpl")
+        self.add_route("query", "view", "query.tpl.html")
 
         uri = "/q/<query_id>/c/<candidate_id>"
         self.add_route("candidate_probe", "route", uri)
-        self.add_route("candidate_probe", "view", "candidate_probe.tpl")
+        self.add_route("candidate_probe", "view", "candidate_probe.tpl.html")
 
         uri = "/q/<query_id>/cs/<candidate_id>"
         self.add_route("candidate_set", "route", uri)
-        self.add_route("candidate_set", "view", "candidate_set.tpl")
+        self.add_route("candidate_set", "view", "candidate_set.tpl.html")
 
         uri = "/q/<query_id>/cs/<candidate_id>/p/<probe_id>"
         self.add_route("candidate_set_probe", "route", uri)
-        self.add_route("candidate_set_probe", "view", "candidate_set_probe.tpl")
+        self.add_route("candidate_set_probe", "view", "candidate_set_probe.tpl.html")
 
         # Forms ----------------------------------------------------------------
 

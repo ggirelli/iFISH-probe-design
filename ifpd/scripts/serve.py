@@ -203,13 +203,13 @@ def run(args: argparse.Namespace) -> None:
     mk_missing_dirs(args)
 
     if args.homepage is not None:
-        if not "home_default" == args.homepage:
+        if not "home_default.tpl.html" == args.homepage:
             assert_msg = "-T option required when using -H."
             assert args.custom_templates is not None, assert_msg
         home_template = args.homepage
         home_status = True
     else:
-        home_template = "home_default"
+        home_template = "home_default.tpl.html"
         home_status = False
 
     if args.custom_routes is not None:
