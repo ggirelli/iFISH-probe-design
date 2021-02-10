@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/release/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/release-date/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/languages/code-size/ggirelli/ifish-probe-design.svg?style=flat)  
 ![](https://img.shields.io/github/watchers/ggirelli/ifish-probe-design.svg?label=Watch&style=social) ![](https://img.shields.io/github/stars/ggirelli/ifish-probe-design.svg?style=social)
 
-[PyPi](https://pypi.org/project/ifish-probe-design/) | [docs](https://ggirelli.github.io/ifish-probe-design/)
+[PyPi](https://pypi.org/project/ifpd/) | [docs](https://ggirelli.github.io/iFISH-probe-design/)
 
 
 **iFISH-Probe-Design** (`ifpd`) is a Python3.6.1+ package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
