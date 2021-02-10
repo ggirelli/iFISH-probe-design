@@ -1,4 +1,11 @@
-theme: jekyll-theme-minimal
-title: "iFISH Probe Design v1.1.0"
-description: "FISH Probe Design"
+title:               ifpd
+description:         'iFISH probe design'
+
+author:
+  name:              Gabriele Girelli
+  url:               http://ggirelli.info
+  email:             gabriele.girelli@scilifelab.se
+
+version:             2.0.2
 google_analytics: "UA-99031010-5"
+theme: jekyll-theme-minimal

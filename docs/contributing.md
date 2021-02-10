@@ -1,8 +1,6 @@
 ---
-title: "iFISH-probe-design Contributing Guidelines"
+title: Contributing Guidelines
 ---
-
-# Contributing Guidelines
 
 ## Introduction
 

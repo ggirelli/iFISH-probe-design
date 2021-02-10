@@ -1,39 +1,30 @@
 ---
-title: "iFISH-probe-design Installation"
+title: Install ifpd
 ---
 
-# How to install iFISH-probe-design
+ifpd is fully implemented in Python3, and is distributed through the PyPI network: the Python Package Manager developed and maintained by the Python community, for the Python community. As such, we recommend using `pip3` (PyPI package installer) to install `ifpd`. We also envision to pack it as a `conda` package in the future (*not available yet*).
 
-### From PyPi
+## Using `pip3`
 
-Install from pypi with `sudo -H pip3 install ifpd`, and that's it! That's as easy as it gets.
+If you have Python3 and `pip3` installed on your computer, you can simply run `sudo -H pip3 install ifpd` on a terminal. That's it! As easy as it gets.
 
-To **update** run `sudo -H pip3 install -U ifpd`.
-
-To **remove** run `sudo -H pip3 uninstall ifpd`, and confirm when prompted.
-
-### From GitHub
-
-You can also **install** from github (any point in history, although we suggest to stick with realease tags) as follows:
+You can also install from github (any point in history, although we suggest to stick with release tags) as follows:
 
 ```bash
-git clone https://github.com/ggirelli/iFISH-Probe-Design/
-cd iFISH-Probe-Design
-sudo -H pip3 install -e .
+git clone https://github.com/ggirelli/iFISH-probe-design/
+cd iFISH-probe-design
+sudo -H pip3 install .
 ```
 
-To **update**, run the following from within the repository folder:
+For a nice guide on installing packages served through PyPI, check out [this tutorial](https://packaging.python.org/tutorials/installing-packages/).
+
+## Using `conda`
+
+If you are a `conda` user, you can install `ifpd` by running the following:
 
 ```bash
-git pull
-sudo -H pip3 install -e .
-```
-<small>(the second line is needed only to update the package version recognized by pip)</small>
-
-To **uninstall**, run the following from within the repository folder:
-
-```bash
-sudo -H python3 setup.py develop --uninstall
+conda skeleton pypi ifpd
+conda build ifpd
 ```
 
-And then manually remove the scripts files. A list of the installed script files is available in the `setup.py` file. Check their location with `whereis`.
+Please, note that `ifpd` is a Python3 package tested on Python3.6. Thus, you will need to create an appropriate environment using `conda`.
