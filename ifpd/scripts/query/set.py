@@ -50,12 +50,17 @@ as homogeneously spaced as possible. Concisely, the script does the following:
     )
 
     parser.add_argument(
-        "region",
-        metavar="region",
+        "chrom",
         type=str,
-        help="""Region of interest in chrN:XXX,YYY format.
-        Use chrN only to run chromosome-wide.""",
+        help="Database feature to query for a probe.",
     )
+    parser.add_argument(
+        "--region",
+        type=str,
+        help="""Start-end location of region of interest (on specified feature).
+        When a region is not provided, the whole feature is queried""",
+    )
+
     parser.add_argument(
         "nProbes", metavar="nProbes", type=int, help="Number of probes to design."
     )
@@ -151,6 +156,17 @@ as homogeneously spaced as possible. Concisely, the script does the following:
     return parser
 
 
+def assert_region(args):
+    if args.region is not None:
+        roi_regexp = "^[0-9]+-[0-9]+$"
+        assert re.match(roi_regexp, args.region) is not None, "".join(
+            [
+                "the provided region does not match the expected pattern:",
+                f' "{args.region}" [XXX-YYY]',
+            ]
+        )
+
+
 @enable_rich_assert
 def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     assert not os.path.isfile(
@@ -164,10 +180,7 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
             args.outdir
         ), f"output folder already exists: {args.outdir}"
 
-    roi_regexp = "^chr[0-9A-Za-z]+(:[0-9]+,[0-9]+)?$"
-    assert_msg = "the provided region does not match the expected pattern:"
-    assert_msg += f' "{args.region}" [chrN:XXX,YYY|chrN]'
-    assert re.match(roi_regexp, args.region) is not None, assert_msg
+    assert_region(args)
 
     assert_msg = f"at least 2 features need, only {len(args.order)} found."
     assert 2 <= len(args.order), assert_msg
@@ -212,21 +225,21 @@ def setup_log(args):
 def get_queried_region(args, oligoDB):
     chromEnd: Optional[int]
     if ":" in args.region:
-        chrom = args.region.split(":")[0]
-        chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(",")]
+        chromStart, chromEnd = [int(x) for x in args.region.split("-")]
     else:
-        chrom = args.region
         chromStart = 0
         chromEnd = None
         if args.hasNetwork and web.internet_on:
-            chromEnd = web.get_chromosome_size(chrom, oligoDB.get_reference_genome())
+            chromEnd = web.get_chromosome_size(
+                args.chrom, oligoDB.get_reference_genome()
+            )
         if chromEnd is None:
-            assert_msg = f'chromosome "{chrom}" not in the database.'
-            assert oligoDB.has_chromosome(chrom), assert_msg
+            assert_msg = f'chromosome "{args.chrom}" not in the database.'
+            assert oligoDB.has_chromosome(args.chrom), assert_msg
 
-            oligoDB.read_chromosome(chrom)
-            chromEnd = oligoDB.chromData[chrom].iloc[:, 1].max()
-    return (chrom, chromStart, chromEnd)
+            oligoDB.read_chromosome(args.chrom)
+            chromEnd = oligoDB.chromData[args.chrom].iloc[:, 1].max()
+    return (args.chrom, chromStart, chromEnd)
 
 
 def init_db(args, oligoDB, queried_region):
@@ -394,7 +407,7 @@ def run(args: argparse.Namespace) -> None:
     assert_msg = "there are not enough oligos in the database."
     assert_msg += f" Asked for {args.n_oligo}, {selectCondition.sum()} found."
     assert args.n_oligo <= selectCondition.sum(), assert_msg
-    logging.info(f"Found {selectCondition.sum()} oligos in {args.region}")
+    logging.info(f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}")
 
     if 3 > selectedOligos.shape[1]:
         logging.info("Retrieving sequences from UCSC...")

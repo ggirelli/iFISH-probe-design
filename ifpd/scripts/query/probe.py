@@ -45,11 +45,17 @@ oligonucleotides. Concisely, the script does the following:
     )
 
     parser.add_argument(
-        "region",
-        metavar="region",
+        "chrom",
         type=str,
-        help="Region of interest in chrN:XXX,YYY format.",
+        help="Database feature to query for a probe.",
     )
+    parser.add_argument(
+        "--region",
+        type=str,
+        help="""Start-end location of region of interest (on specified feature).
+        When a region is not provided, the whole feature is queried""",
+    )
+
     parser.add_argument(
         "database", metavar="database", type=str, help="Path to database folder."
     )
@@ -118,6 +124,17 @@ oligonucleotides. Concisely, the script does the following:
     return parser
 
 
+def assert_region(args):
+    if args.region is not None:
+        roi_regexp = "^[0-9]+-[0-9]+$"
+        assert re.match(roi_regexp, args.region) is not None, "".join(
+            [
+                "the provided region does not match the expected pattern:",
+                f' "{args.region}" [XXX-YYY]',
+            ]
+        )
+
+
 @enable_rich_assert
 def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     assert not os.path.isfile(
@@ -131,10 +148,7 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
             args.outdir
         ), f"output folder already exists: {args.outdir}"
 
-    roi_regexp = "^chr[0-9A-Za-z]+:[0-9]+,[0-9]+$"
-    assert_msg = "the provided region does not match the expected pattern:"
-    assert_msg += f' "{args.region}" [chrN:XXX:YYY]'
-    assert re.match(roi_regexp, args.region) is not None, assert_msg
+    assert_region(args)
 
     assert_msg = f"at least 2 features needed, only {len(args.order)} found."
     assert 2 <= len(args.order), assert_msg
@@ -182,18 +196,17 @@ def run(args: argparse.Namespace) -> None:
     logging.info("Reading database...")
     oligoDB = query.OligoDatabase(args.database, False)
 
-    chrom = args.region.split(":")[0]
-    chromStart, chromEnd = [int(x) for x in args.region.split(":")[1].split(",")]
-    queried_region = (chrom, chromStart, chromEnd)
+    chromStart, chromEnd = [int(x) for x in args.region.split("-")]
+    queried_region = (args.chrom, chromStart, chromEnd)
 
     assert_msg = "databases with overlapping oligos are not supported yet."
     assert not oligoDB.has_overlaps(), assert_msg
 
-    assert_msg = f'chromosome "{chrom}" not in the database.'
-    assert oligoDB.has_chromosome(chrom), assert_msg
+    assert_msg = f'chromosome "{args.chrom}" not in the database.'
+    assert oligoDB.has_chromosome(args.chrom), assert_msg
 
-    oligoDB.read_chromosome(chrom)
-    chromData = oligoDB.chromData[chrom]
+    oligoDB.read_chromosome(args.chrom)
+    chromData = oligoDB.chromData[args.chrom]
 
     selectCondition = np.logical_and(
         chromData.iloc[:, 0] >= chromStart, chromData.iloc[:, 1] <= chromEnd
@@ -203,7 +216,7 @@ def run(args: argparse.Namespace) -> None:
     assert_msg = "there are not enough oligos in the database."
     assert_msg += f" Asked for {args.n_oligo}, {selectCondition.sum()} found."
     assert args.n_oligo <= selectCondition.sum(), assert_msg
-    logging.info(f"Found {selectCondition.sum()} oligos in {args.region}")
+    logging.info(f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}")
 
     if 3 > selectedOligos.shape[1]:
         logging.info("Retrieving sequences from UCSC...")

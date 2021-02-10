@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Temporarily deprecated sequence-less databases due to bug.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
+- Now asking for arguments "chrom [start-end]" when querying.
 
 ## Fixed
 - Blacked code.
