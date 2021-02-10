@@ -49,12 +49,12 @@
 					</select>
 				</div>
 
-				<div class="form-group col col-12 col-md-3">
+				<div class="form-group col col-12 col-md-3" data-toggle="tooltip" data-placement="bottom" title="Set start and end to the same value to query the whole chromosome.">
 					<label for="multi_start">Start position</label>
 					<input type="number" name="multi_start" id="multi_start" class="form-control" placeholder="0" value=0 min=0 />
 				</div>
 
-				<div class="form-group col col-12 col-md-3">
+				<div class="form-group col col-12 col-md-3" data-toggle="tooltip" data-placement="bottom" title="Set start and end to the same value to query the whole chromosome.">
 					<label for="multi_end">End position</label>
 					<input type="number" name="multi_end" id="multi_end" class="form-control" placeholder="0" value=0 min=0 />
 				</div>
