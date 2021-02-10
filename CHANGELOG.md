@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+### Added
+- Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
+
 ### Changed
 - Switched from setup.py to poetry setup.
 - Temporarily deprecated sequence-less databases due to bug.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
-- Now asking for arguments "chrom [start-end]" when querying.
+- Now asking for arguments "chrom [start end]" when querying.
 - Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
 
 ## Fixed

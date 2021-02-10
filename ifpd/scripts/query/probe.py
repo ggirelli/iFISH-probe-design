@@ -51,9 +51,11 @@ oligonucleotides. Concisely, the script does the following:
     )
     parser.add_argument(
         "--region",
-        type=str,
-        help="""Start-end location of region of interest (on specified feature).
-        When a region is not provided, the whole feature is queried""",
+        type=int,
+        nargs=2,
+        help="""Start and end locations (space-separated) of the region of interest.
+        When a region is not provided (or start/end coincide),
+        the whole feature is queried.""",
     )
 
     parser.add_argument(
@@ -134,13 +136,18 @@ oligonucleotides. Concisely, the script does the following:
 
 def assert_region(args):
     if args.region is not None:
-        roi_regexp = "^[0-9]+-[0-9]+$"
-        assert re.match(roi_regexp, args.region) is not None, "".join(
-            [
-                "the provided region does not match the expected pattern:",
-                f' "{args.region}" [XXX-YYY]',
-            ]
-        )
+        if args.region[0] == args.region[1]:
+            args.region = None
+            return
+        assert (
+            args.region[0] >= 0
+        ), f"start location cannot be negative [{args.region[0]}]."
+        assert (
+            args.region[1] >= 0
+        ), f"end location cannot be negative [{args.region[1]}]."
+        assert (
+            args.region[1] > args.region[0]
+        ), f"end location must be greater than start location [{args.region}]."
 
 
 @enable_rich_assert
@@ -209,7 +216,12 @@ def check_n_oligo(args, selectCondition):
         )
     elif args.n_oligo > selectCondition.sum():
         logging.info(
-            f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}"
+            "".join(
+                [
+                    f"Found {selectCondition.sum()} oligos in",
+                    f" {args.chrom}:{args.region[0]}-{args.region[1]}",
+                ]
+            )
         )
         logging.warning(
             "".join(
@@ -231,7 +243,7 @@ def run(args: argparse.Namespace) -> None:
     logging.info("Reading database...")
     oligoDB = query.OligoDatabase(args.database, False)
 
-    chromStart, chromEnd = [int(x) for x in args.region.split("-")]
+    chromStart, chromEnd = args.region
     queried_region = (args.chrom, chromStart, chromEnd)
 
     assert_msg = "databases with overlapping oligos are not supported yet."

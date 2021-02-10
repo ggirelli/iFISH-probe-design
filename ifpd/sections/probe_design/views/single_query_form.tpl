@@ -57,12 +57,12 @@
 					</select>
 				</div>
 
-				<div class="form-group col col-12 col-md-3">
+				<div class="form-group col col-12 col-md-3" data-toggle="tooltip" data-placement="bottom" title="Set start and end to the same value to query the whole chromosome.">
 					<label for="start">Start position</label>
 					<input type="number" name="start" id="start" class="form-control" placeholder="0" value=0 min=0 />
 				</div>
 
-				<div class="form-group col col-12 col-md-3">
+				<div class="form-group col col-12 col-md-3" data-toggle="tooltip" data-placement="bottom" title="Set start and end to the same value to query the whole chromosome.">
 					<label for="end">End position</label>
 					<input type="number" name="end" id="end" class="form-control" placeholder="0" value=0 min=0 />
 				</div>

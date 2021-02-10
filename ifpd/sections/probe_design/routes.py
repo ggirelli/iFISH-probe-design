@@ -586,8 +586,15 @@ class Routes(routes.Routes):
         """
 
         formData = bot.request.forms
-        queriedRegion = f"{formData.chromosome}:{formData.start},{formData.end}"
-        query_id = f"{queriedRegion}:{time.time()}"
+        queriedRegion = ""
+        if formData.start != formData.end:
+            queriedRegion = f"--region {formData.start} {formData.end}"
+        query_id = "%s:%d:%d:%d" % (
+            formData.chromosome,
+            formData.start,
+            formData.end,
+            time.time(),
+        )
         encoder = hashlib.sha256()
         encoder.update(bytes(query_id, "utf-8"))
         query_id = encoder.hexdigest()
@@ -596,8 +603,9 @@ class Routes(routes.Routes):
         oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork=False)
         min_dist = oligoDB.get_oligo_min_dist()
 
-        cmd = ["ifpd_query_probe"]
-        cmd.extend([shlex.quote(queriedRegion), shlex.quote(dbPath)])
+        cmd = ["ifpd query probe"]
+        cmd.extend([shlex.quote(formData.chromosome), shlex.quote(queriedRegion)])
+        cmd.extend([shlex.quote(dbPath)])
         cmd.extend([shlex.quote(f"{self.static_path}/query/{query_id}")])
         cmd.extend(
             [
@@ -653,9 +661,15 @@ class Routes(routes.Routes):
         """
 
         formData = bot.request.forms
-        queriedRegion = f"{formData.multi_chromosome}:"
-        queriedRegion += f"{formData.multi_start},{formData.multi_end}"
-        query_id = f"{queriedRegion}:{time.time()}"
+        queriedRegion = ""
+        if formData.multi_start != formData.multi_end:
+            queriedRegion = f"--region {formData.multi_start} {formData.multi_end}"
+        query_id = "%s:%d:%d:%d" % (
+            formData.multi_chromosome,
+            formData.multi_start,
+            formData.multi_end,
+            time.time(),
+        )
         encoder = hashlib.sha256()
         encoder.update(bytes(query_id, "utf-8"))
         query_id = encoder.hexdigest()
@@ -665,7 +679,8 @@ class Routes(routes.Routes):
         min_dist = oligoDB.get_oligo_min_dist()
 
         cmd = [
-            "ifpd_query_set",
+            "ifpd query set",
+            shlex.quote(formData.multi_chromosome),
             shlex.quote(queriedRegion),
             shlex.quote(formData.multi_n_probes),
             shlex.quote(dbPath),
@@ -715,44 +730,6 @@ class Routes(routes.Routes):
         bot.response.set_header(
             "Location", f"{self.root_uri}{self.app_uri}q/{query_id}"
         )
-
-        # Output
-        return "Query received."
-
-    def single_queries(routes, self):
-        """Single probe queries reception route.
-
-        Args:
-                self (App): ProbeDesigner.App instance.
-        """
-
-        # Read uploaded file
-        data = bot.request.files.data
-        raw = [row.decode("utf-8") for row in data.file.readlines()]
-
-        # Submit query
-        for row in raw:
-            args = row.strip().split("\t")
-
-            # Build query command line
-            cmd = ["fprode_dbquery"]
-            cmd.extend([Query.get_next_id(self.qpath, self.queue)])
-            cmd.extend([shlex.quote(args[0])])
-            cmd.extend([shlex.quote(e) for e in args[3:6]])
-            cmd.extend([shlex.quote("%s/db/%s" % (self.static_path, args[2]))])
-            cmd.extend(["--n_oligo", shlex.quote(args[6])])
-            cmd.extend(["--f1_thr", shlex.quote(args[7])])
-            cmd.extend(["--max_probes", shlex.quote(args[8])])
-            cmd.extend(["--feat_order", shlex.quote(args[9])])
-            cmd.extend(["--outdir", "%s/query/" % self.static_path])
-            cmd.extend(["--description", shlex.quote(args[1])])
-
-            # Add query to the queue
-            self.queue.put(cmd)
-
-        # Redirect
-        bot.response.status = 303
-        bot.response.set_header("Location", "%s%s" % (self.root_uri, self.app_uri))
 
         # Output
         return "Query received."

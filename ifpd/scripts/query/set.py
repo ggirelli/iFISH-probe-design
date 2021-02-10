@@ -56,9 +56,11 @@ as homogeneously spaced as possible. Concisely, the script does the following:
     )
     parser.add_argument(
         "--region",
-        type=str,
-        help="""Start-end location of region of interest (on specified feature).
-        When a region is not provided, the whole feature is queried""",
+        type=int,
+        nargs=2,
+        help="""Start and end locations (space-separated) of the region of interest.
+        When a region is not provided (or start/end coincide),
+        the whole feature is queried.""",
     )
 
     parser.add_argument(
@@ -158,13 +160,18 @@ as homogeneously spaced as possible. Concisely, the script does the following:
 
 def assert_region(args):
     if args.region is not None:
-        roi_regexp = "^[0-9]+-[0-9]+$"
-        assert re.match(roi_regexp, args.region) is not None, "".join(
-            [
-                "the provided region does not match the expected pattern:",
-                f' "{args.region}" [XXX-YYY]',
-            ]
-        )
+        if args.region[0] == args.region[1]:
+            args.region = None
+            return
+        assert (
+            args.region[0] >= 0
+        ), f"start location cannot be negative [{args.region[0]}]."
+        assert (
+            args.region[1] >= 0
+        ), f"end location cannot be negative [{args.region[1]}]."
+        assert (
+            args.region[1] > args.region[0]
+        ), f"end location must be greater than start location [{args.region}]."
 
 
 @enable_rich_assert
@@ -225,7 +232,7 @@ def setup_log(args):
 def get_queried_region(args, oligoDB):
     chromEnd: Optional[int]
     if ":" in args.region:
-        chromStart, chromEnd = [int(x) for x in args.region.split("-")]
+        chromStart, chromEnd = args.region
     else:
         chromStart = 0
         chromEnd = None
@@ -407,7 +414,14 @@ def run(args: argparse.Namespace) -> None:
     assert_msg = "there are not enough oligos in the database."
     assert_msg += f" Asked for {args.n_oligo}, {selectCondition.sum()} found."
     assert args.n_oligo <= selectCondition.sum(), assert_msg
-    logging.info(f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}")
+    logging.info(
+        "".join(
+            [
+                f"Found {selectCondition.sum()} oligos in",
+                f" {args.chrom}:{args.region[0]}-{args.region[1]}",
+            ]
+        )
+    )
 
     if 3 > selectedOligos.shape[1]:
         logging.info("Retrieving sequences from UCSC...")
