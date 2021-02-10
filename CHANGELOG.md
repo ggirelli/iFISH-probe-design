@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
-### ...
-- ...
+### Changed
+- Switched from setup.py to poetry setup.
+- Temporarily deprecated sequence-less databases due to bug.
+- Simplified authorship and license comment.
+- Now all scripts are accessible through a single entry-point at "ifpd".
+
+## Fixed
+- Blacked code.
 
 
 ## [2.0.3.post2] - 2019-09-11

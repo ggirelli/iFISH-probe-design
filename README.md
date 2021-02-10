@@ -4,49 +4,28 @@
 ![](https://img.shields.io/github/release-date/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/languages/code-size/ggirelli/ifish-probe-design.svg?style=flat)  
 ![](https://img.shields.io/github/watchers/ggirelli/ifish-probe-design.svg?label=Watch&style=social) ![](https://img.shields.io/github/stars/ggirelli/ifish-probe-design.svg?style=social)
 
-**iFISH-Probe-Design** (`ifpd`) is a Python3 package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
+**iFISH-Probe-Design** (`ifpd`) is a Python3.6.1+ package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
 
-Installation
----
+## Requirements
 
-If you have Python3.6+ and `pip3` installed on your computer, you can simply run `sudo -H pip3 install ifpd` on a terminal. That's it! As easy as it gets.
+**iFISH-Probe-Designer** is fully implemented in Python3.6.1+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.6.1+ on your machine if you don't have it yet.
 
-You can also install from github (any point in history, although we suggest to stick with release tags) as follows:
+`ifpd` has been tested with Python 3.6.1, 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/fastx-barber#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/fastx-barber/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
 
-```bash
-git clone https://github.com/ggirelli/iFISH-probe-design/
-cd iFISH-probe-design
-sudo -H pip3 install .
-```
+## Installation
 
-For a nice guide on installing packages served through PyPI, check out [this tutorial](https://packaging.python.org/tutorials/installing-packages/).
+We recommend installing `ifpd` using [`pipx`](https://github.com/pipxproject/pipx). Check how to install `pipx` [here](https://github.com/pipxproject/pipx#install-pipx) if you don't have it yet!
 
-Requirements
----
+Once you have `pipx` ready on your system, install the latest stable release of `ifpd` by running: `pipx install ifpd`. If you see the stars (✨ 🌟 ✨), then the installation went well!
 
-**iFISH-Probe-Designer** is fully implemented in Python3, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3 on your machine if you don't have it yet.
-
-If you installed this package using `pip3` (as explained [above](#installation)), then all required libraries were also automatically installed. Nonetheless, here is a list (with version) of the required libraries:
-
-* `bottle>=0.12.13` and `paste>=2.0.3`: to run the web server interface.
-* `ggc>=0.0.3`: for functionalities common to all my packages.
-* `matplotlib>=3.0.0`: to plot.
-* `numpy>=1.14.2`, `pandas>=0.22.0`, and `scipy>=1.0.0`: for data manipulation.
-
-Usage
----
+## Usage
 
 More details on how to run **iFISH-Probe-Design** are available in the online [documentation](https://ggirelli.github.io/iFISH-probe-design/usage).
 
-Contributing
----
+## Contributing
 
-We welcome any contributions to `iFISH-Probe-Design`. Please, refer to the [contribution guidelines](https://ggirelli.github.io/iFISH-probe-design/contributing) if this is your first time contributing! Also, check out our [code of conduct](https://ggirelli.github.io/iFISH-probe-design/code_of_conduct).
+We welcome any contributions to `ifpd`. In short, we use [`black`](https://github.com/psf/black) to standardize code format. Any code change also needs to pass `mypy` checks. For more details, please refer to our [contribution guidelines](https://github.com/ggirelli/ifish-probe-design/blob/main/CONTRIBUTING.md) if this is your first time contributing! Also, check out our [code of conduct](https://github.com/ggirelli/ifish-probe-design/blob/main/CODE_OF_CONDUCT.md).
 
-License
----
+## License
 
-```
-MIT License
-Copyright (c) 2016-2019 Gabriele Girelli
-```
+`MIT License - Copyright (c) 2016-21 Gabriele Girelli`
