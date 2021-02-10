@@ -1,8 +1,12 @@
 # iFISH-Probe-Design
 
-[![DOI](https://zenodo.org/badge/143724120.svg)](https://zenodo.org/badge/latestdoi/143724120) ![](https://img.shields.io/librariesio/github/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/license/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/release/ggirelli/ifish-probe-design.svg?style=flat)  
-![](https://img.shields.io/github/release-date/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/languages/code-size/ggirelli/ifish-probe-design.svg?style=flat)  
+[![DOI](https://zenodo.org/badge/143724120.svg)](https://zenodo.org/badge/latestdoi/143724120) ![](https://img.shields.io/librariesio/github/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/license/ggirelli/ifish-probe-design.svg?style=flat)  
+![](https://github.com/ggirelli/ifish-probe-design/workflows/Python%20package/badge.svg?branch=main&event=push) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ifish-probe-design) ![PyPI - Format](https://img.shields.io/pypi/format/ifish-probe-design) ![PyPI - Status](https://img.shields.io/pypi/status/ifish-probe-design)  
+![](https://img.shields.io/github/release/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/release-date/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/languages/code-size/ggirelli/ifish-probe-design.svg?style=flat)  
 ![](https://img.shields.io/github/watchers/ggirelli/ifish-probe-design.svg?label=Watch&style=social) ![](https://img.shields.io/github/stars/ggirelli/ifish-probe-design.svg?style=social)
+
+[PyPi](https://pypi.org/project/ifish-probe-design/) | [docs](https://ggirelli.github.io/ifish-probe-design/)
+
 
 **iFISH-Probe-Design** (`ifpd`) is a Python3.6.1+ package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
 
@@ -10,7 +14,7 @@
 
 **iFISH-Probe-Designer** is fully implemented in Python3.6.1+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.6.1+ on your machine if you don't have it yet.
 
-`ifpd` has been tested with Python 3.6.1, 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/fastx-barber#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/fastx-barber/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
+`ifpd` has been tested with Python 3.6.1, 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/ifish-probe-design#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/ifish-probe-design/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
 
 ## Installation
 
