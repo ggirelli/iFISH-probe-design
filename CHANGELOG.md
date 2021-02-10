@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
 - Now asking for arguments "chrom [start-end]" when querying.
+- Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
 
 ## Fixed
 - Blacked code.

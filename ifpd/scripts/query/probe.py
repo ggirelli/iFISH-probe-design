@@ -117,6 +117,14 @@ oligonucleotides. Concisely, the script does the following:
         help="""Force overwriting of the query if already run.
             This is potentially dangerous.""",
     )
+    parser.add_argument(
+        "--exact-n-oligo",
+        action="store_const",
+        dest="exact_n_oligo",
+        const=True,
+        default=False,
+        help="""Stop if not enough oligos are found.""",
+    )
     parser = ap.add_version_option(parser)
 
     parser.set_defaults(parse=parse_arguments, run=run)
@@ -150,24 +158,27 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
 
     assert_region(args)
 
-    assert_msg = f"at least 2 features needed, only {len(args.order)} found."
-    assert 2 <= len(args.order), assert_msg
+    assert 2 <= len(
+        args.order
+    ), f"at least 2 features needed, only {len(args.order)} found."
+
     for o in args.order:
-        assert_msg = f'unrecognized feature "{o}". Should be one of {featureList}.'
-        assert o in featureList, assert_msg
+        assert (
+            o in featureList
+        ), f'unrecognized feature "{o}". Should be one of {featureList}.'
 
-    assert_msg = f"first filter threshold must be a fraction: {args.filter_thr}"
-    assert 0 <= args.filter_thr and 1 >= args.filter_thr, assert_msg
+    assert (
+        0 <= args.filter_thr and 1 >= args.filter_thr
+    ), "first filter threshold must be a fraction: {args.filter_thr}"
 
-    assert_msg = "negative minimum distance between consecutive oligos: "
-    assert_msg += f"{args.min_d}"
-    assert args.min_d >= 0, assert_msg
+    assert (
+        args.min_d >= 0
+    ), f"negative minimum distance between consecutive oligos: {args.min_d}"
 
     assert args.n_oligo >= 1, f"a probe must have oligos: {args.n_oligo}"
     if args.max_probes == -1:
         args.max_probes = np.inf
-    assert_msg = f"at least 1 probe in output: {args.max_probes}"
-    assert args.max_probes >= 0, assert_msg
+    assert args.max_probes >= 0, f"at least 1 probe in output: {args.max_probes}"
 
     return args
 
@@ -186,6 +197,30 @@ def setup_log(args):
     logging.getLogger("").addHandler(console)
     if args.forceRun and os.path.isdir(args.outdir):
         logging.info("Overwriting previously run query.")
+
+
+def check_n_oligo(args, selectCondition):
+    if args.exact_n_oligo:
+        assert args.n_oligo <= selectCondition.sum(), "".join(
+            [
+                "there are not enough oligos in the database.",
+                f" Asked for {args.n_oligo}, {selectCondition.sum()} found.",
+            ]
+        )
+    elif args.n_oligo > selectCondition.sum():
+        logging.info(
+            f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}"
+        )
+        logging.warning(
+            "".join(
+                [
+                    f"Designing a probe with {selectCondition.sum()} oligos",
+                    f" (instead of {args.n_oligo}).",
+                ]
+            )
+        )
+        args.n_oligo = selectCondition.sum()
+    return args
 
 
 @enable_rich_assert
@@ -213,10 +248,7 @@ def run(args: argparse.Namespace) -> None:
     )
     selectedOligos = chromData.loc[selectCondition, :]
 
-    assert_msg = "there are not enough oligos in the database."
-    assert_msg += f" Asked for {args.n_oligo}, {selectCondition.sum()} found."
-    assert args.n_oligo <= selectCondition.sum(), assert_msg
-    logging.info(f"Found {selectCondition.sum()} oligos in {args.chrom}:{args.region}")
+    args = check_n_oligo(args, selectCondition)
 
     if 3 > selectedOligos.shape[1]:
         logging.info("Retrieving sequences from UCSC...")
