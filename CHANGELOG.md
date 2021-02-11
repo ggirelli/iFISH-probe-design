@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+
+
+
+## [2.0.4] - 2021-02-11
 ### Added
 - Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
 - `const.py` module with package version tag and other constants.
