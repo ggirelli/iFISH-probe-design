@@ -24,7 +24,9 @@ Once you have `pipx` ready on your system, install the latest stable release of 
 
 ## Usage
 
-More details on how to run **iFISH-Probe-Design** are available in the online [documentation](https://ggirelli.github.io/iFISH-probe-design/usage).
+All **iFISH-Probe-Design** commands are accessible via the `ifpd` keyword on the terminal. For each command, you can access its help page by using the `-h` option.
+
+More details on how to run `ifpd` are available in the online [documentation](https://ggirelli.github.io/iFISH-probe-design/usage).
 
 ## Contributing
 
