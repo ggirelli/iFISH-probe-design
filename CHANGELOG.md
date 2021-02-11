@@ -16,12 +16,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Temporarily deprecated sequence-less databases due to bug.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
-- Now asking for arguments "chrom [start end]" when querying.
+- Now asking for arguments "chrom [--region start end]" when querying.
 - Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
 - Changed extension of simple template files to `.tpl.html`.
 - Moved documentation to `docs`.
 - `mkdb` does not support sequence-less inputs anymore.
-- `query probe` argument order changed.
+- `query probe` and `query set` argument order changed.
 
 ## Fixed
 - Blacked code.

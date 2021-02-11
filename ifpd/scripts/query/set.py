@@ -45,12 +45,25 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help="Design a FISH probe set in a genomic region.",
     )
+    parser.add_argument(
+        "database", metavar="database", type=str, help="Path to database folder."
+    )
 
     parser.add_argument(
         "chrom",
         type=str,
-        help="Database feature to query for a probe.",
+        help="Database feature to query for a probe set.",
     )
+    parser.add_argument(
+        "outdir",
+        metavar="outDir",
+        type=str,
+        help="Path to query output directory. Stops if it exists already.",
+    )
+    parser.add_argument(
+        "nProbes", metavar="nProbes", type=int, help="Number of probes to design."
+    )
+
     parser.add_argument(
         "--region",
         type=int,
@@ -58,46 +71,6 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         help="""Start and end locations (space-separated) of the region of interest.
         When a region is not provided (or start/end coincide),
         the whole feature is queried.""",
-    )
-
-    parser.add_argument(
-        "nProbes", metavar="nProbes", type=int, help="Number of probes to design."
-    )
-    parser.add_argument(
-        "database", metavar="database", type=str, help="Path to database folder."
-    )
-    parser.add_argument(
-        "outdir",
-        metavar="outputDirectory",
-        type=str,
-        help="Path to query output directory. Stops if it exists already.",
-    )
-
-    parser.add_argument(
-        "--order",
-        metavar="featOrder",
-        type=str,
-        default=const.featureList,
-        nargs="+",
-        help="""Space-separated features, used as explained in script description.
-        The available features are: centrality, size, and homogeneity. At least 2
-        features must be listed. Default: "size homogeneity centrality".""",
-    )
-    parser.add_argument(
-        "--filter-thr",
-        metavar="filterThr",
-        type=float,
-        default=0.1,
-        help="""Threshold of first feature filter, used to identify
-        a range around the best value (percentage range around it). Accepts values
-        from 0 to 1. Default: 0.1""",
-    )
-    parser.add_argument(
-        "--min-d",
-        metavar="minD",
-        type=int,
-        default=0,
-        help="*DEPRECATED* Minimum distance between consecutive oligos. Default: 1",
     )
     parser.add_argument(
         "--n-oligo",
@@ -114,14 +87,43 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         help="""Maximum number of probe set candidates to output.
             Set to -1 to retrieve all candidates. Default: -1""",
     )
-    parser.add_argument(
+    parser = ap.add_version_option(parser)
+
+    advanced = parser.add_argument_group("advanced arguments")
+    advanced.add_argument(
+        "--order",
+        metavar="feature",
+        type=str,
+        default=const.featureList,
+        nargs="+",
+        help="""Space-separated features, used as explained in script description.
+        The available features are: 'centrality', 'size', and 'homogeneity'. At least 2
+        features must be listed. Default: "size homogeneity centrality".""",
+    )
+    advanced.add_argument(
+        "--filter-thr",
+        metavar="filterThr",
+        type=float,
+        default=0.1,
+        help="""Threshold of first feature filter, used to identify
+        a range around the best value (percentage range around it). Accepts values
+        from 0 to 1. Default: 0.1""",
+    )
+    advanced.add_argument(
+        "--min-d",
+        metavar="minD",
+        type=int,
+        default=0,
+        help="*DEPRECATED* Minimum distance between consecutive oligos. Default: 1",
+    )
+    advanced.add_argument(
         "--window-shift",
         metavar="winShift",
         type=float,
         default=0.1,
         help="""Window fraction for windows shifting.""",
     )
-    parser.add_argument(
+    advanced.add_argument(
         "-t",
         "--threads",
         metavar="nthreads",
@@ -129,8 +131,7 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         help="""Number of threads for parallelization. Default: 1""",
         default=1,
     )
-
-    parser.add_argument(
+    advanced.add_argument(
         "-f",
         action="store_const",
         dest="forceRun",
@@ -139,7 +140,6 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         help="""Force overwriting of the query if already run.
             This is potentially dangerous.""",
     )
-    parser = ap.add_version_option(parser)
 
     parser.set_defaults(parse=parse_arguments, run=run)
 
