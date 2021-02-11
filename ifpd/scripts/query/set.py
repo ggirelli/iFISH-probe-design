@@ -5,7 +5,7 @@
 
 import argparse
 import ggc  # type: ignore
-from ifpd import query, web
+from ifpd import query
 from ifpd.scripts import arguments as ap  # type: ignore
 from ifpd.exception import enable_rich_assert
 from joblib import Parallel, delayed  # type: ignore
@@ -141,15 +141,6 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         help="""Force overwriting of the query if already run.
             This is potentially dangerous.""",
     )
-    parser.add_argument(
-        "--no-net",
-        action="store_const",
-        dest="hasNetwork",
-        const=False,
-        default=True,
-        help="""Use when internet is not available. Then, chromosome size
-                defaults to the end of the last oligo.""",
-    )
     parser = ap.add_version_option(parser)
 
     parser.set_defaults(parse=parse_arguments, run=run)
@@ -235,10 +226,6 @@ def get_queried_region(args, oligoDB):
     else:
         chromStart = 0
         chromEnd = None
-        if args.hasNetwork and web.internet_on:
-            chromEnd = web.get_chromosome_size(
-                args.chrom, oligoDB.get_reference_genome()
-            )
         if chromEnd is None:
             assert_msg = f'chromosome "{args.chrom}" not in the database.'
             assert oligoDB.has_chromosome(args.chrom), assert_msg
@@ -405,7 +392,7 @@ def run(args: argparse.Namespace) -> None:
     setup_log(args)
 
     logging.info("Reading database...")
-    oligoDB = query.OligoDatabase(args.database, False)
+    oligoDB = query.OligoDatabase(args.database)
 
     queried_region = get_queried_region(args, oligoDB)
     selectCondition, selectedOligos = init_db(args, oligoDB, queried_region)
@@ -421,19 +408,6 @@ def run(args: argparse.Namespace) -> None:
             ]
         )
     )
-
-    if 3 > selectedOligos.shape[1]:
-        logging.info("Retrieving sequences from UCSC...")
-        raise NotImplementedError
-        # sequences = []
-        # for i in tqdm(selectedOligos.index):
-        #     region = selectedOligos.iloc[i, :2].tolist()
-        #     regionSequence = fp.web.get_sequence_from_UCSC(
-        #         config["DATABASE"]["refGenome"], chrom, *region
-        #     )
-        #     sequences.append(regionSequence)
-        # selectedOligos.assign(name=pd.Series(sequences,
-        #                       index=selectedOligos.index).values)
 
     candidateList = build_candidates(args, queried_region, selectedOligos, oligoDB)
     probeFeatureTable = build_feature_table(args, queried_region, candidateList)

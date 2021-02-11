@@ -240,7 +240,7 @@ def run(args: argparse.Namespace) -> None:
     setup_log(args)
 
     logging.info("Reading database...")
-    oligoDB = query.OligoDatabase(args.database, False)
+    oligoDB = query.OligoDatabase(args.database)
 
     chromStart, chromEnd = args.region
     queried_region = (args.chrom, chromStart, chromEnd)
