@@ -21,17 +21,6 @@ tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)"
 tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
 
 [[package]]
-name = "biopython"
-version = "1.78"
-description = "Freely available tools for computational molecular biology."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-numpy = "*"
-
-[[package]]
 name = "bottle"
 version = "0.12.19"
 description = "Fast and simple WSGI-framework for small web-applications."
@@ -76,18 +65,6 @@ description = "A backport of the dataclasses module for Python 3.6"
 category = "main"
 optional = false
 python-versions = ">=3.6, <3.7"
-
-[[package]]
-name = "ggc"
-version = "0.0.3"
-description = "Basic methods, for common usage across packages"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-biopython = ">=1.70"
-tqdm = ">=4.19.8"
 
 [[package]]
 name = "importlib-metadata"
@@ -182,7 +159,7 @@ test = ["pytest (>=4.0.2)", "pytest-xdist", "hypothesis (>=3.58)"]
 
 [[package]]
 name = "paste"
-version = "2.0.3"
+version = "3.5.0"
 description = "Tools for using a Web Server Gateway Interface stack"
 category = "main"
 optional = false
@@ -192,7 +169,7 @@ python-versions = "*"
 six = ">=1.4.0"
 
 [package.extras]
-Flup = ["flup"]
+flup = ["flup"]
 openid = ["python-openid"]
 
 [[package]]
@@ -328,18 +305,6 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
-name = "tqdm"
-version = "4.56.1"
-description = "Fast, Extensible Progress Meter"
-category = "main"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-
-[package.extras]
-dev = ["py-make (>=0.1.0)", "twine", "wheel"]
-telegram = ["requests"]
-
-[[package]]
 name = "typing-extensions"
 version = "3.7.4.3"
 description = "Backported and Experimental Type Hints for Python 3.5+"
@@ -362,7 +327,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.1"
-content-hash = "b1897fdef643a93aa1f32622f03e161081e57e54be30477a0f7b0019a02649b2"
+content-hash = "4a74e2da55447e1f06cd2ac6e17a13369a7da2ec2a0407a852e9ea4e36470e67"
 
 [metadata.files]
 atomicwrites = [
@@ -372,24 +337,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-20.3.0-py2.py3-none-any.whl", hash = "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6"},
     {file = "attrs-20.3.0.tar.gz", hash = "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"},
-]
-biopython = [
-    {file = "biopython-1.78-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:0b9fbb0d3022dc22716da108b8a81b80d952cd97ac1f106de491dce850f92f62"},
-    {file = "biopython-1.78-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:f5021a398c898b9cf6815cc5171c146a601b935b55364c53e6516a2545ab740c"},
-    {file = "biopython-1.78-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:195f099c2c0c39518b6df921ab2b3cc43a601896018fc61909ac8385d5878866"},
-    {file = "biopython-1.78-cp36-cp36m-win32.whl", hash = "sha256:75b55000793f6b76334b8e80dc7e6d8cd2b019af917aa431cea6646e8e696c7f"},
-    {file = "biopython-1.78-cp36-cp36m-win_amd64.whl", hash = "sha256:f1076653937947773768455556b1d24acad9575759e9089082f32636b09add54"},
-    {file = "biopython-1.78-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:e0af107cc62a905d13d35dd7b38f335a37752ede45e4617139e84409a6a88dc4"},
-    {file = "biopython-1.78-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:4565c97fab16c5697d067b821b6a1da0ec3ef36a9c96cf103ac7b4a94eb9f9ba"},
-    {file = "biopython-1.78-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:0df5cddef2819c975e6508adf5d85aa046e449df5420d02b04871c7836b41273"},
-    {file = "biopython-1.78-cp37-cp37m-win32.whl", hash = "sha256:5c0b369f91a76b8e5e36624d075585c3f0f088ea4a6e3d015c48f08e48ce0114"},
-    {file = "biopython-1.78-cp37-cp37m-win_amd64.whl", hash = "sha256:cc3b0b78022d14f11d508038a288a189d03c97c476d6636c7b6f98bd8bc8462b"},
-    {file = "biopython-1.78-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:010142a8ec2549ff0649edd497658964ef1a18eefdb9fd942ec1e81b292ce2d9"},
-    {file = "biopython-1.78-cp38-cp38-manylinux1_i686.whl", hash = "sha256:194528eda6856a4c68f840ca0bcc9b544a5edee3548b97521084e7ac38c833ca"},
-    {file = "biopython-1.78-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:ada611f12ee3b0bef7308ef41ee7b94898613b369ab44e0268d74bd1d6a06920"},
-    {file = "biopython-1.78-cp38-cp38-win32.whl", hash = "sha256:48d424453a5512a1d1d41a4acabdfe5291da1f491a2d3606f2b0e4fbd63aeda6"},
-    {file = "biopython-1.78-cp38-cp38-win_amd64.whl", hash = "sha256:2bd5a630be2a8e593094f7b1717fc962eda8931b68542b97fbf9bd8e2ac1e08d"},
-    {file = "biopython-1.78.tar.gz", hash = "sha256:1ee0a0b6c2376680fea6642d5080baa419fd73df104a62d58a8baf7a8bbe4564"},
 ]
 bottle = [
     {file = "bottle-0.12.19-py3-none-any.whl", hash = "sha256:f6b8a34fe9aa406f9813c02990db72ca69ce6a158b5b156d2c41f345016a723d"},
@@ -410,9 +357,6 @@ cycler = [
 dataclasses = [
     {file = "dataclasses-0.8-py3-none-any.whl", hash = "sha256:0201d89fa866f68c8ebd9d08ee6ff50c0b255f8ec63a71c16fda7af82bb887bf"},
     {file = "dataclasses-0.8.tar.gz", hash = "sha256:8479067f342acf957dc82ec415d355ab5edb7e7646b90dc6e2fd1d96ad084c97"},
-]
-ggc = [
-    {file = "ggc-0.0.3.tar.gz", hash = "sha256:62c1043e30089ff4c841d34864524b65aa78bd3f0254cd91be52a03247b87439"},
 ]
 importlib-metadata = [
     {file = "importlib_metadata-3.4.0-py3-none-any.whl", hash = "sha256:ace61d5fc652dc280e7b6b4ff732a9c2d40db2c0f92bc6cb74e07b73d53a1771"},
@@ -554,9 +498,8 @@ pandas = [
     {file = "pandas-1.1.5.tar.gz", hash = "sha256:f10fc41ee3c75a474d3bdf68d396f10782d013d7f67db99c0efbfd0acb99701b"},
 ]
 paste = [
-    {file = "Paste-2.0.3-py2-none-any.whl", hash = "sha256:9d17d06cd95d700acb7be449a02c13db28449de2adaf0f45339f4a310601f096"},
-    {file = "Paste-2.0.3-py34-none-any.whl", hash = "sha256:fc0de2f2fb1f50f2b2b986993e57a840f98ffba03e3e5260a37382c326be6a31"},
-    {file = "Paste-2.0.3.tar.gz", hash = "sha256:2346a347824c32641bf020c17967b49ae74d3310ec1bc9b958d4b84e2d985218"},
+    {file = "Paste-3.5.0-py2.py3-none-any.whl", hash = "sha256:8e08200a570f7e29dfafd4eea0e1b38a6193cfda6446bb515db74250b632c53b"},
+    {file = "Paste-3.5.0.tar.gz", hash = "sha256:1b095c42dc91d426f3ae85101796b14d265887f8f36f3aad143a5f29effdc39d"},
 ]
 pillow = [
     {file = "Pillow-8.1.0-cp36-cp36m-macosx_10_10_x86_64.whl", hash = "sha256:d355502dce85ade85a2511b40b4c61a128902f246504f7de29bbeec1ae27933a"},
@@ -658,10 +601,6 @@ six = [
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
-]
-tqdm = [
-    {file = "tqdm-4.56.1-py2.py3-none-any.whl", hash = "sha256:ab9b659241d82b8b51b2269ee243ec95286046bf06015c4e15a947cc15914211"},
-    {file = "tqdm-4.56.1.tar.gz", hash = "sha256:2874fa525c051177583ec59c0fb4583e91f28ccd3f217ffad2acdb32d2c789ac"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.7.4.3-py2-none-any.whl", hash = "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"},
