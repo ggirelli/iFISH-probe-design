@@ -1,0 +1,89 @@
+%include(vpath + 'header.tpl.html')
+
+<!-- header -->
+<div class="row">
+	<div id="main" class="col col-xl-6 offset-xl-3 col-lg-12">
+	
+		<h1 id="title">
+			Query
+		</h1>
+		
+		%if breadcrumbs:
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				%if not type(None) == type(menu_template):
+					%include(menu_template)
+				%end
+				<li class="breadcrumb-item"><a href="/">Home</a></li>
+				<li class="breadcrumb-item"><a href="/probe-design/">Design</a></li>
+				<li class="breadcrumb-item"><a href="{{app_uri}}q/{{query['id']}}">Query: {{query['id']}}</a></li>
+				<li class="breadcrumb-item" aria-current="page">Candidate: {{candidate['id']}}</li>
+			</ol>
+		</nav>
+		%end
+	
+		<div class="container-fluid p-0"><div class="card mb-3">
+			<div class="card-header">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs card-header-tabs">
+					<li rolw="presentation" class="nav-item">
+						<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/interface#probe-set-candidate-page" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+							<span class="fas fa-info-circle"></span>
+						</a>
+					</li>
+					<li role="presentation" class="nav-item">
+						<a class="nav-link active" href="" aria-controls="" role="tab" data-toggle="tab">Candidate set # {{candidate['id']}}</a>
+					</li>
+				</ul>
+			</div>
+			<div class="card-body">
+				<table>
+					<thead></thead>
+					<tbody>
+						<tr>
+							<td colspan="3">
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/images/windows.png" alt="Candidate #{{candidate['id']}}, probe" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/images/distr.png" alt="Candidate #{{candidate['id']}}, oligo" />
+							</td>
+							<td>
+								<img class="img-fluid" src="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/images/distance.png" alt="Candidate #{{candidate['id']}}, distance" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div></div>
+
+
+		<div class="row">
+			<div class="col col-6"><div class="card border-info">
+				<div class="card-body">
+					<h3 class="card-title">Probe list</h3>
+					<ul class="list-group list-group-flush candidate_settings">
+						%nProbes = query['candidate_table'].loc[int(candidate['id']),'nProbes']
+						%for seti in range(nProbes):
+						<li class="list-group-item border-info">
+							<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/p/{{seti}}" class="text-decoration-none text-info"><span class="fas fa-external-link-square-alt"></span>&nbsp;Probe #{{seti}}</a>
+						</li>
+						%end
+					</ul>
+				</div>
+			</div></div>
+			<div class="col col-6"><div class="card">
+				<div class="card-body row">
+					<h3 class="card-title col col-12">Download as...</h3>
+					<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/documents/probe_set_{{candidate['id']}}.fa/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-dna"></span>&nbsp;Fasta</button></a>
+					<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/documents/probe_set_{{candidate['id']}}.bed/download/" target="_download" class="col col-6 text-decoration-none"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-bed"></span>&nbsp;Bed</button></a>
+					<a href="{{app_uri}}q/{{query['id']}}/cs/{{candidate['id']}}/download/" target="_download" class="col col-12 text-decoration-none mt-3"><button class="btn btn-info btn-block btn-lg"><span class="fas fa-file-archive"></span>&nbsp;Zip</button></a>
+				</div>
+			</div></div>
+		</div>
+
+	</div>
+</div>
+
+% include(vpath + 'footer.tpl.html')

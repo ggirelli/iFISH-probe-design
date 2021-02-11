@@ -7,13 +7,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
-### ...
-- ...
+### Added
+- Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
+- `const.py` module with package version tag and other constants.
+- Option to hide breadcrumbs when running `serve`.
+- Enforcing GUI to be accessed at serving URI, not viewing one.
+
+### Changed
+- Switched from setup.py to poetry setup.
+- Simplified authorship and license comment.
+- Now all scripts are accessible through a single entry-point at "ifpd".
+- Now asking for arguments "chrom [--region start end]" when querying.
+- Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
+- Changed extension of simple template files to `.tpl.html`.
+- Moved documentation to `docs`.
+- `mkdb` does not support sequence-less inputs anymore.
+- `query probe` and `query set` argument order changed.
+- Made `static` argument mandatory for `serve`, for compatibility with `pipx` installation.
+- `Error 500` now triggers a redirect to app homepage with a 5s delay.
+- Breadcrumbs are on by default on `serve.`
+
+## Fixed
+- Blacked code.
+- Bugs crashing query when probe has 1 or 2 oligos only.
+- Bugs crashing query when probe set has 1 or 2 probes only.
+
+## Removed
+- `web` module and all network-based checks.
+- Network-based checks from `dbchk`.
+- Dependency from `ggc` and `tqdm`.
+- Sequence-less databases due to bug.
+
 
 
 ## [2.0.3.post2] - 2019-09-11
 ## Fixed
 - Bug crashing web interface due to missing str2int conversion.
+
 
 
 ## [2.0.3.post1] - 2019-07-24

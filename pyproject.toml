@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "ifpd"
+version = "2.0.4"
+description = "An iFISH probe design pipeline, with web interface included."
+authors = ["Gabriele Girelli <gigi.ga90@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ggirelli/iFISH-Probe-Design"
+repository = "https://github.com/ggirelli/iFISH-Probe-Design"
+keywords = ["biology", "cell", "DNA", "RNA", "FISH", "fluorescence", "hybridization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+	"License :: OSI Approved :: MIT License",
+    "Operating System :: Unix",
+    "Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.6"
+]
+include = [
+	"CHANGELOG.md",
+	"LICENSE",
+	"ifpd/interface/css/*",
+	"ifpd/interface/fonts/*",
+	"ifpd/interface/images/*",
+	"ifpd/interface/js/*",
+	"ifpd/interface/views/*",
+	"ifpd/sections/probe_design/css/*",
+	"ifpd/sections/probe_design/views/*"
+]
+
+[tool.poetry.dependencies]
+python = "^3.6.1"
+bottle = "^0.12.13"
+joblib = ">=0.16,<0.18"
+matplotlib = "^3.0.0"
+numpy = "^1.19.1"
+pandas = "^1.1.2"
+paste = "^3.0.7"
+pytest = "^6.1.1"
+rich = "^9.0"
+scipy = "^1.0.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+"ifpd" = "ifpd.scripts.ifpd:main"

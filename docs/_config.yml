@@ -1,0 +1,12 @@
+title:               ifpd
+description:         'iFISH probe design'
+
+author:
+  name:              Gabriele Girelli
+  nickname:          GG
+  url:               http://ggirelli.info
+  email:             gabriele.girelli@scilifelab.se
+
+version:             2.0.4
+google_analytics: "UA-99031010-5"
+theme: jekyll-theme-minimal

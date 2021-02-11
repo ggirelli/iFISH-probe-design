@@ -25,3 +25,17 @@ If you want to reporte a **bug**, please use the github [issue tracker](https://
 ## How to suggest a feature or enhancement
 
 If you would like to see a new feature implemented in `iFISH-Probe-Design`, or to have an already existing feature improved, please use the github [issue tracker](https://github.com/ggirelli/iFISH-Probe-Design/issues) and follow the template that should automatically load up.
+
+# Style your contributions
+
+We like to have `ifpd` code styled with [`black`](https://github.com/psf/black) and checked with `mypy`. `mypy`, `flake8`, and `black` conforming checks are automatically ran on all pull requests through GitHub Actions.
+
+# Changing dependencies
+
+If your code changes `ifpd` dependencies, we recommend to change them in the `pyproject.toml` file and then regenerate `requirements.txt` by running:
+
+```
+poetry export -f requirements.txt -o requirements.txt --without-hashes
+```
+
+See [poetry](https://github.com/python-poetry/poetry)'s documentation for more details on the format of the `pyproject.toml` file.

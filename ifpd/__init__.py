@@ -1,25 +1,10 @@
-# -*- coding: utf-8 -*-
+"""
+@author: Gabriele Girelli
+@contact: gigi.ga90@gmail.com
+"""
 
-# ------------------------------------------------------------------------------
-# 
-# Author: Gabriele Girelli
-# Email: gigi.ga90@gmail.com
-# Version: 0.0.1
-# Description: Webserver sections module
-# 
-# ------------------------------------------------------------------------------
+from ifpd.const import __version__
+from ifpd import bioext, exception, query, stats
+from ifpd import sections
 
-
-
-# DEPENDENCIES =================================================================
-
-from ifpd.sections import *
-
-from . import bioext
-from . import web
-from . import stats
-from . import query
-
-# END ==========================================================================
-
-################################################################################
+__all__ = ["__version__", "bioext", "exception", "query", "sections", "stats"]
