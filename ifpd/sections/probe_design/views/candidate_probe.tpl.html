@@ -21,9 +21,22 @@
 			</ol>
 		</nav>
 		%end
+
 		
 		<div class="container-fluid p-0"><div class="card mb-3">
-			<div class="card-header">Candidate #{{candidate['id']}}</div>
+			<div class="card-header">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs card-header-tabs">
+					<li rolw="presentation" class="nav-item">
+						<a class="nav-link" href="https://ggirelli.github.io/iFISH-probe-design/interface#probe-candidate-page" target="_new" data-toggle="tooltip" data-placement="top" title="Help">
+							<span class="fas fa-info-circle"></span>
+						</a>
+					</li>
+					<li role="presentation" class="nav-item">
+						<a class="nav-link active" href="" aria-controls="" role="tab" data-toggle="tab">Candidate #{{candidate['id']}}</a>
+					</li>
+				</ul>
+			</div>
 			<div class="card-body">
 				<table>
 					<tbody>
