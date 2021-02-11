@@ -589,7 +589,7 @@ class Routes(routes.Routes):
         queriedRegion = ""
         if formData.start != formData.end:
             queriedRegion = f"--region {formData.start} {formData.end}"
-        query_id = "%s:%d:%d:%d" % (
+        query_id = "%s:%s:%s:%s" % (
             formData.chromosome,
             formData.start,
             formData.end,
@@ -600,25 +600,31 @@ class Routes(routes.Routes):
         query_id = encoder.hexdigest()
 
         dbPath = f"{self.static_path}/db/{formData.database}"
-        oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork=False)
+        oligoDB = fp.query.OligoDatabase(dbPath)
         min_dist = oligoDB.get_oligo_min_dist()
 
-        cmd = ["ifpd query probe"]
-        cmd.extend([shlex.quote(formData.chromosome), shlex.quote(queriedRegion)])
-        cmd.extend([shlex.quote(dbPath)])
-        cmd.extend([shlex.quote(f"{self.static_path}/query/{query_id}")])
-        cmd.extend(
-            [
-                "--order",
-                shlex.quote(formData.f1),
-                shlex.quote(formData.f2),
-                shlex.quote(formData.f3),
-            ]
-        )
-        cmd.extend(["--filter-thr", shlex.quote(formData.f1_threshold)])
-        cmd.extend(["--n-oligo", shlex.quote(formData.n_oligo)])
-        cmd.extend(["--max-probes", shlex.quote(formData.max_probes)])
-        cmd.extend(["--min-d", shlex.quote(f"{min_dist}")])
+        cmd = [
+            "ifpd",
+            "query",
+            "probe",
+            shlex.quote(dbPath),
+            shlex.quote(formData.chromosome),
+            shlex.quote(f"{self.static_path}/query/{query_id}"),
+            "--order",
+            shlex.quote(formData.f1),
+            shlex.quote(formData.f2),
+            shlex.quote(formData.f3),
+            "--filter-thr",
+            shlex.quote(formData.f1_threshold),
+            "--n-oligo",
+            shlex.quote(formData.n_oligo),
+            "--max-probes",
+            shlex.quote(formData.max_probes),
+            "--min-d",
+            shlex.quote(f"{min_dist}"),
+        ]
+        if 0 != len(queriedRegion):
+            cmd.extend([shlex.quote(queriedRegion)])
 
         config = configparser.ConfigParser()
         timestamp = time.time()
@@ -664,7 +670,7 @@ class Routes(routes.Routes):
         queriedRegion = ""
         if formData.multi_start != formData.multi_end:
             queriedRegion = f"--region {formData.multi_start} {formData.multi_end}"
-        query_id = "%s:%d:%d:%d" % (
+        query_id = "%s:%s:%s:%s" % (
             formData.multi_chromosome,
             formData.multi_start,
             formData.multi_end,
@@ -675,16 +681,17 @@ class Routes(routes.Routes):
         query_id = encoder.hexdigest()
 
         dbPath = f"{self.static_path}/db/{formData.multi_database}"
-        oligoDB = fp.query.OligoDatabase(dbPath, hasNetwork=False)
+        oligoDB = fp.query.OligoDatabase(dbPath)
         min_dist = oligoDB.get_oligo_min_dist()
 
         cmd = [
-            "ifpd query set",
-            shlex.quote(formData.multi_chromosome),
-            shlex.quote(queriedRegion),
-            shlex.quote(formData.multi_n_probes),
+            "ifpd",
+            "query",
+            "set",
             shlex.quote(dbPath),
+            shlex.quote(formData.multi_chromosome),
             shlex.quote(f"{self.static_path}/query/{query_id}"),
+            shlex.quote(formData.multi_n_probes),
             "--order",
             shlex.quote(formData.f1),
             shlex.quote(formData.f2),
@@ -698,6 +705,8 @@ class Routes(routes.Routes):
             "--window-shift",
             shlex.quote(f"{formData.multi_win_shift}"),
         ]
+        if 0 != len(queriedRegion):
+            cmd.extend([shlex.quote(queriedRegion)])
 
         config = configparser.ConfigParser()
         timestamp = time.time()

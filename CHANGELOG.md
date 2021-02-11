@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Moved documentation to `docs`.
 - `mkdb` does not support sequence-less inputs anymore.
 - `query probe` and `query set` argument order changed.
+- Made `static` argument mandatory for `serve`, for compatibility with `pipx` installation.
 
 ## Fixed
 - Blacked code.
@@ -31,12 +32,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Removed
 - `web` module and all network-based checks.
 - Network-based checks from `dbchk`.
+- Dependency from `ggc` and `tqdm`.
 
 
 
 ## [2.0.3.post2] - 2019-09-11
 ## Fixed
 - Bug crashing web interface due to missing str2int conversion.
+
 
 
 ## [2.0.3.post1] - 2019-07-24

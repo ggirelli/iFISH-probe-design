@@ -12,7 +12,7 @@ from joblib import Parallel, delayed  # type: ignore
 import numpy as np  # type: ignore
 import os
 import pandas as pd  # type: ignore
-from tqdm import tqdm  # type: ignore
+from rich.progress import track  # type: ignore
 from typing import List
 
 matplotlib.use("svg")
@@ -129,7 +129,7 @@ class OligoDatabase(object):
     def read_all_chromosomes(self, verbose):
         chromList = [d for d in os.listdir(self.dirPath) if not d.startswith(".")]
         assert 0 < len(chromList), "no chromosome files found in {self.dirPath}"
-        chromList = tqdm(chromList) if verbose else chromList
+        chromList = track(chromList) if verbose else chromList
 
         for chrom in chromList:
             self.read_chromosome(chrom)
@@ -440,7 +440,7 @@ class ProbeFeatureTable(object):
                 for candidate in candidateList
             )
         else:
-            candidateList = tqdm(candidateList) if verbose else candidateList
+            candidateList = track(candidateList) if verbose else candidateList
             for candidate in candidateList:
                 self.data.append(candidate.describe(queried_region))
         self.data = pd.concat(self.data)

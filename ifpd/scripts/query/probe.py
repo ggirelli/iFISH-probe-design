@@ -195,6 +195,7 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
 @enable_rich_assert
 def run(args: argparse.Namespace) -> None:
     os.mkdir(args.outdir)
+    ap.add_log_file_handler(os.path.join(args.outdir, "log"))
 
     logging.info("Read database.")
     oligoDB = query.OligoDatabase(args.database)

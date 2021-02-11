@@ -4,7 +4,6 @@
 """
 
 import argparse
-import ggc  # type: ignore
 from ifpd import const, query
 from ifpd.scripts import arguments as ap  # type: ignore
 from ifpd.exception import enable_rich_assert
@@ -240,7 +239,7 @@ def init_db(
 
 def build_candidates(args, queried_region, selectedOligos, oligoDB):
     logging.info("Build probe candidates.")
-    args.threads = ggc.args.check_threads(args.threads)
+    args.threads = ap.check_threads(args.threads)
     if 1 != args.threads:
         candidateList = Parallel(n_jobs=args.threads, backend="threading", verbose=1)(
             delayed(query.OligoProbe)(
@@ -378,6 +377,7 @@ def populate_windows(args, candidateList, window_setList, probeFeatureTable):
 @enable_rich_assert
 def run(args: argparse.Namespace) -> None:
     os.mkdir(args.outdir)
+    ap.add_log_file_handler(os.path.join(args.outdir, "log"))
 
     logging.info("Read database.")
     oligoDB = query.OligoDatabase(args.database)

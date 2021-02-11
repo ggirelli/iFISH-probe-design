@@ -10,3 +10,6 @@
 
 # pytest cache
 .pytest_cache/*
+
+# Poetry
+poetry.lock

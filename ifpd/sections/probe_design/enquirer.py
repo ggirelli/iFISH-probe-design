@@ -42,10 +42,7 @@ class Enquirer(threading.Thread):
             config.write(OH)
 
     def __get_outdir_id(self, cmd):
-        if "ifpd_query_set" == cmd[0]:
-            return 4
-        elif "ifpd_query_probe" == cmd[0]:
-            return 3
+        return 5
 
     def run(self):
         """Run one query from the queue."""
@@ -56,10 +53,13 @@ class Enquirer(threading.Thread):
 
                 # If the queue released a task
                 if not type(None) == type(cmd):
+                    logging.info(cmd)
                     outdir_id = self.__get_outdir_id(cmd)
 
                     query_id = os.path.basename(cmd[outdir_id])
+                    logging.info((cmd[outdir_id], query_id))
                     EH = open(f"{cmd[outdir_id]}.error.log", "w+")
+                    logging.info(EH)
 
                     logging.debug(f'Running query "{query_id}"')
                     timestamp = time.time()

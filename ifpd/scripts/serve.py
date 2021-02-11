@@ -26,6 +26,12 @@ def init_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPars
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help="Run WebServer.",
     )
+    parser.add_argument(
+        "static",
+        metavar="folder",
+        type=str,
+        help="Path to static folder (created if not found).",
+    )
 
     parser.add_argument(
         "-u",
@@ -42,15 +48,6 @@ def init_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPars
         type=int,
         default=8080,
         help="Web server port. Default: 8080",
-    )
-    parser.add_argument(
-        "-s",
-        "--static",
-        metavar="folder",
-        type=str,
-        default="%s/static/" % os.path.dirname(os.path.dirname(ifpd.__file__)),
-        help='Path to static folder (created if not found). Default: "%s"'
-        % ("%s/static/" % os.path.dirname(os.path.dirname(ifpd.__file__))),
     )
     parser.add_argument(
         "-m",
