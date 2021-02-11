@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
 - `const.py` module with package version tag and other constants.
 - Option to hide breadcrumbs when running `serve`.
+- Enforcing GUI to be accessed at serving URI, not viewing one.
 
 ### Changed
 - Switched from setup.py to poetry setup.
