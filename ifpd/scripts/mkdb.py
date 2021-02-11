@@ -150,18 +150,20 @@ def sort_oligos(args, chromList):
         if any(startPositions <= endPositions):
             has_overlaps = True
 
+        oligoLengthList = np.unique(chromDF["chromEnd"] - chromDF["chromStart"])
+        oligoLengthRange[0] = min(oligoLengthRange[0], oligoLengthList.min())
+        oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
+
         assert len(startPositions) == len(endPositions)
         if 0 == len(startPositions):
             continue
         oligoMinDist = min(oligoMinDist, min(startPositions - endPositions - 1))
-
-        oligoLengthList = np.unique(chromDF["chromEnd"] - chromDF["chromStart"])
-        oligoLengthRange[0] = min(oligoLengthRange[0], oligoLengthList.min())
-        oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
     return oligoMinDist, oligoLengthRange, has_overlaps
 
 
 def mk_config(args, oligoMinDist, oligoLengthRange, has_overlaps):
+    if np.inf == oligoMinDist:
+        oligoMinDist = 0
     logging.info("Write config file.")
     config = configparser.ConfigParser()
     config["DATABASE"] = {"name": args.dbName, "refGenome": args.refGenome}
@@ -197,6 +199,8 @@ def run(args: argparse.Namespace) -> None:
     logging.info("Parse and write database.")
     chromList = set()
     for line in oligoGenerator:
+        if 0 == len(line.strip()):
+            continue
         line = line.strip().split("\t")
         chrom = line.pop(0)
         line = "\t".join(line) + "\n"

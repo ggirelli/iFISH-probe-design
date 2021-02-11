@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Changed
 - Upgraded dependencies to latest versions and tested.
 
+## Fixed
+- Minor bug in `ifpd_mkdb` triggered by databases with 1 oligo in a feature. (unlikely scenario)
+
 
 
 ## [2.0.4] - 2021-02-11
