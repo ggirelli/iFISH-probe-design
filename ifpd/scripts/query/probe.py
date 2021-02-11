@@ -11,8 +11,8 @@ import logging
 import numpy as np  # type: ignore
 import os
 from rich.logging import RichHandler  # type: ignore
+from rich.progress import track  # type: ignore
 import shutil
-from tqdm import tqdm  # type: ignore
 
 logging.basicConfig(
     level=logging.INFO,
@@ -61,6 +61,7 @@ oligonucleotides. Concisely, the script does the following:
         metavar=("chromStart", "chromEnd"),
         type=int,
         nargs=2,
+        default=(0, np.inf),
         help="""Start and end locations (space-separated) of the region of interest.
         When a region is not provided (or start/end coincide),
         the whole feature is queried.""",
@@ -159,11 +160,11 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     if args.forceRun:
         if os.path.isdir(args.outdir):
             shutil.rmtree(args.outdir)
+            logging.warning("Overwriting previously run query.")
     else:
         assert not os.path.isdir(
             args.outdir
         ), f"output folder already exists: {args.outdir}"
-
     assert_region(args)
 
     assert 2 <= len(
@@ -189,22 +190,6 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     assert args.max_probes >= 0, f"at least 1 probe in output: {args.max_probes}"
 
     return args
-
-
-def setup_log(args):
-    formatString = "%(asctime)-25s %(name)s %(levelname)-8s %(message)s"
-    formatter = logging.Formatter(formatString)
-    logging.basicConfig(
-        filename=os.path.join(args.outdir, "log"),
-        level=logging.INFO,
-        format=formatString,
-    )
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    console.setFormatter(formatter)
-    logging.getLogger("").addHandler(console)
-    if args.forceRun and os.path.isdir(args.outdir):
-        logging.info("Overwriting previously run query.")
 
 
 def check_n_oligo(args, selectCondition):
@@ -245,13 +230,9 @@ def check_n_oligo(args, selectCondition):
 @enable_rich_assert
 def run(args: argparse.Namespace) -> None:
     os.mkdir(args.outdir)
-    setup_log(args)
 
-    logging.info("Reading database...")
+    logging.info("Read database.")
     oligoDB = query.OligoDatabase(args.database)
-
-    chromStart, chromEnd = args.region
-    queried_region = (args.chrom, chromStart, chromEnd)
 
     assert (
         not oligoDB.has_overlaps()
@@ -262,6 +243,10 @@ def run(args: argparse.Namespace) -> None:
 
     oligoDB.read_chromosome(args.chrom)
     chromData = oligoDB.chromData[args.chrom]
+    if args.region[1] == np.inf:
+        args.region = (args.region[0], chromData['chromEnd'].max())
+    chromStart, chromEnd = args.region
+    queried_region = (args.chrom, chromStart, chromEnd)
 
     selectCondition = np.logical_and(
         chromData.iloc[:, 0] >= chromStart, chromData.iloc[:, 1] <= chromEnd
@@ -270,9 +255,11 @@ def run(args: argparse.Namespace) -> None:
 
     args = check_n_oligo(args, selectCondition)
 
-    logging.info("Building probe candidates...")
+    logging.info("Build probe candidates.")
     candidateList = []
-    for i in tqdm(range(0, selectedOligos.shape[0] - args.n_oligo)):
+    for i in track(
+        range(0, selectedOligos.shape[0] - args.n_oligo + 1), description="Building"
+    ):
         candidateList.append(
             query.OligoProbe(
                 queried_region[0],

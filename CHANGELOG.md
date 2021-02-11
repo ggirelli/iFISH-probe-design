@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Fixed
 - Blacked code.
+- Bugs crashing query when probe has 1 or 2 oligos only.
 
 ## Removed
 - `web` module and all network-based checks.

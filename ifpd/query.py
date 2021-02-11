@@ -124,8 +124,6 @@ class OligoDatabase(object):
         if self.has_sequences():
             assert chromData.shape[1] >= 3, f'missing sequence columns in "{chromPath}"'
 
-        self.__sequence_network_check(chromData, chrom)
-
         self.chromData[chrom] = chromData
 
     def read_all_chromosomes(self, verbose):
@@ -304,7 +302,7 @@ class OligoProbe(object):
         )
 
         plt.gca().axes.get_yaxis().set_visible(False)
-        plt.suptitle("%s:%d-%d" % (chrom, start, stop))
+        plt.suptitle("%s:%d-%.0f" % (chrom, start, stop))
         plt.xlabel("genomic coordinate [nt]")
         plt.legend(fontsize="small", loc="best")
 
@@ -344,7 +342,7 @@ class OligoProbe(object):
                 range(
                     self.chromStart,
                     self.chromEnd,
-                    int((self.chromEnd - self.chromStart) / 5.0),
+                    max(1, int((self.chromEnd - self.chromStart) / 5.0)),
                 )
             )
         )
@@ -389,19 +387,23 @@ class OligoProbe(object):
     def _plot_oligo_distance(self, outputDir):
         fig = plt.figure()
 
-        startPositions = self.oligoData.iloc[1:, 0].values
-        endPositions = self.oligoData.iloc[:-1, 1].values
-        diffs = startPositions - endPositions
-        plt.hist(diffs, density=1, facecolor="green", alpha=0.5)
-        density = stats.calc_density(diffs, alpha=0.5)
-        plt.plot(
-            density["x"].tolist(),
-            density["y"].tolist(),
-            "b--",
-            label="Density distribution",
-        )
+        if 1 < self.oligoData.shape[0]:
+            startPositions = self.oligoData.iloc[1:, 0].values
+            endPositions = self.oligoData.iloc[:-1, 1].values
+            diffs = startPositions - endPositions
+            plt.hist(diffs, density=1, facecolor="green", alpha=0.5)
+            density = stats.calc_density(diffs, alpha=0.5)
+            plt.plot(
+                density["x"].tolist(),
+                density["y"].tolist(),
+                "b--",
+                label="Density distribution",
+            )
 
-        plt.suptitle(f"{self.chrom}:{self.chromStart}-{self.chromEnd}")
+            plt.suptitle(f"{self.chrom}:{self.chromStart}-{self.chromEnd}")
+        else:
+            plt.figure()
+
         plt.xlabel("Distance between consecutive oligos [nt]")
         plt.ylabel("Density")
         plt.legend(fontsize="small", loc="best")
