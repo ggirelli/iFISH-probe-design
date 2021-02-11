@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+## Added
+- `poetry.lock` file for common dependency versions.
+
+## Changed
+- Upgraded dependencies to latest versions and tested.
 
 
 
