@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `web` module and all network-based checks.
 - Network-based checks from `dbchk`.
 - Dependency from `ggc` and `tqdm`.
-- Sequence-less databases due to bug support.
+- Sequence-less databases due to bug.
 
 
 
