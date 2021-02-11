@@ -19,9 +19,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
 - Changed extension of simple template files to `.tpl.html`.
 - Moved documentation to `docs`.
+- `mkdb` does not support sequence-less inputs anymore.
+- `query probe` argument order changed.
 
 ## Fixed
 - Blacked code.
+
+## Removed
+- `web` module and all network-based checks.
+- Network-based checks from `dbchk`.
+
 
 
 ## [2.0.3.post2] - 2019-09-11
