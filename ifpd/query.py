@@ -7,7 +7,7 @@ import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 import matplotlib.patches as patches  # type: ignore
 import configparser
-from ifpd import bioext, stats, web
+from ifpd import bioext, stats
 from joblib import Parallel, delayed  # type: ignore
 import numpy as np  # type: ignore
 import os
@@ -21,31 +21,24 @@ matplotlib.use("svg")
 class OligoDatabase(object):
     """FISH-ProDe Oligonucleotide Database class."""
 
-    def __init__(self, dbDirPath, hasNetwork=True, UCSC_DAS_URI=web.UCSC_DAS_URI):
+    def __init__(self, dbDirPath):
         super(OligoDatabase, self).__init__()
         self.dirPath = dbDirPath
-        self.hasNetwork = hasNetwork
-        self.UCSC_DAS_URI = UCSC_DAS_URI
         self.chromData = {}
 
-        assert_msg = f'expected folder, file found: "{self.dirPath}"'
-        assert not os.path.isfile(self.dirPath), assert_msg
-
-        assert_msg = f'database folder not found: "{self.dirPath}"'
-        assert os.path.isdir(self.dirPath), assert_msg
+        assert not os.path.isfile(
+            self.dirPath
+        ), f'expected folder, file found: "{self.dirPath}"'
+        assert os.path.isdir(
+            self.dirPath
+        ), f'database folder not found: "{self.dirPath}"'
 
         configPath = os.path.join(self.dirPath, ".config")
-        assert_msg = f'missing "{configPath}" file.'
-        assert os.path.isfile(configPath), assert_msg
+        assert os.path.isfile(configPath), f'missing "{configPath}" file.'
 
         with open(configPath, "r") as IH:
             self.config = configparser.ConfigParser()
             self.config.read_string("".join(IH.readlines()))
-
-        if self.hasNetwork:
-            refGenome = self.get_reference_genome()
-            refGenomeChecked = web.check_reference_genome(refGenome, self.UCSC_DAS_URI)
-            assert refGenomeChecked, f'genome "{refGenome}" not found @UCSC'
 
     def check_overlaps(self):
         hasOverlaps = False
@@ -81,29 +74,10 @@ class OligoDatabase(object):
 
     def has_sequences(self):
         """Reads sequence status from Database .config"""
-        return self.config.getboolean("OLIGOS", "sequence")
+        return True
 
     def has_chromosome(self, chrom):
         return chrom in os.listdir(self.dirPath)
-
-    def __sequence_network_check(self, chromData, chrom):
-        if self.hasNetwork and self.has_sequences():
-            for i in range(chromData.shape[0]):
-                chromStart, chromEnd, sequence = tuple(chromData.iloc[i, :3].tolist())
-
-                assert_msg = "sequence length does not match oligo"
-                assert_msg += f" (#{i}) length"
-                assert len(sequence) == chromEnd - chromStart, assert_msg
-
-                assert_status, msg = web.check_sequence(
-                    (chrom, chromStart, chromEnd),
-                    sequence,
-                    self.get_reference_genome(),
-                    UCSC_DAS_URI=self.UCSC_DAS_URI,
-                )
-                assert_msg = f"sequence of oligo #{i} does not match"
-                assert_msg += " UCSC" + msg
-                assert assert_status, assert_msg
 
     def read_chromosome(self, chrom):
         assert self.has_chromosome(chrom)
@@ -112,52 +86,45 @@ class OligoDatabase(object):
         chromData = pd.read_csv(chromPath, "\t", header=None)
         chromData.columns = bioext.UCSCbed.FIELD_NAMES[1 : (chromData.shape[1] + 1)]
 
-        assert_msg = f'found empty chromosome file: "{chromPath}"'
-        assert 0 != chromData.shape[0], assert_msg
-
-        assert_msg = f'missing columns in "{chromPath}"'
-        assert 2 <= chromData.shape[1], assert_msg
-
-        assert_msg = f'found unsorted file: "{chromPath}"'
-        assert all(chromData.iloc[:, 0].diff()[1:] > 0), assert_msg
-
-        assert_msg = f'found unsorted file: "{chromPath}"'
-        assert all(chromData.iloc[:, 1].diff()[1:] >= 0), assert_msg
+        assert 0 != chromData.shape[0], f'found empty chromosome file: "{chromPath}"'
+        assert 2 <= chromData.shape[1], f'missing columns in "{chromPath}"'
+        assert all(
+            chromData.iloc[:, 0].diff()[1:] > 0
+        ), f'found unsorted file: "{chromPath}"'
+        assert all(
+            chromData.iloc[:, 1].diff()[1:] >= 0
+        ), 'found unsorted file: "{chromPath}"'
 
         oligoMinDist = self.get_oligo_min_dist()
         startValues = chromData.iloc[1:, 0].values
         endValues = chromData.iloc[:-1, 1].values
-        oligoMinD_observed = min(startValues - endValues)
-        assert_msg = "oligo min distance does not match: "
-        assert_msg += f"{oligoMinD_observed} instead of {oligoMinDist}."
-        assert oligoMinD_observed == oligoMinDist, assert_msg
+        if 0 != len(startValues):
+            oligoMinD_observed = min(startValues - endValues)
+        else:
+            oligoMinD_observed = np.inf
+        assert oligoMinD_observed >= oligoMinDist, "".join(
+            [
+                "oligo min distance does not match: ",
+                f"{oligoMinD_observed} instead of {oligoMinDist}.",
+            ]
+        )
 
         oligoLengthRange = self.get_oligo_length_range()
         oligoLengthList = chromData.iloc[:, 1] - chromData.iloc[:, 0]
-        assert_msg = f'oligo too small for ".config" in "{chromPath}"'
-        assert all(oligoLengthList >= oligoLengthRange[0]), assert_msg
-        assert_msg = f'oligo too big for ".config" in "{chromPath}"'
-        assert all(oligoLengthList <= oligoLengthRange[1]), assert_msg
+        assert all(
+            oligoLengthList >= oligoLengthRange[0]
+        ), f'oligo too small for ".config" in "{chromPath}"'
+        assert all(
+            oligoLengthList <= oligoLengthRange[1]
+        ), f'oligo too big for ".config" in "{chromPath}"'
 
         if self.has_overlaps():
-            assert_msg = f'overlaps status mismatch in "{chromPath}"'
-            assert self.check_overlaps(), assert_msg
+            assert self.check_overlaps(), f'overlaps status mismatch in "{chromPath}"'
 
         if self.has_sequences():
-            assert_msg = f'missing sequence columns in "{chromPath}"'
-            assert chromData.shape[1] >= 3, assert_msg
+            assert chromData.shape[1] >= 3, f'missing sequence columns in "{chromPath}"'
 
         self.__sequence_network_check(chromData, chrom)
-
-        if self.hasNetwork:
-            chromSizeCheck = web.check_chromosome_size(
-                chrom,
-                chromData.iloc[-1, 1],
-                self.get_reference_genome(),
-                UCSC_DAS_URI=self.UCSC_DAS_URI,
-            )
-            assert_msg = f'chromosome size not respected: "{chromPath}"'
-            assert chromSizeCheck, assert_msg
 
         self.chromData[chrom] = chromData
 
@@ -495,8 +462,9 @@ class ProbeFeatureTable(object):
         self.data = self.data.loc[condition, :]
 
     def filter(self, feature, thr, cumulative=False):
-        assert_msg = f'fetature "{feature}" not recognized.'
-        assert feature in self.FEATURE_SORT.keys(), assert_msg
+        assert (
+            feature in self.FEATURE_SORT.keys()
+        ), f'fetature "{feature}" not recognized.'
 
         if not cumulative:
             self.reset()
