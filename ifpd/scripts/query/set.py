@@ -14,9 +14,8 @@ import numpy as np  # type: ignore
 import os
 import pandas as pd  # type: ignore
 from rich.logging import RichHandler  # type: ignore
+from rich.progress import track  # type: ignore
 import shutil
-from tqdm import tqdm  # type: ignore
-from typing import Optional
 
 logging.basicConfig(
     level=logging.INFO,
@@ -68,6 +67,7 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         "--region",
         type=int,
         nargs=2,
+        default=(0, np.inf),
         help="""Start and end locations (space-separated) of the region of interest.
         When a region is not provided (or start/end coincide),
         the whole feature is queried.""",
@@ -115,6 +115,15 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         type=int,
         default=0,
         help="*DEPRECATED* Minimum distance between consecutive oligos. Default: 1",
+    )
+    advanced.add_argument(
+        "--exact-n-oligo",
+        action="store_const",
+        dest="exact_n_oligo",
+        const=True,
+        default=False,
+        help="""Stop if not enough oligos are found,
+        instead of designing the largest probe.""",
     )
     advanced.add_argument(
         "--window-shift",
@@ -170,6 +179,7 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     if args.forceRun:
         if os.path.isdir(args.outdir):
             shutil.rmtree(args.outdir)
+            logging.warning("Overwriting previously run query.")
     else:
         assert not os.path.isdir(
             args.outdir
@@ -201,59 +211,35 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     return args
 
 
-def setup_log(args):
-    formatString = "%(asctime)-25s %(name)s %(levelname)-8s %(message)s"
-    formatter = logging.Formatter(formatString)
-    logging.basicConfig(
-        filename=os.path.join(args.outdir, "log"),
-        level=logging.INFO,
-        format=formatString,
-    )
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    console.setFormatter(formatter)
-    logging.getLogger("").addHandler(console)
-    if args.forceRun and os.path.isdir(args.outdir):
-        logging.info("Overwriting previously run query.")
-
-
-def get_queried_region(args, oligoDB):
-    chromEnd: Optional[int]
-    if ":" in args.region:
-        chromStart, chromEnd = args.region
-    else:
-        chromStart = 0
-        chromEnd = None
-        if chromEnd is None:
-            assert oligoDB.has_chromosome(
-                args.chrom
-            ), f'chromosome "{args.chrom}" not in the database.'
-
-            oligoDB.read_chromosome(args.chrom)
-            chromEnd = oligoDB.chromData[args.chrom].iloc[:, 1].max()
-    return (args.chrom, chromStart, chromEnd)
-
-
-def init_db(args, oligoDB, queried_region):
-    chrom, chromStart, chromEnd = queried_region
+def init_db(
+    args,
+    oligoDB,
+):
     assert (
         not oligoDB.has_overlaps()
     ), "databases with overlapping oligos are not supported yet."
 
-    if chrom not in oligoDB.chromData.keys():
-        oligoDB.read_chromosome(chrom)
-    chromData = oligoDB.chromData[chrom]
+    if args.chrom not in oligoDB.chromData.keys():
+        oligoDB.read_chromosome(args.chrom)
+    chromData = oligoDB.chromData[args.chrom]
+    if args.region[1] == np.inf:
+        args.region = (
+            args.region[0],
+            oligoDB.chromData[args.chrom]["chromEnd"].max(),
+        )
+    chromStart, chromEnd = args.region
+    queried_region = (args.chrom, chromStart, chromEnd)
 
     selectCondition = np.logical_and(
         chromData.iloc[:, 0] >= chromStart, chromData.iloc[:, 1] <= chromEnd
     )
     selectedOligos = chromData.loc[selectCondition, :]
 
-    return oligoDB, selectCondition, selectedOligos
+    return oligoDB, queried_region, selectCondition, selectedOligos
 
 
 def build_candidates(args, queried_region, selectedOligos, oligoDB):
-    logging.info("Building probe candidates...")
+    logging.info("Build probe candidates.")
     args.threads = ggc.args.check_threads(args.threads)
     if 1 != args.threads:
         candidateList = Parallel(n_jobs=args.threads, backend="threading", verbose=1)(
@@ -262,11 +248,11 @@ def build_candidates(args, queried_region, selectedOligos, oligoDB):
                 selectedOligos.iloc[ii : (ii + args.n_oligo), :],
                 oligoDB,
             )
-            for ii in range(0, selectedOligos.shape[0] - args.n_oligo)
+            for ii in range(0, selectedOligos.shape[0] - args.n_oligo + 1)
         )
     else:
         candidateList = []
-        for i in tqdm(range(0, selectedOligos.shape[0] - args.n_oligo)):
+        for i in track(range(0, selectedOligos.shape[0] - args.n_oligo + 1)):
             candidateList.append(
                 query.OligoProbe(
                     queried_region[0],
@@ -321,17 +307,17 @@ def export_window_set(args, queried_region, window_setList, wsi):
 
 
 def build_feature_table(args, queried_region, candidateList):
-    logging.info("Describing candidates...")
+    logging.info("Describe candidates.")
     probeFeatureTable = query.ProbeFeatureTable(
         candidateList, queried_region, True, args.threads
     )
 
-    logging.info("Writing description table...")
+    logging.info("Write description table.")
     probeFeatureTable.data.to_csv(
         os.path.join(args.outdir, "probe_candidates.tsv"), "\t", index=False
     )
 
-    assert args.nProbes < probeFeatureTable.data.shape[0], "".join(
+    assert args.nProbes <= probeFeatureTable.data.shape[0], "".join(
         [
             "not enough probes in the region of interest: ",
             f"{probeFeatureTable.data.shape[0]}/{args.nProbes}",
@@ -392,28 +378,11 @@ def populate_windows(args, candidateList, window_setList, probeFeatureTable):
 @enable_rich_assert
 def run(args: argparse.Namespace) -> None:
     os.mkdir(args.outdir)
-    setup_log(args)
 
-    logging.info("Reading database...")
+    logging.info("Read database.")
     oligoDB = query.OligoDatabase(args.database)
-
-    queried_region = get_queried_region(args, oligoDB)
-    selectCondition, selectedOligos = init_db(args, oligoDB, queried_region)
-
-    assert args.n_oligo <= selectCondition.sum(), "".join(
-        [
-            "there are not enough oligos in the database.",
-            f" Asked for {args.n_oligo}, {selectCondition.sum()} found.",
-        ]
-    )
-    logging.info(
-        "".join(
-            [
-                f"Found {selectCondition.sum()} oligos in",
-                f" {args.chrom}:{args.region[0]}-{args.region[1]}",
-            ]
-        )
-    )
+    oligoDB, queried_region, selectCondition, selectedOligos = init_db(args, oligoDB)
+    args = ap.check_n_oligo(args, selectCondition)
 
     candidateList = build_candidates(args, queried_region, selectedOligos, oligoDB)
     probeFeatureTable = build_feature_table(args, queried_region, candidateList)
@@ -422,7 +391,7 @@ def run(args: argparse.Namespace) -> None:
         args, candidateList, window_setList, probeFeatureTable
     )
 
-    logging.info("Comparing probe set candidates...")
+    logging.info("Compare probe set candidates.")
     probeSetSpread = np.array(
         [ws.calc_probe_size_and_homogeneity() for ws in window_setList]
     )
@@ -436,7 +405,7 @@ def run(args: argparse.Namespace) -> None:
         )
     )
 
-    logging.info("Ranking based on #probes and homogeneity (of probes and size)...")
+    logging.info("Rank based on #probes and homogeneity (of probes and size).")
     probeSetData = pd.DataFrame.from_dict(
         {
             "id": range(len(window_setList)),
@@ -451,7 +420,7 @@ def run(args: argparse.Namespace) -> None:
         os.path.join(args.outdir, "set_candidates.tsv"), "\t", index=False
     )
 
-    logging.info("Exporting probe set candidates...")
+    logging.info("Export probe set candidates.")
     window_setList = [window_setList[i] for i in probeSetData["id"].values]
 
     if 1 != args.threads:
@@ -460,7 +429,7 @@ def run(args: argparse.Namespace) -> None:
             for wsi in range(len(window_setList))
         )
     else:
-        for wsi in tqdm(range(len(window_setList))):
+        for wsi in track(range(len(window_setList))):
             export_window_set(args, queried_region, window_setList, wsi)
 
     logging.info("Done. :thumbs_up: :smiley:")

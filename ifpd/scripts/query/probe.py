@@ -192,41 +192,6 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     return args
 
 
-def check_n_oligo(args, selectCondition):
-    assert 0 < selectCondition.sum(), "".join(
-        [
-            "no oligos found in the specified region.",
-            f" [{args.chrom}:{args.region[0]}-{args.region[1]}]",
-        ]
-    )
-    if args.exact_n_oligo:
-        assert args.n_oligo <= selectCondition.sum(), "".join(
-            [
-                "there are not enough oligos in the database.",
-                f" Asked for {args.n_oligo}, {selectCondition.sum()} found.",
-            ]
-        )
-    elif args.n_oligo > selectCondition.sum():
-        logging.info(
-            "".join(
-                [
-                    f"Found {selectCondition.sum()} oligos in",
-                    f" {args.chrom}:{args.region[0]}-{args.region[1]}",
-                ]
-            )
-        )
-        logging.warning(
-            "".join(
-                [
-                    f"Designing a probe with {selectCondition.sum()} oligos",
-                    f" (instead of {args.n_oligo}).",
-                ]
-            )
-        )
-        args.n_oligo = selectCondition.sum()
-    return args
-
-
 @enable_rich_assert
 def run(args: argparse.Namespace) -> None:
     os.mkdir(args.outdir)
@@ -244,7 +209,7 @@ def run(args: argparse.Namespace) -> None:
     oligoDB.read_chromosome(args.chrom)
     chromData = oligoDB.chromData[args.chrom]
     if args.region[1] == np.inf:
-        args.region = (args.region[0], chromData['chromEnd'].max())
+        args.region = (args.region[0], chromData["chromEnd"].max())
     chromStart, chromEnd = args.region
     queried_region = (args.chrom, chromStart, chromEnd)
 
@@ -253,7 +218,7 @@ def run(args: argparse.Namespace) -> None:
     )
     selectedOligos = chromData.loc[selectCondition, :]
 
-    args = check_n_oligo(args, selectCondition)
+    args = ap.check_n_oligo(args, selectCondition)
 
     logging.info("Build probe candidates.")
     candidateList = []

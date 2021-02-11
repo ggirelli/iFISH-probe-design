@@ -401,12 +401,10 @@ class OligoProbe(object):
             )
 
             plt.suptitle(f"{self.chrom}:{self.chromStart}-{self.chromEnd}")
-        else:
-            plt.figure()
+            plt.legend(fontsize="small", loc="best")
 
         plt.xlabel("Distance between consecutive oligos [nt]")
         plt.ylabel("Density")
-        plt.legend(fontsize="small", loc="best")
 
         plt.savefig(os.path.join(outputDir, "distance.png"), format="png")
         plt.close(fig)
@@ -514,6 +512,9 @@ class GenomicWindow(object):
 
     def shift(self, n):
         return GenomicWindow(self.chrom, self.chromStart + n, self.size)
+
+    def __repr__(self):
+        return f"{self.chrom}:{self.chromStart}-{self.chromEnd}"
 
 
 class GenomicWindowList(object):
@@ -650,23 +651,28 @@ class GenomicWindowList(object):
 
         probes = [w.probe for w in self if w.probe is not None]
 
-        plt.plot(
-            [0, len(probes) - 1],
-            [probes[0].midpoint, probes[-1].midpoint],
-            "k-",
-            label="Homogeneous distribution",
-        )
-        plt.plot(
-            list(range(len(probes))), [p.midpoint for p in probes], "r.", label="Probe"
-        )
+        if 1 < len(probes):
+            plt.plot(
+                [0, len(probes) - 1],
+                [probes[0].midpoint, probes[-1].midpoint],
+                "k-",
+                label="Homogeneous distribution",
+            )
+            plt.plot(
+                list(range(len(probes))),
+                [p.midpoint for p in probes],
+                "r.",
+                label="Probe",
+            )
 
-        plt.suptitle(
-            f"{probes[0].chrom}:" + f"{probes[0].chromStart}{probes[-1].chromEnd}"
-        )
+            plt.suptitle(
+                f"{probes[0].chrom}:" + f"{probes[0].chromStart}{probes[-1].chromEnd}"
+            )
+            plt.xlim((-1, len(probes)))
+            plt.legend(fontsize="small", loc="best")
+
         plt.xlabel("probe number")
         plt.ylabel("genomic coordinate [nt]")
-        plt.xlim((-1, len(probes)))
-        plt.legend(fontsize="small", loc="best")
 
         plt.savefig(
             os.path.join(outputDir, "distr.png"), format="png", bbox_inches="tight"
@@ -678,25 +684,27 @@ class GenomicWindowList(object):
 
         probes = [w.probe for w in self if w.probe is not None]
 
-        starts = np.array([p.chromStart for p in probes][1:])
-        ends = np.array([p.chromEnd for p in probes][:-1])
-        diffs = starts - ends
-        plt.hist(diffs, density=1, facecolor="green", alpha=0.5)
+        if 1 < len(probes):
+            starts = np.array([p.chromStart for p in probes][1:])
+            ends = np.array([p.chromEnd for p in probes][:-1])
+            diffs = starts - ends
+            plt.hist(diffs, density=1, facecolor="green", alpha=0.5)
 
-        density = stats.calc_density(diffs, alpha=0.5)
-        plt.plot(
-            density["x"].tolist(),
-            density["y"].tolist(),
-            "b--",
-            label="Density distribution",
-        )
+            density = stats.calc_density(diffs, alpha=0.5)
+            plt.plot(
+                density["x"].tolist(),
+                density["y"].tolist(),
+                "b--",
+                label="Density distribution",
+            )
 
-        plt.suptitle(
-            f"{probes[0].chrom}:" + f"{probes[0].chromStart}{probes[-1].chromEnd}"
-        )
+            plt.suptitle(
+                f"{probes[0].chrom}:" + f"{probes[0].chromStart}{probes[-1].chromEnd}"
+            )
+            plt.legend(fontsize="small", loc="best")
+
         plt.xlabel("Distance between consecutive probes [nt]")
         plt.ylabel("Density")
-        plt.legend(fontsize="small", loc="best")
 
         plt.savefig(
             os.path.join(outputDir, "distance.png"), format="png", bbox_inches="tight"
