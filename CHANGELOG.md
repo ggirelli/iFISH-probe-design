@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `mkdb` does not support sequence-less inputs anymore.
 - `query probe` and `query set` argument order changed.
 - Made `static` argument mandatory for `serve`, for compatibility with `pipx` installation.
+- `Error 500` now triggers a redirect to app homepage with a 5s delay.
 
 ## Fixed
 - Blacked code.

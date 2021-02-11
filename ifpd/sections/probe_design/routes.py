@@ -133,7 +133,7 @@ class Routes(routes.Routes):
         # Errors ---------------------------------------------------------------
 
         self.add_route("error404", "error", 404)
-        self.add_route("error500", "error", 500)
+        self.add_route("error500_with_redirect", "error", 500)
 
         # AJAX requests --------------------------------------------------------
 
@@ -744,6 +744,20 @@ class Routes(routes.Routes):
         return "Query received."
 
     # Error --------------------------------------------------------------------
+
+    def error500_with_redirect(routes, self, error):
+        """Error 500.
+
+        Args:
+                self (App): ProbeDesigner.App instance.
+                error: error data.
+        """
+        return f"""
+        ERROR 500: nothing here, sorry :(<br/>
+        Redirecting to homepage in 5 seconds.<br />
+        <a href='{self.root_uri}{self.app_uri}'>Click here if you are stuck.</a>
+        <meta http-equiv="refresh" content="5;url={self.root_uri}{self.app_uri}">
+        """
 
     # AJAX Requests ------------------------------------------------------------
 
