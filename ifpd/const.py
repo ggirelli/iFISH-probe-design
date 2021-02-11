@@ -4,3 +4,5 @@
 """
 
 __version__ = "2.0.4"
+
+featureList = ["size", "homogeneity", "centrality"]

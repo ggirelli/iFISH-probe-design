@@ -5,7 +5,7 @@
 
 import argparse
 import ggc  # type: ignore
-from ifpd import query
+from ifpd import const, query
 from ifpd.scripts import arguments as ap  # type: ignore
 from ifpd.exception import enable_rich_assert
 from joblib import Parallel, delayed  # type: ignore
@@ -23,8 +23,6 @@ logging.basicConfig(
     format="%(message)s",
     handlers=[RichHandler(markup=True, rich_tracebacks=True)],
 )
-
-featureList = ["size", "homogeneity", "centrality"]
 
 
 def init_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentParser:
@@ -79,7 +77,7 @@ as homogeneously spaced as possible. Concisely, the script does the following:
         "--order",
         metavar="featOrder",
         type=str,
-        default=featureList,
+        default=const.featureList,
         nargs="+",
         help="""Space-separated features, used as explained in script description.
         The available features are: centrality, size, and homogeneity. At least 2
@@ -184,8 +182,8 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
     ), f"at least 2 features need, only {len(args.order)} found."
     for o in args.order:
         assert (
-            o in featureList
-        ), f'unrecognized feature "{o}". Should be one of {featureList}.'
+            o in const.featureList
+        ), f'unrecognized feature "{o}". Should be one of {const.featureList}.'
     assert (
         0 <= args.filter_thr and 1 >= args.filter_thr
     ), f"first filter threshold must be a fraction: {args.filter_thr}"
