@@ -194,18 +194,21 @@ def run(args: argparse.Namespace) -> None:
     bottle.TEMPLATE_PATH.append(root_path)
     bottle.TEMPLATE_PATH.append("%s/interface/views/" % root_path)
     if args.custom_templates is not None:
-        assert_msg = f"folder not found: '{args.custom_templates}'"
-        assert os.path.isdir(args.custom_templates), assert_msg
+        assert os.path.isdir(
+            args.custom_templates
+        ), f"folder not found: '{args.custom_templates}'"
         bottle.TEMPLATE_PATH.append(args.custom_templates)
 
-    assert_msg = "folder expected, file found: %s" % args.static
-    assert not os.path.isfile(args.static), assert_msg
+    assert not os.path.isfile(args.static), (
+        "folder expected, file found: %s" % args.static
+    )
     mk_missing_dirs(args)
 
     if args.homepage is not None:
         if not "home_default.tpl.html" == args.homepage:
-            assert_msg = "-T option required when using -H."
-            assert args.custom_templates is not None, assert_msg
+            assert (
+                args.custom_templates is not None
+            ), "-T option required when using -H."
         home_template = args.homepage
         home_status = True
     else:
@@ -213,8 +216,9 @@ def run(args: argparse.Namespace) -> None:
         home_status = False
 
     if args.custom_routes is not None:
-        assert_msg = f"file not found: {args.custom_routes}"
-        assert os.path.isfile(args.custom_routes), assert_msg
+        assert os.path.isfile(
+            args.custom_routes
+        ), f"file not found: {args.custom_routes}"
 
     root = build_root_app(args, home_template, home_status)
 

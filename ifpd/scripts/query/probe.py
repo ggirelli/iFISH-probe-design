@@ -245,11 +245,12 @@ def run(args: argparse.Namespace) -> None:
     chromStart, chromEnd = args.region
     queried_region = (args.chrom, chromStart, chromEnd)
 
-    assert_msg = "databases with overlapping oligos are not supported yet."
-    assert not oligoDB.has_overlaps(), assert_msg
-
-    assert_msg = f'chromosome "{args.chrom}" not in the database.'
-    assert oligoDB.has_chromosome(args.chrom), assert_msg
+    assert (
+        not oligoDB.has_overlaps()
+    ), "databases with overlapping oligos are not supported yet."
+    assert oligoDB.has_chromosome(
+        args.chrom
+    ), f'chromosome "{args.chrom}" not in the database.'
 
     oligoDB.read_chromosome(args.chrom)
     chromData = oligoDB.chromData[args.chrom]

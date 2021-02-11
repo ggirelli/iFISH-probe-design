@@ -12,9 +12,7 @@ class Query(object):
 
     def __init__(self, query_id, query_root):
         super(Query, self).__init__()
-
-        assert_msg = f'query "{query_id}" not found.'
-        assert Query.exists(query_id, query_root), assert_msg
+        assert Query.exists(query_id, query_root), f'query "{query_id}" not found.'
 
         self.data = {}
         self.data["id"] = query_id

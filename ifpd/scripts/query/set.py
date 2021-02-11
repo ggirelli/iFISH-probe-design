@@ -179,26 +179,26 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
 
     assert_region(args)
 
-    assert_msg = f"at least 2 features need, only {len(args.order)} found."
-    assert 2 <= len(args.order), assert_msg
+    assert 2 <= len(
+        args.order
+    ), f"at least 2 features need, only {len(args.order)} found."
     for o in args.order:
-        assert_msg = f'unrecognized feature "{o}". Should be one of {featureList}.'
-        assert o in featureList, assert_msg
-
-    assert_msg = f"first filter threshold must be a fraction: {args.filter_thr}"
-    assert 0 <= args.filter_thr and 1 >= args.filter_thr, assert_msg
-    assert_msg = f"window shift must be a fraction: {args.window_shift}"
-    assert 0 < args.window_shift and 1 >= args.window_shift, assert_msg
-
-    assert_msg = "negative minimum distance between consecutive oligos: "
-    assert_msg += f"{args.min_d}"
-    assert args.min_d >= 0, assert_msg
-
+        assert (
+            o in featureList
+        ), f'unrecognized feature "{o}". Should be one of {featureList}.'
+    assert (
+        0 <= args.filter_thr and 1 >= args.filter_thr
+    ), f"first filter threshold must be a fraction: {args.filter_thr}"
+    assert (
+        0 < args.window_shift and 1 >= args.window_shift
+    ), f"window shift must be a fraction: {args.window_shift}"
+    assert (
+        args.min_d >= 0
+    ), f"negative minimum distance between consecutive oligos: {args.min_d}"
     assert args.n_oligo >= 1, f"a probe must have oligos: {args.n_oligo}"
     if args.max_sets == -1:
         args.max_sets = np.inf
-    assert_msg = f"at least 1 probe set in output: {args.max_sets}"
-    assert args.max_sets >= 0, assert_msg
+    assert args.max_sets >= 0, f"at least 1 probe set in output: {args.max_sets}"
 
     return args
 
@@ -227,8 +227,9 @@ def get_queried_region(args, oligoDB):
         chromStart = 0
         chromEnd = None
         if chromEnd is None:
-            assert_msg = f'chromosome "{args.chrom}" not in the database.'
-            assert oligoDB.has_chromosome(args.chrom), assert_msg
+            assert oligoDB.has_chromosome(
+                args.chrom
+            ), f'chromosome "{args.chrom}" not in the database.'
 
             oligoDB.read_chromosome(args.chrom)
             chromEnd = oligoDB.chromData[args.chrom].iloc[:, 1].max()
@@ -237,8 +238,9 @@ def get_queried_region(args, oligoDB):
 
 def init_db(args, oligoDB, queried_region):
     chrom, chromStart, chromEnd = queried_region
-    assert_msg = "databases with overlapping oligos are not supported yet."
-    assert not oligoDB.has_overlaps(), assert_msg
+    assert (
+        not oligoDB.has_overlaps()
+    ), "databases with overlapping oligos are not supported yet."
 
     if chrom not in oligoDB.chromData.keys():
         oligoDB.read_chromosome(chrom)
@@ -331,9 +333,12 @@ def build_feature_table(args, queried_region, candidateList):
         os.path.join(args.outdir, "probe_candidates.tsv"), "\t", index=False
     )
 
-    assert_msg = "not enough probes in the region of interest: "
-    assert_msg += f"{probeFeatureTable.data.shape[0]}/{args.nProbes}"
-    assert args.nProbes < probeFeatureTable.data.shape[0], assert_msg
+    assert args.nProbes < probeFeatureTable.data.shape[0], "".join(
+        [
+            "not enough probes in the region of interest: ",
+            f"{probeFeatureTable.data.shape[0]}/{args.nProbes}",
+        ]
+    )
 
     return probeFeatureTable
 
@@ -397,9 +402,12 @@ def run(args: argparse.Namespace) -> None:
     queried_region = get_queried_region(args, oligoDB)
     selectCondition, selectedOligos = init_db(args, oligoDB, queried_region)
 
-    assert_msg = "there are not enough oligos in the database."
-    assert_msg += f" Asked for {args.n_oligo}, {selectCondition.sum()} found."
-    assert args.n_oligo <= selectCondition.sum(), assert_msg
+    assert args.n_oligo <= selectCondition.sum(), "".join(
+        [
+            "there are not enough oligos in the database.",
+            f" Asked for {args.n_oligo}, {selectCondition.sum()} found.",
+        ]
+    )
     logging.info(
         "".join(
             [
