@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
 - `const.py` module with package version tag and other constants.
+- Option to hide breadcrumbs when running `serve`.
 
 ### Changed
 - Switched from setup.py to poetry setup.
-- Temporarily deprecated sequence-less databases due to bug.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
 - Now asking for arguments "chrom [--region start end]" when querying.
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `query probe` and `query set` argument order changed.
 - Made `static` argument mandatory for `serve`, for compatibility with `pipx` installation.
 - `Error 500` now triggers a redirect to app homepage with a 5s delay.
+- Breadcrumbs are on by default on `serve.`
 
 ## Fixed
 - Blacked code.
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `web` module and all network-based checks.
 - Network-based checks from `dbchk`.
 - Dependency from `ggc` and `tqdm`.
+- Sequence-less databases due to bug support.
 
 
 

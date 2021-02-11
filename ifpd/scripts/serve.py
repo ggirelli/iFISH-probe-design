@@ -57,7 +57,24 @@ def init_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPars
         default="email@example.com",
         help="Email address of server admin.",
     )
+    parser = ap.add_version_option(parser)
 
+    advanced = parser.add_argument_group("advanced arguments")
+    advanced.add_argument(
+        "--hide-breadcrumbs",
+        action="store_const",
+        dest="show_breadcrumbs",
+        const=False,
+        default=True,
+        help="""Hide navigation breadcrumbs.""",
+    )
+    advanced.add_argument(
+        "-R",
+        "--custom-routes",
+        metavar="routesFile",
+        type=str,
+        help="Path to custom routes Python file.",
+    )
     parser.add_argument(
         "-T",
         "--custom-templates",
@@ -74,15 +91,6 @@ def init_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPars
         Use "-H home_default" to turn default homepage template on.
         When using a custom homepage template, -T must be specified.""",
     )
-
-    parser.add_argument(
-        "-R",
-        "--custom-routes",
-        metavar="routesFile",
-        type=str,
-        help="Path to custom routes Python file.",
-    )
-    parser = ap.add_version_option(parser)
 
     parser.set_defaults(parse=parse_arguments, run=run)
 
@@ -167,6 +175,8 @@ def build_root_app(args, home_template, home_status):
     # Custom routes
     if args.custom_routes is not None:
         exec(open(args.custom_routes).read())
+
+    pdApp.vd['breadcrumbs'] = args.show_breadcrumbs
 
     # Mount Sections
     root.mount("probe-design", pdApp)
