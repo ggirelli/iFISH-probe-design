@@ -76,7 +76,7 @@ https://genome.ucsc.edu/FAQ/FAQformat.html#format1
     parser = ap.add_version_option(parser)
 
     advanced = parser.add_argument_group("advanced arguments")
-    parser.add_argument(
+    advanced.add_argument(
         "--increment-chrom-end",
         action="store_const",
         dest="incrementChromEnd",
@@ -86,7 +86,7 @@ https://genome.ucsc.edu/FAQ/FAQformat.html#format1
             and the last position (chromEnd) is actually included. This forces
             a unit increase of that position to convert to UCSC bed format.""",
     )
-    parser.add_argument(
+    advanced.add_argument(
         "--custom-config",
         metavar="config",
         type=str,
