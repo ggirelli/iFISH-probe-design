@@ -12,7 +12,7 @@ title: ifpd scripts
 
 <!-- /MarkdownTOC -->
 
-You can access the help page of each script by using the `-h` option. Moreover, a selection of examples is available in [the corresponding page]({{ site.baseurl }}/examples).
+All `ifpd` commands are accessible via the `ifpd` keyword. For each command, you can access its help page by using the `-h` option. Moreover, a selection of examples is available in [the corresponding page]({{ site.baseurl }}/examples).
 
 ## `ifpd mkdb`
 
