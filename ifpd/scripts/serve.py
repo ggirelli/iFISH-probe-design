@@ -176,7 +176,7 @@ def build_root_app(args, home_template, home_status):
     if args.custom_routes is not None:
         exec(open(args.custom_routes).read())
 
-    pdApp.vd['breadcrumbs'] = args.show_breadcrumbs
+    pdApp.vd["breadcrumbs"] = args.show_breadcrumbs
 
     # Mount Sections
     root.mount("probe-design", pdApp)
