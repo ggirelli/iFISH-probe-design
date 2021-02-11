@@ -2,34 +2,43 @@
 title: ifpd scripts
 ---
 
+<!-- MarkdownTOC -->
+
+- [`ifpd mkdb`](#ifpd-mkdb)
+- [`ifpd dbchk`](#ifpd-dbchk)
+- [`ifpd query probe`](#ifpd-query-probe)
+- [`ifpd query set`](#ifpd-query-set)
+- [`ifpd serve`](#ifpd-serve)
+
+<!-- /MarkdownTOC -->
+
 You can access the help page of each script by using the `-h` option. Moreover, a selection of examples is available in [the corresponding page]({{ site.baseurl }}/examples).
 
-## `ifpd_mkdb`
+## `ifpd mkdb`
 
-This script takes a BED-like file of at least three columns (`chromosome`, `start` position, and `end` position), and generates a [database]({{ site.baseurl }}/database) folder in a format compatible with the rest of `ifpd`'s scripts. The input file can contain a fourth optional column with the `sequence` corresponding to each row's region. If that is the case, the sequence can be retained by using the `--retain-sequences`.
+This script takes a BED-like file of four (4) columns (`chromosome`, `start` position, `end` position, and `sequence`), and generates a [database]({{ site.baseurl }}/database) folder in a format compatible with the rest of `ifpd`'s scripts.
 
-The minimum input comprises the BED-like file path, the corresponding reference genome, and a name for the new database. Importantly, the specified reference genome must be in an NCBI-compatible format and available at UCSC. Use the `--list-refGenomes` to show the list of available genomes.
+The minimum input comprises the input file path and a name for the new database. We recommend providing also a reference genome label (via `--refGenome`), which is retained in the database config file for trackability.
 
-If you want to use a genome available through a DAS server different from the UCSC one, you can specify the DAS server URL with the `--das-uri`. If you do not have internet connection, use the `--no-net` option.
+As explained in the [database]({{ site.baseurl }}/database) page, the input file is expected to respect the UCSC BED format pertaining the indexing of genomic coordinates. If your input file specifies regions with both `start` and `end` positions being inclusive, you can use the `--increment-chrom-end` option to convert it to the appropriate format.
 
-As explained in the [database]({{ site.baseurl }}/database) page, the input BED-like file is expected to respect the UCSC BED format pertaining the indexing of genomic coordinates. If your input file specifies regions with both `start` and `end` positions being inclusive, you can use the `--increment-chrom-end` option to convert it to the appropriate format.
+## `ifpd dbchk`
 
-## `ifpd_dbchk`
+This script checks a database for proper formatting and compatibility with the `ifpd` package.
 
-This script checks a database for proper formatting and compatibility with the `ifpd` package. Some checks require internet connection. Use `--no-net` to skip them. Also, when a connection to the internet is available, use the `--check-seq` to verify that the sequences stored in the database are correct. This sequence-check step is skipped by default due to it being extremely slow.
-
-## `ifpd_query_probe`
+## `ifpd query probe`
 
 This script queries a database to design a single iFISH probe, using the algorithm explained in [the corresponding page]({{ site.baseurl }}/algorithms#single-probe-design).
 
 The minimum input comprises (in order):
 
-1. `region`: the genomic region of interest, in the following format: `chrN:XXX,YYY`.
-2. `database`: the path to the database folder.
+1. `database`: the path to the database folder.
+2. `chrom`: the chromosome (or database feature) to be queried.
 3. `outputDirectory`: the path to the query output folder.
 
 Some optional parameters, used as detailed in the algorithms page, are also available.
 
+* The extremes of the region of interest (via `--region start end`). If skipped, or if `start` and `end` coincide, the whole feature is queried.
 * The `--order` option allows to provide the features priority order, by providing a space-separated list of features (at least 2). For example: `--order homogeneity size centrality`.
 * The `--filter-thr` option specifies the fraction used to define the range in the filtering step (*F*). This should be a fraction (from 0 to 1), and defaults to 0.1.
 * The `--n-oligo` to specify the number of oligos desired in a probe. The default is 48.
@@ -37,19 +46,22 @@ Some optional parameters, used as detailed in the algorithms page, are also avai
 
 For security reasons, if the specified `outputDirectory ` already exists, the script triggers an `AssertError`. To force this through, use the `-f` option. But keep in mind that this will overwrite the specified `outputDirectory`, deleting its whole content.
 
-## `ifpd_query_set`
+Note also that, by default, if the number of oligos in the specified region of interest is lower than the number requested via `--n-oligo`, the largest probe possible is generated. If a smaller probe would not be useful, use `--exact-n-oligo` to stop the execution earlier.
+
+## `ifpd query set`
 
 This script queries a database to design a spotting iFISH probe, using the algorithm explained in [the corresponding page]({{ site.baseurl }}/algorithms#spotting-probe-design).
 
 The minimum input comprises (in order):
 
-1. `region`: the genomic region of interest, in the following format: `chrN:XXX,YYY`. Also, a chromosome-spotting probe can be designed by specifying a region as `chrN`.
-2. `nProbes`: the number of desired probes for the spotting design.
-3. `database`: the path to the database folder.
+1. `database`: the path to the database folder.
+2. `chrom`: the chromosome (or database feature) to be queried.
 4. `outputDirectory`: the path to the query output folder.
+3. `nProbes`: the number of desired probes for the spotting design.
 
 Some optional parameters, used as detailed in the algorithms page, are also available.
 
+* The extremes of the region of interest (via `--region start end`). If skipped, or if `start` and `end` coincide, the whole feature is queried.
 * The `--order` option allows to provide the features priority order, by providing a space-separated list of features (at least 2). For example: `--order homogeneity size centrality`.
 * The `--filter-thr` option specifies the fraction used to define the range in the filtering step (*F*). This should be a fraction (from 0 to 1), and defaults to 0.1.
 * The `--n-oligo` to specify the number of oligos desired in a probe. The default is 48.
@@ -59,11 +71,13 @@ Some optional parameters, used as detailed in the algorithms page, are also avai
 
 For security reasons, if the specified `outputDirectory ` already exists, the script triggers an `AssertError`. To force this through, use the `-f` option. But keep in mind that this will overwrite the specified `outputDirectory`, deleting its whole content.
 
-## `ifpd_serve`
+Note also that, by default, if the number of oligos in the specified region of interest is lower than the number requested via `--n-oligo`, the largest probe possible is generated. If a smaller probe would not be useful, use `--exact-n-oligo` to stop the execution earlier.
+
+## `ifpd serve`
 
 This script can be used to run the `ifpd` [web interface]({{ site.baseurl }}/interface) on your own computer. If run without any parameters, it serves the interface at the `0.0.0.0:8080` address. URL and port can be customized using the `-u` and `-p` options, respectively.
 
-The interface requires also a `static` folder (by default created in the package installation path), where databases and queries are stored. It is highly advised to specify a custom static folder path using the `-s` option. The structure of the static folder, created when running `ifpd_serve` the first time, is the following:
+The interface requires also a `static` folder (by default created in the package installation path), where databases and queries are stored. It is highly advised to specify a custom static folder path. The structure of the static folder, created when running `ifpd serve` the first time, is the following:
 
 ```
 static_folder

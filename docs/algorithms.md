@@ -2,6 +2,17 @@
 title: Algorithms
 ---
 
+<!-- MarkdownTOC -->
+
+- [Single probe design](#single-probe-design)
+    - [Features](#features)
+    - [Algorithm](#algorithm)
+- [Spotting probe design](#spotting-probe-design)
+    - [Features](#features-1)
+    - [Algorithm](#algorithm-1)
+
+<!-- /MarkdownTOC -->
+
 We included two algorithms in `ifpd`: the first to design a single probe in a genomic region of interest (gROI), and the second to design a number of homogeneously spread probes in a gROI (i.e, to design a *spotting* probe).
 
 Both algorithms are based on the calculation of either single or spotting probe-related features. We will go more into the details of both features and algorithms in the following sections.

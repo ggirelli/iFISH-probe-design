@@ -30,6 +30,12 @@ More details on how to run **iFISH-Probe-Design** are available in the online [d
 
 We welcome any contributions to `ifpd`. In short, we use [`black`](https://github.com/psf/black) to standardize code format. Any code change also needs to pass `mypy` checks. For more details, please refer to our [contribution guidelines](https://github.com/ggirelli/ifish-probe-design/blob/main/CONTRIBUTING.md) if this is your first time contributing! Also, check out our [code of conduct](https://github.com/ggirelli/ifish-probe-design/blob/main/CODE_OF_CONDUCT.md).
 
+### Reference
+
+```
+Gelali, E., Girelli, G., Matsumoto, M., Wernersson, E., Custodio, J., Mota, A., ... & Bienko, M. (2019). iFISH is a publically available resource enabling versatile DNA FISH to study genome architecture. Nature communications, 10(1), 1-15.
+```
+
 ## License
 
 `MIT License - Copyright (c) 2016-21 Gabriele Girelli`

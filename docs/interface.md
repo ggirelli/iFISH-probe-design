@@ -10,12 +10,16 @@ The interface is fully responsive, and can be visualized with a display of any s
 
 #### Content
 
-* [Homepage](#homepage)
+<!-- MarkdownTOC -->
+
+- [Homepage](#homepage)
     - [Single probe](#single-probe)
     - [Spotting probe](#spotting-probe)
-* [Query page](#query-page)
-* [Probe candidate page](#probe-candidate-page)
-* [Probe set candidate page](#probe-set-candidate-page)
+- [Query page](#query-page)
+- [Probe candidate page](#probe-candidate-page)
+- [Probe set candidate page](#probe-set-candidate-page)
+
+<!-- /MarkdownTOC -->
 
 ## Homepage
 

@@ -6,6 +6,6 @@ author:
   url:               http://ggirelli.info
   email:             gabriele.girelli@scilifelab.se
 
-version:             2.0.2
+version:             2.0.4
 google_analytics: "UA-99031010-5"
 theme: jekyll-theme-minimal
