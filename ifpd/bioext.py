@@ -6,7 +6,7 @@
 # import ifpd as fp
 import os
 import pandas as pd  # type: ignore
-from tqdm import tqdm  # type: ignore
+from rich.progress import track  # type: ignore
 
 
 class UCSCbed(object):
@@ -80,7 +80,7 @@ class UCSCbed(object):
         with open(self.path, "r+") as IH:
             if self.custom:
                 next(IH)
-            for line in tqdm(IH, total=self.nrecords - 1):
+            for line in track(IH, total=self.nrecords - 1, description="Parsing"):
                 if parse:
                     yield UCSCbed.parse_bed_line(
                         line, enforceBED3, self.incrementChromEnd
@@ -112,46 +112,6 @@ class UCSCbed(object):
         lineDF.iloc[0, 2] += incrementChromEnd
 
         return lineDF
-
-    # @staticmethod
-    # def add_sequence_to_raw_record(bedRecords, hasNetwork=False):
-    #     for record in bedRecords:
-    #         assert type("") == type(record)
-    #         record = record.strip().split("\t")
-
-    #         assert_msg = "each record must have at least 3 columns,"
-    #         assert_msg += f" {len(record)} found."
-    #         assert 3 <= len(record), assert_msg
-
-    #         if 4 > len(record) and hasNetwork:
-    #             oligoSequence = fp.web.get_sequence_from_UCSC(
-    #                 (record[0], int(record[1]), int(record[2])), args.refGenome
-    #             )
-    #             record.append(oligoSequence)
-    #         record = record[:4]
-    #         yield ("\t".join(record) + "\n")
-
-    # @staticmethod
-    # def add_sequence_to_parsed_record(bedRecords):
-    #     for record in bedRecords:
-    #         assert type(pd.DataFrame()) == type(bedRecords)
-
-    #         assert_msg = "each record must have at least 3 columns,"
-    #         assert_msg += f" {record.shape[0]} found."
-    #         assert 3 <= record.shape[0]
-
-    #         if 4 > record.shape[1]:
-    #             region = (
-    #                 record.loc[:, ["chrom", "chromStart", "chromEnd"]]
-    #                 .iloc[0, :]
-    #                 .tolist()
-    #             )
-    #             oligoSequence = fp.web.get_sequence_from_UCSC(
-    #                 tuple(region), args.refGenome
-    #             )
-    #             record.append(oligoSequence)
-    #         record = record.iloc[0, :4]
-    #         yield (record)
 
     def isBEDN(self, n):
         n = min(n, 12)
