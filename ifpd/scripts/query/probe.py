@@ -10,7 +10,6 @@ from ifpd.exception import enable_rich_assert
 import logging
 import numpy as np  # type: ignore
 import os
-import re
 from rich.logging import RichHandler  # type: ignore
 import shutil
 from tqdm import tqdm  # type: ignore
