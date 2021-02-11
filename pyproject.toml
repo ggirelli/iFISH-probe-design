@@ -34,7 +34,7 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.6.1"
 bottle = "^0.12.13"
-joblib = ">=0.16,<0.18"
+joblib = ">=0.16,<1.1"
 matplotlib = "^3.0.0"
 numpy = "^1.19.1"
 pandas = "^1.1.2"
