@@ -44,40 +44,60 @@ oligonucleotides. Concisely, the script does the following:
     )
 
     parser.add_argument(
+        "database", metavar="database", type=str, help="Path to database folder."
+    )
+    parser.add_argument(
         "chrom",
         type=str,
         help="Database feature to query for a probe.",
     )
     parser.add_argument(
+        "outdir",
+        metavar="outDir",
+        type=str,
+        help="Path to query output directory. Stops if it exists already.",
+    )
+
+    parser.add_argument(
         "--region",
+        metavar=("chromStart", "chromEnd"),
         type=int,
         nargs=2,
         help="""Start and end locations (space-separated) of the region of interest.
         When a region is not provided (or start/end coincide),
         the whole feature is queried.""",
     )
-
     parser.add_argument(
-        "database", metavar="database", type=str, help="Path to database folder."
+        "--n-oligo",
+        metavar="nOligo",
+        type=int,
+        default=48,
+        help="""Number of oligos per probe. If not enough oligos are found, the largest
+        probe (with greater number of oligos) is designed by default. Default: 48""",
     )
     parser.add_argument(
-        "outdir",
-        metavar="outputDirectory",
-        type=str,
-        help="Path to query output directory. Stops if it exists already.",
+        "--max-probes",
+        metavar="nProbes",
+        type=int,
+        default=-1,
+        help="""Maximum number of probe candidates to output.
+            Set to -1 to retrieve all candidates. Default: -1""",
     )
 
-    parser.add_argument(
+    parser = ap.add_version_option(parser)
+
+    advanced = parser.add_argument_group("advanced arguments")
+    advanced.add_argument(
         "--order",
-        metavar="featOrder",
+        metavar="feature",
         type=str,
         default=featureList,
         nargs="+",
         help="""Space-separated features, used as explained in script description.
-        The available features are: centrality, size, and homogeneity. At least 2
+        The available features are: 'centrality', 'size', and 'homogeneity'. At least 2
         features must be listed. Default: "size homogeneity centrality".""",
     )
-    parser.add_argument(
+    advanced.add_argument(
         "--filter-thr",
         metavar="filterThr",
         type=float,
@@ -86,47 +106,31 @@ oligonucleotides. Concisely, the script does the following:
         a range around the best value (percentage range around it). Accepts values
         from 0 to 1. Default: 0.1""",
     )
-    parser.add_argument(
+    advanced.add_argument(
         "--min-d",
         metavar="minD",
         type=int,
         default=10,
         help="*DEPRECATED* Minimum distance between consecutive oligos. Default: 10",
     )
-    parser.add_argument(
-        "--n-oligo",
-        metavar="nOligo",
-        type=int,
-        default=48,
-        help="Number of oligos per probe. Default: 48",
+    advanced.add_argument(
+        "--exact-n-oligo",
+        action="store_const",
+        dest="exact_n_oligo",
+        const=True,
+        default=False,
+        help="""Stop if not enough oligos are found,
+        instead of designing the largest probe.""",
     )
-    parser.add_argument(
-        "--max-probes",
-        metavar="maxProbes",
-        type=int,
-        default=-1,
-        help="""Maximum number of probe candidates to output.
-            Set to -1 to retrieve all candidates. Default: -1""",
-    )
-
-    parser.add_argument(
+    advanced.add_argument(
         "-f",
         action="store_const",
         dest="forceRun",
         const=True,
         default=False,
         help="""Force overwriting of the query if already run.
-            This is potentially dangerous.""",
+            !!!This is potentially dangerous!!!""",
     )
-    parser.add_argument(
-        "--exact-n-oligo",
-        action="store_const",
-        dest="exact_n_oligo",
-        const=True,
-        default=False,
-        help="""Stop if not enough oligos are found.""",
-    )
-    parser = ap.add_version_option(parser)
 
     parser.set_defaults(parse=parse_arguments, run=run)
 
@@ -206,6 +210,12 @@ def setup_log(args):
 
 
 def check_n_oligo(args, selectCondition):
+    assert 0 < selectCondition.sum(), "".join(
+        [
+            "no oligos found in the specified region.",
+            f" [{args.chrom}:{args.region[0]}-{args.region[1]}]",
+        ]
+    )
     if args.exact_n_oligo:
         assert args.n_oligo <= selectCondition.sum(), "".join(
             [
@@ -261,19 +271,6 @@ def run(args: argparse.Namespace) -> None:
     selectedOligos = chromData.loc[selectCondition, :]
 
     args = check_n_oligo(args, selectCondition)
-
-    if 3 > selectedOligos.shape[1]:
-        logging.info("Retrieving sequences from UCSC...")
-        raise NotImplementedError
-        # sequences = []
-        # for i in tqdm(selectedOligos.index):
-        #     region = selectedOligos.iloc[i, :2].tolist()
-        #     regionSequence = fp.web.get_sequence_from_UCSC(
-        #         config["DATABASE"]["refGenome"], chrom, *region
-        #     )
-        #     sequences.append(regionSequence)
-        # selectedOligos.assign(name=pd.Series(sequences,
-        #                       index=selectedOligos.index).values)
 
     logging.info("Building probe candidates...")
     candidateList = []
