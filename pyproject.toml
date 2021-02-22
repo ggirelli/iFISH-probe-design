@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ifpd"
-version = "2.0.4"
+version = "2.0.5"
 description = "An iFISH probe design pipeline, with web interface included."
 authors = ["Gabriele Girelli <gigi.ga90@gmail.com>"]
 license = "MIT"

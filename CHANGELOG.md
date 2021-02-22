@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+
+
+
+## [2.0.5] - 2021-02-22
 ## Added
 - `poetry.lock` file for common dependency versions.
 
@@ -15,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Fixed
 - Minor bug in `ifpd_mkdb` triggered by databases with 1 oligo in a feature. (unlikely scenario)
+- Bug in `ifpd_serve` that added quotes around `--region start end` and caused queries to fail.
 
 
 
