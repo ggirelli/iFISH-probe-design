@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.5] - 2021-02-22
 ## Added
 - `poetry.lock` file for common dependency versions.
+- Logging commands submitted to queue via `ifpd serve`.
 
 ## Changed
 - Upgraded dependencies to latest versions and tested.
