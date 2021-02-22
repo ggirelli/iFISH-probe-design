@@ -10,6 +10,7 @@ import hashlib
 import ifpd as fp
 from ifpd.sections import routes
 from ifpd.sections.probe_design.query import Query
+import logging
 import os
 import pandas as pd  # type: ignore
 import shlex
@@ -586,9 +587,13 @@ class Routes(routes.Routes):
         """
 
         formData = bot.request.forms
-        queriedRegion = ""
+        queriedRegion = []
         if formData.start != formData.end:
-            queriedRegion = f"--region {formData.start} {formData.end}"
+            queriedRegion = [
+                "--region",
+                shlex.quote(formData.start),
+                shlex.quote(formData.end),
+            ]
         query_id = "%s:%s:%s:%s" % (
             formData.chromosome,
             formData.start,
@@ -624,7 +629,8 @@ class Routes(routes.Routes):
             shlex.quote(f"{min_dist}"),
         ]
         if 0 != len(queriedRegion):
-            cmd.extend([shlex.quote(queriedRegion)])
+            cmd.extend(queriedRegion)
+        logging.info(" ".join(cmd))
 
         config = configparser.ConfigParser()
         timestamp = time.time()
@@ -667,9 +673,13 @@ class Routes(routes.Routes):
         """
 
         formData = bot.request.forms
-        queriedRegion = ""
-        if formData.multi_start != formData.multi_end:
-            queriedRegion = f"--region {formData.multi_start} {formData.multi_end}"
+        queriedRegion = []
+        if formData.start != formData.end:
+            queriedRegion = [
+                "--region",
+                shlex.quote(formData.start),
+                shlex.quote(formData.end),
+            ]
         query_id = "%s:%s:%s:%s" % (
             formData.multi_chromosome,
             formData.multi_start,
@@ -706,7 +716,8 @@ class Routes(routes.Routes):
             shlex.quote(f"{formData.multi_win_shift}"),
         ]
         if 0 != len(queriedRegion):
-            cmd.extend([shlex.quote(queriedRegion)])
+            cmd.extend(queriedRegion)
+        logging.info(" ".join(cmd))
 
         config = configparser.ConfigParser()
         timestamp = time.time()

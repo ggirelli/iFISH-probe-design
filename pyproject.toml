@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ifpd"
-version = "2.0.4"
+version = "2.0.5"
 description = "An iFISH probe design pipeline, with web interface included."
 authors = ["Gabriele Girelli <gigi.ga90@gmail.com>"]
 license = "MIT"
@@ -32,16 +32,16 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
-bottle = "^0.12.13"
-joblib = ">=0.16,<0.18"
-matplotlib = "^3.0.0"
-numpy = "^1.19.1"
-pandas = "^1.1.2"
-paste = "^3.0.7"
-pytest = "^6.1.1"
-rich = "^9.0"
-scipy = "^1.0.0"
+python = "^3.7.1"
+bottle = "^0.12.19"
+joblib = "^1.0.1"
+matplotlib = "^3.3.4"
+numpy = "^1.20.1"
+pandas = "^1.2.2"
+pytest = "^6.2.2"
+rich = "^9.10.0"
+scipy = "^1.6.0"
+Paste = "^3.5.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

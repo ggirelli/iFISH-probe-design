@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
+## [2.0.5] - 2021-02-22
+## Added
+- `poetry.lock` file for common dependency versions.
+- Logging commands submitted to queue via `ifpd serve`.
+
+## Changed
+- Upgraded dependencies to latest versions and tested.
+
+## Fixed
+- Minor bug in `ifpd_mkdb` triggered by databases with 1 oligo in a feature. (unlikely scenario)
+- Bug in `ifpd_serve` that added quotes around `--region start end` and caused queries to fail.
+
+
+
 ## [2.0.4] - 2021-02-11
 ### Added
 - Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
