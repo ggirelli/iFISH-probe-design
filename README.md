@@ -1,6 +1,6 @@
 # iFISH-Probe-Design
 
-[![DOI](https://zenodo.org/badge/143724120.svg)](https://zenodo.org/badge/latestdoi/143724120) ![](https://img.shields.io/librariesio/github/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/license/ggirelli/ifish-probe-design.svg?style=flat)  
+[![DOI](https://zenodo.org/badge/143724120.svg)](https://zenodo.org/badge/latestdoi/143724120) ![](https://img.shields.io/github/license/ggirelli/ifish-probe-design.svg?style=flat)  
 ![](https://github.com/ggirelli/ifish-probe-design/workflows/Python%20package/badge.svg?branch=main&event=push) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ifpd) ![PyPI - Format](https://img.shields.io/pypi/format/ifpd) ![PyPI - Status](https://img.shields.io/pypi/status/ifpd)  
 ![](https://img.shields.io/github/release/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/release-date/ggirelli/ifish-probe-design.svg?style=flat) ![](https://img.shields.io/github/languages/code-size/ggirelli/ifish-probe-design.svg?style=flat)  
 ![](https://img.shields.io/github/watchers/ggirelli/ifish-probe-design.svg?label=Watch&style=social) ![](https://img.shields.io/github/stars/ggirelli/ifish-probe-design.svg?style=social)
