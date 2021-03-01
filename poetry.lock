@@ -253,7 +253,7 @@ python-versions = "*"
 
 [[package]]
 name = "rich"
-version = "9.12.0"
+version = "9.12.3"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
@@ -535,8 +535,8 @@ pytz = [
     {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
 ]
 rich = [
-    {file = "rich-9.12.0-py3-none-any.whl", hash = "sha256:dc2499772c96bd2c488b34739425d1cdfa433bf394f4f2f5af5ca6f399171df0"},
-    {file = "rich-9.12.0.tar.gz", hash = "sha256:27e3deb24555d7dad554afa871c7e77f16a0336a625ed78dd10de21193b4ec11"},
+    {file = "rich-9.12.3-py3-none-any.whl", hash = "sha256:bc7087a7fcca8852784ccccc88d992c23efaf9d7e1dcca991a440d7a779352e2"},
+    {file = "rich-9.12.3.tar.gz", hash = "sha256:77bd13c72350c4907540be33910c0ec13bebb68fba4986e055fb564338f9e94a"},
 ]
 scipy = [
     {file = "scipy-1.6.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:a15a1f3fc0abff33e792d6049161b7795909b40b97c6cc2934ed54384017ab76"},
