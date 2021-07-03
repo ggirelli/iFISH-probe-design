@@ -12,9 +12,9 @@
 
 ## Requirements
 
-**iFISH-Probe-Designer** is fully implemented in Python3.6.1+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.6.1+ on your machine if you don't have it yet.
+**iFISH-Probe-Designer** is fully implemented in Python3.7+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.6.1+ on your machine if you don't have it yet.
 
-`ifpd` has been tested with Python 3.6.1, 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/ifish-probe-design#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/ifish-probe-design/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
+`ifpd` has been tested with Python 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/ifish-probe-design#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/ifish-probe-design/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
 
 ## Installation
 
