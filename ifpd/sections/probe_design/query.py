@@ -28,6 +28,4 @@ class Query(object):
     @staticmethod
     def exists(query_id, query_root):
         """Check if a query exists."""
-        # dirExists = os.path.isdir(os.path.join(query_root, query_id))
-        configExists = os.path.isfile(os.path.join(query_root, f"{query_id}.config"))
-        return configExists  # and dirExists
+        return os.path.isfile(os.path.join(query_root, f"{query_id}.config"))

@@ -30,11 +30,10 @@ def zipFile(path, ziph, root=None):
     assert os.path.isfile(path), "file expected."
     oldRoot = ""
     new_path = path
-    if not type(None) == type(root):
+    if type(None) != type(root):
         oldRoot = os.path.commonpath([root, path])
-        if 0 != len(oldRoot):
-            if new_path.startswith(oldRoot):
-                new_path = new_path[len(oldRoot) :]
+        if len(oldRoot) != 0 and new_path.startswith(oldRoot):
+            new_path = new_path[len(oldRoot) :]
     ziph.write(path, new_path)
 
 
@@ -442,10 +441,10 @@ class Routes(routes.Routes):
         d["query"] = Query(query_id, self.qpath).data
         d["queryRoot"] = self.qpath
 
-        if "done" == d["query"]["status"]:
-            if "single" == d["query"]["type"]:
+        if d["query"]["status"] == "done":
+            if d["query"]["type"] == "single":
                 fpath = os.path.join(self.qpath, query_id, "candidates.tsv")
-            elif "spotting" == d["query"]["type"]:
+            elif d["query"]["type"] == "spotting":
                 fpath = os.path.join(self.qpath, query_id, "set_candidates.tsv")
             if not os.path.isfile(fpath):
                 d["query"]["status"] = "error"
@@ -628,7 +627,7 @@ class Routes(routes.Routes):
             "--min-d",
             shlex.quote(f"{min_dist}"),
         ]
-        if 0 != len(queriedRegion):
+        if len(queriedRegion) != 0:
             cmd.extend(queriedRegion)
         logging.info(" ".join(cmd))
 
@@ -715,7 +714,7 @@ class Routes(routes.Routes):
             "--window-shift",
             shlex.quote(f"{formData.multi_win_shift}"),
         ]
-        if 0 != len(queriedRegion):
+        if len(queriedRegion) != 0:
             cmd.extend(queriedRegion)
         logging.info(" ".join(cmd))
 
@@ -776,7 +775,7 @@ class Routes(routes.Routes):
         dbPath = os.path.join(self.static_path, "db", dbDir)
         chrList = [x for x in os.listdir(dbPath) if not os.path.isdir(x)]
         chrList = [x for x in chrList if x not in [".log", ".config"]]
-        if 0 == len(chrList):
+        if not chrList:
             return '{"chrList":[]}'
         chrList.sort()
         return '{"chrList":["%s"]}' % '","'.join(chrList[::-1])
@@ -784,13 +783,13 @@ class Routes(routes.Routes):
     def queueStatus(routes, self):
         taskList = []
         for task in self.queue.queue:
-            if "ifpd_query_set" == task[0]:
+            if task[0] == "ifpd_query_set":
                 outdir_id = 4
-            elif "ifpd_query_probe" == task[0]:
+            elif task[0] == "ifpd_query_probe":
                 outdir_id = 3
             query_id = os.path.basename(task[outdir_id])
             data = Query(query_id, self.qpath).data
             taskList.append(os.path.basename(task[1]) + f' @{data["isotime"]}')
-        if 0 == len(taskList):
+        if not taskList:
             return '{"queue":[]}'
         return '{"queue": ["%s"]}' % '", "'.join(taskList)

@@ -86,9 +86,9 @@ class App(rootApp.App):
         self.vd["google_analytics_token"] = ""
 
         # Set default
-        if not type(None) == type(MAX_CURR):
+        if type(None) != type(MAX_CURR):
             self.MAX_CURR = MAX_CURR
-        if not type(None) == type(BUF_SIZE):
+        if type(None) != type(BUF_SIZE):
             self.BUF_SIZE = BUF_SIZE
 
         # Logging config

@@ -177,8 +177,9 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
         ), f'unrecognized feature "{o}". Should be one of {const.featureList}.'
 
     assert (
-        0 <= args.filter_thr and 1 >= args.filter_thr
+        args.filter_thr >= 0 and args.filter_thr <= 1
     ), "first filter threshold must be a fraction: {args.filter_thr}"
+
 
     assert (
         args.min_d >= 0
@@ -222,17 +223,18 @@ def run(args: argparse.Namespace) -> None:
     args = ap.check_n_oligo(args, selectCondition)
 
     logging.info("Build probe candidates.")
-    candidateList = []
-    for i in track(
-        range(0, selectedOligos.shape[0] - args.n_oligo + 1), description="Building"
-    ):
-        candidateList.append(
-            query.OligoProbe(
-                queried_region[0],
-                selectedOligos.iloc[i : (i + args.n_oligo), :],
-                oligoDB,
-            )
+    candidateList = [
+        query.OligoProbe(
+            queried_region[0],
+            selectedOligos.iloc[i : (i + args.n_oligo), :],
+            oligoDB,
         )
+        for i in track(
+            range(selectedOligos.shape[0] - args.n_oligo + 1),
+            description="Building",
+        )
+    ]
+
     logging.info(f"Found {len(candidateList)} probe candidates.")
 
     logging.info("Describing candidates...")

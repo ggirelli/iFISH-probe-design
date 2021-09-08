@@ -52,35 +52,32 @@ class Enquirer(threading.Thread):
                 cmd = self.queue.get()
 
                 # If the queue released a task
-                if not type(None) == type(cmd):
+                if type(None) != type(cmd):
                     outdir_id = self.__get_outdir_id(cmd)
 
                     query_id = os.path.basename(cmd[outdir_id])
-                    EH = open(f"{cmd[outdir_id]}.error.log", "w+")
+                    with open(f"{cmd[outdir_id]}.error.log", "w+") as EH:
+                        logging.debug(f'Running query "{query_id}"')
+                        timestamp = time.time()
+                        isotimestamp = datetime.datetime.fromtimestamp(
+                            timestamp
+                        ).isoformat()
+                        config = self.readQueryConfig(cmd[outdir_id])
+                        config["GENERAL"]["status"] = "running"
+                        config["WHEN"]["start_time"] = f"{timestamp}"
+                        config["WHEN"]["start_isotime"] = isotimestamp
+                        self.writeQueryConfig(cmd[outdir_id], config)
 
-                    logging.debug(f'Running query "{query_id}"')
-                    timestamp = time.time()
-                    isotimestamp = datetime.datetime.fromtimestamp(
-                        timestamp
-                    ).isoformat()
-                    config = self.readQueryConfig(cmd[outdir_id])
-                    config["GENERAL"]["status"] = "running"
-                    config["WHEN"]["start_time"] = f"{timestamp}"
-                    config["WHEN"]["start_isotime"] = isotimestamp
-                    self.writeQueryConfig(cmd[outdir_id], config)
-
-                    sp.call(cmd, stderr=EH)
-                    timestamp = time.time()
-                    isotimestamp = datetime.datetime.fromtimestamp(
-                        timestamp
-                    ).isoformat()
-                    logging.debug(f'Finished query "{query_id}"')
-                    config = self.readQueryConfig(cmd[outdir_id])
-                    config["GENERAL"]["status"] = "done"
-                    config["WHEN"]["done_time"] = f"{timestamp}"
-                    config["WHEN"]["done_isotime"] = isotimestamp
-                    self.writeQueryConfig(cmd[outdir_id], config)
-                    cmd = self.queue.task_done(cmd)
-                    EH.close()
-
+                        sp.call(cmd, stderr=EH)
+                        timestamp = time.time()
+                        isotimestamp = datetime.datetime.fromtimestamp(
+                            timestamp
+                        ).isoformat()
+                        logging.debug(f'Finished query "{query_id}"')
+                        config = self.readQueryConfig(cmd[outdir_id])
+                        config["GENERAL"]["status"] = "done"
+                        config["WHEN"]["done_time"] = f"{timestamp}"
+                        config["WHEN"]["done_isotime"] = isotimestamp
+                        self.writeQueryConfig(cmd[outdir_id], config)
+                        cmd = self.queue.task_done(cmd)
         return

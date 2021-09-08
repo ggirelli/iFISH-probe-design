@@ -147,12 +147,12 @@ def build_root_app(args, home_template, home_status):
     @root.route("/")
     @bottle.view(home_template)
     def index():
-        d = {}
-        d["custom_stylesheets"] = ["home.css"]
-        d["title"] = "iFISH"
-        d["description"] = "iFISH"
-        d["home_status"] = home_status
-        return d
+        return {
+            'custom_stylesheets': ["home.css"],
+            'title': 'iFISH',
+            'description': 'iFISH',
+            'home_status': home_status,
+        }
 
     # 404 Error
     @root.error(404)
@@ -212,7 +212,7 @@ def run(args: argparse.Namespace) -> None:
     mk_missing_dirs(args)
 
     if args.homepage is not None:
-        if not "home_default.tpl.html" == args.homepage:
+        if args.homepage != "home_default.tpl.html":
             assert (
                 args.custom_templates is not None
             ), "-T option required when using -H."

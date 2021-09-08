@@ -111,7 +111,7 @@ https://genome.ucsc.edu/FAQ/FAQformat.html#format1
 
 @enable_rich_assert
 def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
-    if "." == args.output:
+    if args.output == ".":
         args.output = args.dbName
 
     assert os.path.isfile(args.input), f'input file not found: "{args.input}"'
@@ -123,7 +123,6 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
         if os.path.isdir(args.output):
             logging.warning("'-f' option used. Removing previously generated database.")
             shutil.rmtree(args.output)
-            pass
     else:
         assert not os.path.isdir(
             args.output
@@ -155,7 +154,7 @@ def sort_oligos(args, chromList):
         oligoLengthRange[1] = max(oligoLengthRange[1], oligoLengthList.max())
 
         assert len(startPositions) == len(endPositions)
-        if 0 == len(startPositions):
+        if len(startPositions) == 0:
             continue
         oligoMinDist = min(oligoMinDist, min(startPositions - endPositions - 1))
     return oligoMinDist, oligoLengthRange, has_overlaps
@@ -199,7 +198,7 @@ def run(args: argparse.Namespace) -> None:
     logging.info("Parse and write database.")
     chromList = set()
     for line in oligoGenerator:
-        if 0 == len(line.strip()):
+        if len(line.strip()) == 0:
             continue
         line = line.strip().split("\t")
         chrom = line.pop(0)

@@ -194,11 +194,13 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
             o in const.featureList
         ), f'unrecognized feature "{o}". Should be one of {const.featureList}.'
     assert (
-        0 <= args.filter_thr and 1 >= args.filter_thr
+        args.filter_thr >= 0 and args.filter_thr <= 1
     ), f"first filter threshold must be a fraction: {args.filter_thr}"
+
     assert (
-        0 < args.window_shift and 1 >= args.window_shift
+        args.window_shift > 0 and args.window_shift <= 1
     ), f"window shift must be a fraction: {args.window_shift}"
+
     assert (
         args.min_d >= 0
     ), f"negative minimum distance between consecutive oligos: {args.min_d}"
@@ -240,25 +242,24 @@ def init_db(
 def build_candidates(args, queried_region, selectedOligos, oligoDB):
     logging.info("Build probe candidates.")
     args.threads = ap.check_threads(args.threads)
-    if 1 != args.threads:
-        candidateList = Parallel(n_jobs=args.threads, backend="threading", verbose=1)(
+    if args.threads != 1:
+        candidateList = Parallel(
+            n_jobs=args.threads, backend="threading", verbose=1
+        )(
             delayed(query.OligoProbe)(
                 queried_region[0],
                 selectedOligos.iloc[ii : (ii + args.n_oligo), :],
                 oligoDB,
             )
-            for ii in range(0, selectedOligos.shape[0] - args.n_oligo + 1)
+            for ii in range(selectedOligos.shape[0] - args.n_oligo + 1)
         )
+
     else:
-        candidateList = []
-        for i in track(range(0, selectedOligos.shape[0] - args.n_oligo + 1)):
-            candidateList.append(
-                query.OligoProbe(
+        candidateList = [query.OligoProbe(
                     queried_region[0],
                     selectedOligos.iloc[i : (i + args.n_oligo), :],
                     oligoDB,
-                )
-            )
+                ) for i in track(range(selectedOligos.shape[0] - args.n_oligo + 1))]
     logging.info(f"Found {len(candidateList)} probe candidates.")
 
     return candidateList
@@ -272,7 +273,7 @@ def build_windows(args, queried_region, oligoDB):
     window_size /= args.nProbes + 1
     window_size = int(window_size)
 
-    skip = 1 + (0 != (chromEnd - chromStart) % window_size)
+    skip = 1 + ((chromEnd - chromStart) % window_size != 0)
     for startPosition in range(chromStart, chromEnd, window_size)[:-skip]:
         window_set.add(chrom, startPosition, window_size)
 
@@ -281,9 +282,10 @@ def build_windows(args, queried_region, oligoDB):
         args.min_d + oligoDB.get_oligo_length_range()[0],
     )
 
-    window_setList = []
-    for s in range(0, window_size, window_shift):
-        window_setList.append(window_set.shift(s))
+    window_setList = [
+        window_set.shift(s) for s in range(0, window_size, window_shift)
+    ]
+
     logging.info(f" Built {len(window_setList)} window sets.")
 
     return window_setList
@@ -346,10 +348,10 @@ def populate_windows(args, candidateList, window_setList, probeFeatureTable):
                 )
             )
 
-            if 0 == selectCondition.sum():
+            if selectCondition.sum() == 0:
                 window_setList[wsi][wi].probe = None
                 continue
-            elif 1 != selectCondition.sum():
+            elif selectCondition.sum() != 1:
                 probeFeatureTable.keep(selectCondition, cumulative=True)
                 feature_range, feature = probeFeatureTable.filter(
                     args.order[0], args.filter_thr, cumulative=True
@@ -423,7 +425,7 @@ def run(args: argparse.Namespace) -> None:
     logging.info("Export probe set candidates.")
     window_setList = [window_setList[i] for i in probeSetData["id"].values]
 
-    if 1 != args.threads:
+    if args.threads != 1:
         Parallel(n_jobs=args.threads, verbose=1)(
             delayed(export_window_set)(args, queried_region, window_setList, wsi)
             for wsi in range(len(window_setList))
