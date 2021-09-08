@@ -93,3 +93,5 @@ class App(bot.Bottle):
             page: self.route_builder(page, self.route_list.data[page])
             for page in self.route_list.data.keys()
         }
+
+        return route_functions

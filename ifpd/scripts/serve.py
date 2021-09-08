@@ -148,10 +148,10 @@ def build_root_app(args, home_template, home_status):
     @bottle.view(home_template)
     def index():
         return {
-            'custom_stylesheets': ["home.css"],
-            'title': 'iFISH',
-            'description': 'iFISH',
-            'home_status': home_status,
+            "custom_stylesheets": ["home.css"],
+            "title": "iFISH",
+            "description": "iFISH",
+            "home_status": home_status,
         }
 
     # 404 Error

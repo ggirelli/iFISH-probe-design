@@ -243,9 +243,7 @@ def build_candidates(args, queried_region, selectedOligos, oligoDB):
     logging.info("Build probe candidates.")
     args.threads = ap.check_threads(args.threads)
     if args.threads != 1:
-        candidateList = Parallel(
-            n_jobs=args.threads, backend="threading", verbose=1
-        )(
+        candidateList = Parallel(n_jobs=args.threads, backend="threading", verbose=1)(
             delayed(query.OligoProbe)(
                 queried_region[0],
                 selectedOligos.iloc[ii : (ii + args.n_oligo), :],
@@ -255,11 +253,14 @@ def build_candidates(args, queried_region, selectedOligos, oligoDB):
         )
 
     else:
-        candidateList = [query.OligoProbe(
-                    queried_region[0],
-                    selectedOligos.iloc[i : (i + args.n_oligo), :],
-                    oligoDB,
-                ) for i in track(range(selectedOligos.shape[0] - args.n_oligo + 1))]
+        candidateList = [
+            query.OligoProbe(
+                queried_region[0],
+                selectedOligos.iloc[i : (i + args.n_oligo), :],
+                oligoDB,
+            )
+            for i in track(range(selectedOligos.shape[0] - args.n_oligo + 1))
+        ]
     logging.info(f"Found {len(candidateList)} probe candidates.")
 
     return candidateList
@@ -282,9 +283,7 @@ def build_windows(args, queried_region, oligoDB):
         args.min_d + oligoDB.get_oligo_length_range()[0],
     )
 
-    window_setList = [
-        window_set.shift(s) for s in range(0, window_size, window_shift)
-    ]
+    window_setList = [window_set.shift(s) for s in range(0, window_size, window_shift)]
 
     logging.info(f" Built {len(window_setList)} window sets.")
 

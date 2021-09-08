@@ -180,7 +180,6 @@ def parse_arguments(args: argparse.Namespace) -> argparse.Namespace:
         args.filter_thr >= 0 and args.filter_thr <= 1
     ), "first filter threshold must be a fraction: {args.filter_thr}"
 
-
     assert (
         args.min_d >= 0
     ), f"negative minimum distance between consecutive oligos: {args.min_d}"
