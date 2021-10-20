@@ -182,9 +182,9 @@ def build_root_app(args, home_template, home_status):
         custom_routes_mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(custom_routes_mod)
         if "update_probe_design_app" in dir(custom_routes_mod):
-            pdApp = custom_routes_mod.update_probe_design_app(pdApp)
+            pdApp = custom_routes_mod.update_probe_design_app(bot, pdApp)
         if "update_root_app" in dir(custom_routes_mod):
-            root = custom_routes_mod.update_root_app(root)
+            root = custom_routes_mod.update_root_app(bot, root)
 
     pdApp.vd["breadcrumbs"] = args.show_breadcrumbs
 
