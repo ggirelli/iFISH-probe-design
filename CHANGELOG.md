@@ -7,8 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 ## Unreleased
+
+## [2.1.0] - 2021-10-20
+### Added
+- Pre-commit hooks.
+
+### Changed
+- Import of custom routes script with `importlib.util`.
+- Updated dependencies.
+- Dropped support for Python 3.6.
+
 ### Fixed
 - Typo in GUI via `ifpd serve`.
+- Typos in GUI.
+- Alternative tab switcher of probe-design GUI.
 
 
 ## [2.0.5] - 2021-02-22
