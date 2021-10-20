@@ -21,17 +21,24 @@
 		%end
 
 		<div id="abstract">
-			Here you can <u>design</u> new single probes or spotting probes. Go to the <a
-				href="javascript:$('a[aria-controls=\'new_query\']').trigger('click');">Single Probe</a> tab to design
-			one probe in a region of interest. Instead, to query for a number of probes in a single region of interest
-			use <a href="javascript:$('a[aria-controls=\'new_multi_query\']').trigger('click');">Spotting Probe</a>. In
-			the <a href="javascript:$('a[aria-controls=\'databases\']').trigger('click');">Databases</a> tab you can
-			scroll through the available databases. To go to a previously ran query, use the <a
-				href="javascript:$('a[aria-controls=\'search\']').trigger('click');">search</a> tool. You can also check
-			how many queries are currently in the <a
-				href="javascript:$('a[aria-controls=\'queue\']').trigger('click');">Queue</a>. More details in the <a
+			Here you can <u>design</u> new single probes or spotting probes. Go to the <a href="#new_query"
+				data-control-tab="new_query" class="additional-tab-control">Single Probe</a> tab to
+			design one probe in a region of interest. Instead, to query for a number of probes in a single region of
+			interest use <a href="#new_multi_query" data-control-tab="new_multi_query"
+				class="additional-tab-control">Spotting Probe</a> . In the <a href="#databases"
+				data-control-tab="databases" class="additional-tab-control">Databases</a> tab you can scroll through the
+			available databases. To go to a previously ran query, use the <a href="#search" data-control-tab="search"
+				class="additional-tab-control">search</a> tool. You can also check how many queries are currently in the
+			<a href="#queue" data-control-tab="queue" class="additional-tab-control">Queue</a> . More details in the <a
 				href="https://ggirelli.github.io/iFISH-probe-design/" target="_help">help</a> page.
 		</div>
+		<script type="text/javascript">
+			$("a.additional-tab-control").click(function (e) {
+				e.preventDefault();
+				target_tab = $(this).attr("data-control-tab");
+				$("a[aria-controls='" + target_tab + "']").trigger("click");
+			});
+		</script>
 
 		<div class="row">
 			<!-- main panel -->

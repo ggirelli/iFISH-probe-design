@@ -49,8 +49,3 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry.scripts]
 "ifpd" = "ifpd.scripts.ifpd:main"
-
-[tool.vulture]
-paths = ["ifpd"]
-min_confidence = 80
-verbose = true
