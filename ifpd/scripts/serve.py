@@ -8,6 +8,7 @@ import bottle as bot  # type: ignore
 import ifpd
 from ifpd.scripts import arguments as ap  # type: ignore
 from ifpd.exception import enable_rich_assert
+import importlib
 import logging
 import os
 from rich.logging import RichHandler  # type: ignore
@@ -174,10 +175,11 @@ def build_root_app(args, home_template, home_status):
 
     # Custom routes
     if args.custom_routes is not None:
-        exec(
-            open(args.custom_routes).read(),
-            dict(bot=bot, args=args, pdApp=pdApp, root=root),
-        )
+        custom_routes_mod = importlib.import_module(args.custom_routes)
+        if "update_probe_design_app" in dir(custom_routes_mod):
+            pdApp = custom_routes_mod.update_probe_design_app(pdApp)
+        if "update_root_app" in dir(custom_routes_mod):
+            root = custom_routes_mod.update_root_app(root)
 
     pdApp.vd["breadcrumbs"] = args.show_breadcrumbs
 
