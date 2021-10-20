@@ -69,7 +69,7 @@ def add_log_file_handler(path: str, logger_name: Optional[str] = None) -> None:
     """
     assert not os.path.isdir(path)
     log_dir = os.path.dirname(path)
-    assert os.path.isdir(log_dir) or "" == log_dir
+    assert os.path.isdir(log_dir) or log_dir == ""
     fh = RichHandler(console=Console(file=open(path, mode="w+")), markup=True)
     fh.setLevel(logging.INFO)
     logging.getLogger(logger_name).addHandler(fh)

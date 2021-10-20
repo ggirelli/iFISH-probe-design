@@ -98,7 +98,7 @@ class OligoDatabase(object):
         oligoMinDist = self.get_oligo_min_dist()
         startValues = chromData.iloc[1:, 0].values
         endValues = chromData.iloc[:-1, 1].values
-        if 0 != len(startValues):
+        if len(startValues) != 0:
             oligoMinD_observed = min(startValues - endValues)
         else:
             oligoMinD_observed = np.inf
@@ -189,10 +189,9 @@ class OligoProbe(object):
         at either of the region extremities."""
         region_halfWidth = (region[2] - region[1]) / 2
         region_midPoint = region[1] + region_halfWidth
-        centrality = (
+        return (
             region_halfWidth - abs(region_midPoint - self.midpoint)
         ) / region_halfWidth
-        return centrality
 
     def get_probe_size(self):
         """Probe size, defined as difference between start of first oligo
@@ -204,7 +203,7 @@ class OligoProbe(object):
         distance between consecutive oligos, calculated from their start
         position, disregarding oligo length."""
         std = np.std(np.diff(self.oligoData.iloc[:, 1]))
-        return np.inf if 0 == std else 1 / std
+        return np.inf if std == 0 else 1 / std
 
     def describe(self, region, path=None):
         """Builds a small pd.DataFrame describing a probe."""
@@ -219,7 +218,7 @@ class OligoProbe(object):
             }
         )
 
-        if not type(None) == type(path):
+        if type(None) != type(path):
             config = configparser.ConfigParser()
             config["REGION"] = {
                 "chrom": region[0],
@@ -254,7 +253,7 @@ class OligoProbe(object):
             fasta += f"{self.chrom}:{chromStart}-{chromEnd}\n"
             fasta += f"{sequence}\n"
 
-        if not type(None) == type(path):
+        if type(None) != type(path):
             assert os.path.isdir(os.path.dirname(path))
             with open(path, "w+") as OH:
                 OH.write(fasta)
@@ -272,7 +271,7 @@ class OligoProbe(object):
             bed += f"{self.chrom}\t{chromStart}\t{chromEnd}\t"
             bed += f"{prefix}oligo_{i}\n"
 
-        if not type(None) == type(path):
+        if type(None) != type(path):
             assert os.path.isdir(os.path.dirname(path))
             with open(path, "w+") as OH:
                 OH.write(bed)
@@ -387,7 +386,7 @@ class OligoProbe(object):
     def _plot_oligo_distance(self, outputDir):
         fig = plt.figure()
 
-        if 1 < self.oligoData.shape[0]:
+        if self.oligoData.shape[0] > 1:
             startPositions = self.oligoData.iloc[1:, 0].values
             endPositions = self.oligoData.iloc[:-1, 1].values
             diffs = startPositions - endPositions
@@ -433,7 +432,7 @@ class ProbeFeatureTable(object):
         assert 0 < len(candidateList)
 
         self.data = []
-        if 1 != threads:
+        if threads != 1:
             verbose = 1 if verbose else 0
             self.data = Parallel(n_jobs=threads, backend="threading", verbose=verbose)(
                 delayed(describe_candidate)(candidate, queried_region)
@@ -475,8 +474,11 @@ class ProbeFeatureTable(object):
         feature_delta = best_feature * thr
         feature_range = (best_feature - feature_delta, best_feature + feature_delta)
 
-        discardCondition = [self.data[feature] < feature_range[0]]
-        discardCondition.append(self.data[feature] > feature_range[1])
+        discardCondition = [
+            self.data[feature] < feature_range[0],
+            self.data[feature] > feature_range[1],
+        ]
+
         discardCondition = np.logical_or(*discardCondition)
         self.discarded = pd.concat([self.discarded, self.data.loc[discardCondition, :]])
         self.data = self.data.loc[np.logical_not(discardCondition), :]
@@ -531,8 +533,7 @@ class GenomicWindowList(object):
         return self.data[i]
 
     def __iter__(self):
-        for window in self.data:
-            yield window
+        yield from self.data
 
     def __len__(self):
         return len(self.data)
@@ -541,7 +542,7 @@ class GenomicWindowList(object):
         self.data.append(GenomicWindow(chrom, start, size))
 
     def count_probes(self):
-        return sum([w.has_probe() for w in self])
+        return sum(w.has_probe() for w in self)
 
     def shift(self, n):
         return GenomicWindowList([window.shift(n) for window in self.data])
@@ -551,7 +552,7 @@ class GenomicWindowList(object):
         self.data = [self.data[i] for i in np.argsort(midpointList)]
 
     def calc_probe_size_and_homogeneity(self):
-        if 3 > self.count_probes():
+        if self.count_probes() < 3:
             return np.nan
 
         probeData = pd.concat(
@@ -651,7 +652,7 @@ class GenomicWindowList(object):
 
         probes = [w.probe for w in self if w.probe is not None]
 
-        if 1 < len(probes):
+        if len(probes) > 1:
             plt.plot(
                 [0, len(probes) - 1],
                 [probes[0].midpoint, probes[-1].midpoint],
@@ -684,7 +685,7 @@ class GenomicWindowList(object):
 
         probes = [w.probe for w in self if w.probe is not None]
 
-        if 1 < len(probes):
+        if len(probes) > 1:
             starts = np.array([p.chromStart for p in probes][1:])
             ends = np.array([p.chromEnd for p in probes][:-1])
             diffs = starts - ends

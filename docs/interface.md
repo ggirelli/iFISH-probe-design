@@ -13,8 +13,8 @@ The interface is fully responsive, and can be visualized with a display of any s
 <!-- MarkdownTOC -->
 
 - [Homepage](#homepage)
-    - [Single probe](#single-probe)
-    - [Spotting probe](#spotting-probe)
+  - [Single probe](#single-probe)
+  - [Spotting probe](#spotting-probe)
 - [Query page](#query-page)
 - [Probe candidate page](#probe-candidate-page)
 - [Probe set candidate page](#probe-set-candidate-page)
@@ -88,7 +88,7 @@ When the query leaves the queue, the <span class="text-warning">yellow</span> al
 ![query-head-success]({{ site.baseurl }}/images/query-head-success.png)
 ![query-head-timeout]({{ site.baseurl }}/images/query-head-timeout.png)
 
-Once the query is processed, the alert turns <span class="text-success">green</span> and reports the time at which the query was completed, alongside the running time. If something wrong happend during the processing, or if the query took too long, the alert turns <span class="text-dange">red</span> and invites the user to try again or contact the server admin.
+Once the query is processed, the alert turns <span class="text-success">green</span> and reports the time at which the query was completed, alongside the running time. If something wrong happened during the processing, or if the query took too long, the alert turns <span class="text-dange">red</span> and invites the user to try again or contact the server admin.
 
 ![query-head-info]({{ site.baseurl }}/images/query-head-info.png)
 

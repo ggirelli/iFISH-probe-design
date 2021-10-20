@@ -13,7 +13,7 @@ def calc_density(data, **kwargs):
     nbins = 1000 if "nbins" not in list(kwargs.keys()) else kwargs["nbins"]
 
     # If only one nucleus was found
-    if 1 == len(data):
+    if len(data) == 1:
         f = eval(f"lambda x: 1 if x == {data[0]} else 0")
         f = np.vectorize(f)
         return {"x": np.array([data[0]]), "y": np.array([1]), "f": f}

@@ -13,7 +13,7 @@ class Queue(q.Queue):
     Args:
             MAX_CURR (int): maximum number of simultaneously released tasks.
             doing (list): list of currently released tasks (i.e., running).
-            done (list): list of completed taks.
+            done (list): list of completed tasks.
     """
 
     MAX_CURR = 1
@@ -26,7 +26,7 @@ class Queue(q.Queue):
         Args:
                 n_doing (int): max number of simultaneously running tasks.
         """
-        if not type(None) == type(MAX_CURR):
+        if type(None) != type(MAX_CURR):
             self.MAX_CURR = MAX_CURR
         super(Queue, self).__init__()
         return
@@ -37,7 +37,7 @@ class Queue(q.Queue):
         """
 
         # Stop if already running
-        if not self.MAX_CURR >= len(self.doing):
+        if self.MAX_CURR < len(self.doing):
             return
 
         # Call original method
