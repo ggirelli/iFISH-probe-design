@@ -66,6 +66,10 @@ class App(rootApp.App):
         # Save input parameters
         self.section_path = section_path
         self.root_uri = root_uri
+        if root_uri.endswith("/") and root_uri[:-1].endswith(":80"):
+            uri_for_check = ":".join(root_uri.split(":")[:-1]) + "/"
+        else:
+            uri_for_check = root_uri
         self.app_uri = app_uri
         self.local_path = "%s%s" % (section_path, self.base_dir)
         self.static_path = static_path
@@ -77,6 +81,7 @@ class App(rootApp.App):
         # Start setting up view dictionary
         self.vd["app_uri"] = "%s%s" % (root_uri, app_uri)
         self.vd["root_uri"] = root_uri
+        self.vd["uri_for_check"] = uri_for_check
         self.vd["vpath"] = self.vpath
         self.vd["qpath"] = self.qpath
         self.vd["description"] = "iFISH probe designer application."
