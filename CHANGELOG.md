@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.1.0.post1] - 2021-10-20
+### Fixed
+- Trove classifiers in `pyproject.toml`.
+
 ## [2.1.0] - 2021-10-20
 ### Added
 - Pre-commit hooks.
@@ -184,7 +188,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.0.1] - 2017-08-06 - First release
 
-
+[2.1.0.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0.post1
 [2.1.0]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0
 [2.0.5]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.5
 [2.0.4]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.4
