@@ -88,10 +88,7 @@ class App(bot.Bottle):
     def build_routes(self):
         """Build routes."""
 
-        # Will contain the route functions
-        route_functions = {
+        return {
             page: self.route_builder(page, self.route_list.data[page])
             for page in self.route_list.data.keys()
         }
-
-        return route_functions
