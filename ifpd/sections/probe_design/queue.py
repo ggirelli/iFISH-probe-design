@@ -13,7 +13,7 @@ class Queue(q.Queue):
     Args:
             MAX_CURR (int): maximum number of simultaneously released tasks.
             doing (list): list of currently released tasks (i.e., running).
-            done (list): list of completed taks.
+            done (list): list of completed tasks.
     """
 
     MAX_CURR = 1
