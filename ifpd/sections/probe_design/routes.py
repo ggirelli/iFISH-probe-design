@@ -783,11 +783,7 @@ class Routes(routes.Routes):
     def queueStatus(routes, self):
         taskList = []
         for task in self.queue.queue:
-            if task[0] == "ifpd_query_set":
-                outdir_id = 4
-            elif task[0] == "ifpd_query_probe":
-                outdir_id = 3
-            query_id = os.path.basename(task[outdir_id])
+            query_id = os.path.basename(task[5])
             data = Query(query_id, self.qpath).data
             taskList.append(os.path.basename(task[1]) + f' @{data["isotime"]}')
         if not taskList:
