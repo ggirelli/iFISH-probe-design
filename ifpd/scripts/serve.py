@@ -4,10 +4,11 @@
 """
 
 import argparse
-import bottle  # type: ignore
+import bottle as bot  # type: ignore
 import ifpd
 from ifpd.scripts import arguments as ap  # type: ignore
 from ifpd.exception import enable_rich_assert
+import importlib.util
 import logging
 import os
 from rich.logging import RichHandler  # type: ignore
@@ -106,17 +107,17 @@ def add_static_routes_includes(root, root_path):
     # CSS files
     @root.route("/css/<path>")
     def callback_css(path):
-        return bottle.static_file(path, "%s/interface/css/" % root_path)
+        return bot.static_file(path, "%s/interface/css/" % root_path)
 
     # JS files
     @root.route("/js/<path>")
     def callback_js(path):
-        return bottle.static_file(path, "%s/interface/js/" % root_path)
+        return bot.static_file(path, "%s/interface/js/" % root_path)
 
     # Fonts files
     @root.route("/fonts/<path>")
     def callback_fonts(path):
-        return bottle.static_file(path, "%s/interface/fonts/" % root_path)
+        return bot.static_file(path, "%s/interface/fonts/" % root_path)
 
     return root
 
@@ -125,12 +126,12 @@ def add_static_routes_download(root, root_path):
     # Images
     @root.route("/images/<path>")
     def callback_images(path):
-        return bottle.static_file(path, "%s/interface/images/" % root_path)
+        return bot.static_file(path, "%s/interface/images/" % root_path)
 
     # Documents
     @root.route("/documents/<path>")
     def callback_documents(path):
-        return bottle.static_file(path, "%s/interface/documents/" % root_path)
+        return bot.static_file(path, "%s/interface/documents/" % root_path)
 
     return root
 
@@ -141,11 +142,11 @@ def build_root_app(args, home_template, home_status):
     section_path = "%s/" % os.path.dirname(ifpd.sections.__file__)
 
     # Start root app
-    root = bottle.Bottle()
+    root = bot.Bottle()
 
     # Home
     @root.route("/")
-    @bottle.view(home_template)
+    @bot.view(home_template)
     def index():
         return {
             "custom_stylesheets": ["home.css"],
@@ -174,7 +175,16 @@ def build_root_app(args, home_template, home_status):
 
     # Custom routes
     if args.custom_routes is not None:
-        exec(open(args.custom_routes).read())
+        assert args.custom_routes.endswith(".py")
+        spec = importlib.util.spec_from_file_location(
+            "custom_routes", args.custom_routes
+        )
+        custom_routes_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(custom_routes_mod)
+        if "update_probe_design_app" in dir(custom_routes_mod):
+            pdApp = custom_routes_mod.update_probe_design_app(bot, pdApp, args)
+        if "update_root_app" in dir(custom_routes_mod):
+            root = custom_routes_mod.update_root_app(bot, root, args)
 
     pdApp.vd["breadcrumbs"] = args.show_breadcrumbs
 
@@ -198,13 +208,13 @@ def run(args: argparse.Namespace) -> None:
     # Server params
     root_path = "%s/" % os.path.dirname(ifpd.__file__)
 
-    bottle.TEMPLATE_PATH.append(root_path)
-    bottle.TEMPLATE_PATH.append("%s/interface/views/" % root_path)
+    bot.TEMPLATE_PATH.append(root_path)
+    bot.TEMPLATE_PATH.append("%s/interface/views/" % root_path)
     if args.custom_templates is not None:
         assert os.path.isdir(
             args.custom_templates
         ), f"folder not found: '{args.custom_templates}'"
-        bottle.TEMPLATE_PATH.append(args.custom_templates)
+        bot.TEMPLATE_PATH.append(args.custom_templates)
 
     assert not os.path.isfile(args.static), (
         "folder expected, file found: %s" % args.static

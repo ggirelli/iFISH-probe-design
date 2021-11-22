@@ -8,13 +8,13 @@
 [PyPi](https://pypi.org/project/ifpd/) | [docs](https://ggirelli.github.io/iFISH-probe-design/)
 
 
-**iFISH-Probe-Design** (`ifpd`) is a Python3.6.1+ package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
+**iFISH-Probe-Design** (`ifpd`) is a Python3.7+ package containing tools for selection of complementary oligonucleotides to build iFISH probes. It also includes a web interface, which simplifies the procedure by removing any requirement for programming skills. Read the online [documentation](https://ggirelli.github.io/iFISH-probe-design/) for more details.
 
 ## Requirements
 
-**iFISH-Probe-Designer** is fully implemented in Python3.7+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.6.1+ on your machine if you don't have it yet.
+**iFISH-Probe-Designer** is fully implemented in Python3.7+, thus you need Python3 to run it. Check out [here](https://realpython.com/installing-python/) how to install Python3.7+ on your machine if you don't have it yet.
 
-`ifpd` has been tested with Python 3.7, and 3.8. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/ifish-probe-design#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/ifish-probe-design/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
+`ifpd` has been tested with Python 3.7, 3.8, and 3.9. We recommend installing it using `pipx` (see [below](https://github.com/ggirelli/ifish-probe-design#install)) to avoid dependency conflicts with other packages. The packages it depends on are listed in our [dependency graph](https://github.com/ggirelli/ifish-probe-design/network/dependencies). We use [`poetry`](https://github.com/python-poetry/poetry) to handle our dependencies.
 
 ## Installation
 
@@ -32,7 +32,7 @@ We welcome any contributions to `ifpd`. In short, we use [`black`](https://githu
 
 ### Reference
 
-* Gelali, E., Girelli, G., Matsumoto, M., Wernersson, E., Custodio, J., Mota, A., ... & Bienko, M. (2019). iFISH is a publically available resource enabling versatile DNA FISH to study genome architecture. Nature communications, 10(1), 1-15. ([link](https://www.nature.com/articles/s41467-019-09616-w))
+* Gelali, E., Girelli, G., Matsumoto, M., Wernersson, E., Custodio, J., Mota, A., ... & Bienko, M. (2019). iFISH is a publicly available resource enabling versatile DNA FISH to study genome architecture. Nature communications, 10(1), 1-15. ([link](https://www.nature.com/articles/s41467-019-09616-w))
 
 ## License
 

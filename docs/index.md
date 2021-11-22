@@ -13,4 +13,4 @@ The tools allow to select sets of oligomers as iFISH probes, starting from datab
 
 ### Reference
 
-Gelali, E., Girelli, G., Matsumoto, M., Wernersson, E., Custodio, J., Mota, A., ... & Bienko, M. (2019). iFISH is a publically available resource enabling versatile DNA FISH to study genome architecture. Nature communications, 10(1), 1-15. ([link](https://www.nature.com/articles/s41467-019-09616-w))
+Gelali, E., Girelli, G., Matsumoto, M., Wernersson, E., Custodio, J., Mota, A., ... & Bienko, M. (2019). iFISH is a publicly available resource enabling versatile DNA FISH to study genome architecture. Nature communications, 10(1), 1-15. ([link](https://www.nature.com/articles/s41467-019-09616-w))
