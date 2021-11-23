@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.1.post1] - 2021-11-23
+### Fixed
+- Now using version flag from `importlib`.
+
 ## [2.1.1] - 2021-11-23
 ### Fixed
 - Output directory error via GUI due to changed CLI hook call structure after switching
@@ -41,14 +45,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded dependencies to latest versions and tested.
 
 ## Fixed
-- Minor bug in `ifpd_mkdb` triggered by databases with 1 oligo in a feature. (unlikely scenario)
-- Bug in `ifpd_serve` that added quotes around `--region start end` and caused queries to fail.
+- Minor bug in `ifpd_mkdb` triggered by databases with 1 oligo in a feature. 
+(unlikely scenario)
+- Bug in `ifpd_serve` that added quotes around `--region start end` and caused 
+queries to fail.
 
 
 
 ## [2.0.4] - 2021-02-11
 ### Added
-- Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a query of the whole feature.
+- Tooltip to GUI explaining that setting `start` and `end` to the same value triggers a 
+query of the whole feature.
 - `const.py` module with package version tag and other constants.
 - Option to hide breadcrumbs when running `serve`.
 - Enforcing GUI to be accessed at serving URI, not viewing one.
@@ -58,12 +65,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simplified authorship and license comment.
 - Now all scripts are accessible through a single entry-point at "ifpd".
 - Now asking for arguments "chrom [--region start end]" when querying.
-- Single probe design default behavior now does not stop if not enough oligos are found, instead it generates a probe with the largest number of oligos. To revert to the old behavior use the `--exact-n-oligo` option.
+- Single probe design default behavior now does not stop if not enough oligos are found,
+ instead it generates a probe with the largest number of oligos. To revert to the old
+ behavior use the `--exact-n-oligo` option.
 - Changed extension of simple template files to `.tpl.html`.
 - Moved documentation to `docs`.
 - `mkdb` does not support sequence-less inputs anymore.
 - `query probe` and `query set` argument order changed.
-- Made `static` argument mandatory for `serve`, for compatibility with `pipx` installation.
+- Made `static` argument mandatory for `serve`, for compatibility with `pipx` 
+installation.
 - `Error 500` now triggers a redirect to app homepage with a 5s delay.
 - Breadcrumbs are on by default on `serve.`
 
@@ -166,13 +176,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Renamed package to `ifpd`.
 - Moved interface documents to separate sub-folder.
 - Each database is structured as follows:
-    + One file per chromosome, with the name being the same as the chromosome. One row per oligo and two columns: start and end position, as per the UCSC bed format standard. Also, a third (optional) column can be present, with the sequence of the oligo.
+    + One file per chromosome, with the name being the same as the chromosome. One row 
+    per oligo and two columns: start and end position, as per the UCSC bed format 
+    standard. Also, a third (optional) column can be present, with the sequence of the 
+    oligo.
     + One `.config` file with the database details.
-- Database query now split in two scripts (`fprode_dbquery_probe` and `fprode_dbquery_probeSet`), for single-probe and probe-set design.
+- Database query now split in two scripts (`fprode_dbquery_probe` and 
+`fprode_dbquery_probeSet`), for single-probe and probe-set design.
     + Query-related methods moved to the `query` sub-module.
     + Query ID now handled server-side, for easier standalone script execution.
     + Region of interest now passed as `chrN:XXX,YYY`, for convenience.
-    + Query name and description now handled only server-side, i.e., removed as input parameters of the query scripts.
+    + Query name and description now handled only server-side, i.e., removed as 
+    input parameters of the query scripts.
 - Refined user interface.
 - Queue in web interface now reports region and isotimestamp for each queued query.
 - Queries can be reached by knowing their ID only.
@@ -194,6 +209,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.0.1] - 2017-08-06 - First release
 
 [Unreleased]: https://github.com/ggirelli/iFISH-probe-design/
+[2.1.1.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1.post1
 [2.1.1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1
 [2.1.0.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0.post1
 [2.1.0]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0

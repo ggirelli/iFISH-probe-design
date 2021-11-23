@@ -3,7 +3,13 @@
 @contact: gigi.ga90@gmail.com
 """
 
-from ifpd.const import __version__
+from importlib.metadata import version
+
+try:
+    __version__ = version(__name__)
+except Exception as e:
+    raise e
+
 from ifpd import bioext, exception, query, stats
 from ifpd import sections
 

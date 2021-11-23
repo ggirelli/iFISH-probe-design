@@ -4,7 +4,7 @@
 """
 
 import argparse
-from ifpd.const import __version__
+from ifpd import __version__
 import joblib  # type: ignore
 import logging
 from rich.logging import RichHandler  # type: ignore

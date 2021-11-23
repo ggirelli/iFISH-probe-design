@@ -4,7 +4,7 @@
 """
 
 import argparse
-from ifpd.const import __version__
+from ifpd import __version__
 from ifpd.scripts import arguments as ap
 from ifpd import scripts
 import sys
