@@ -126,7 +126,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							%for rowi in range(min(query['candidate_table'].shape[0], int(max_probes))):
+							%for rowi in range(int(min(query['candidate_table'].shape[0], max_probes))):
 								<tr>
 									<td>{{rowi}}</td>
 									%for coli in range(query['candidate_table'].shape[1]):
