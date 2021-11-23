@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.1.post2] - 2021-11-23
+### Fixed
+- Interface break when requesting all probe candidates.
+
 ## [2.1.1.post1] - 2021-11-23
 ### Fixed
 - Now using version flag from `importlib`.
@@ -209,6 +213,7 @@ installation.
 ## [0.0.1] - 2017-08-06 - First release
 
 [Unreleased]: https://github.com/ggirelli/iFISH-probe-design/
+[2.1.1.post2]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1.post2
 [2.1.1.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1.post1
 [2.1.1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1
 [2.1.0.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0.post1
