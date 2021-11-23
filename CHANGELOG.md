@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
-## Unreleased
+## [Unreleased]
+
+## [2.1.1] - 2021-11-23
+### Fixed
+- Output directory error via GUI due to changed CLI hook call structure after switching
+  from `argparse` to `click`.
 
 ## [2.1.0.post1] - 2021-10-20
 ### Fixed
@@ -188,6 +193,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.0.1] - 2017-08-06 - First release
 
+[Unreleased]: https://github.com/ggirelli/iFISH-probe-design/
+[2.1.1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.1
 [2.1.0.post1]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0.post1
 [2.1.0]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.1.0
 [2.0.5]: https://github.com/ggirelli/iFISH-probe-design/releases/tag/v2.0.5
